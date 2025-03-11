@@ -1,0 +1,63 @@
+<resources>
+    <string name="app_name">Emergency App</string>
+
+    <!-- Common -->
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="repeat_password">Repeat password</string>
+    <string name="generic_error">Something wrong happened. Please try again.</string>
+    <string name="email_error">Please insert a valid email.</string>
+    <string name="try_again">Try again</string>
+    <string name="ok">OK</string>
+    <string name="password_field_end_icon_hide_content_description">Hide password</string>
+    <string name="password_field_end_icon_show_content_description">Show password</string>
+    <string name="account">Account</string>
+
+    <!-- LoginScreen -->
+    <string name="sign_in">Sign in</string>
+    <string name="login_details">Enter your login details</string>
+    <string name="empty_password_error">Password cannot be empty.</string>
+
+    <!-- SignUpScreen -->
+    <string name="sign_up">Sign up</string>
+    <string name="create_account_test">Create account Test</string>
+    <string name="password_error">Your password should have at least six characters and include one digit, one lower case letter and one upper case letter.</string>
+    <string name="password_match_error">Passwords do not match.</string>
+
+    <!-- Dialogs -->
+    <string name="sign_out_title">Sign out?</string>
+    <string name="sign_out_description">You will have to sign in again to see your tasks.</string>
+    <string name="delete_account_title">Delete account?</string>
+    <string name="delete_account_description">You will lose all your tasks and your account will be deleted. This action is irreversible.</string>
+    <string name="welcome_back">Welcome Back</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="guest">Guest</string>
+    <string name="sign_in_with_google">Sign in With Google</string>
+    <string name="sign_up_with_google">Sign up With Google</string>
+    <string name="sign_in_with_facebook">Sign in With Facebook</string>
+    <string name="sign_up_with_facebook">Sign up With Facebook</string>
+    <string name="don_t_have_an_account_sign_up">Don\'t have an account?</string>
+    <string name="already_have_an_account_sign_in">Already have an account?</string>
+    <string name="invalid_password_error">The password is invalid or the user does not have a password.</string>
+    <string name="authentication_failed">Authentication failed. Please try again.</string>
+    <string name="email_already_in_use">The email address is already in use by another account.</string>
+    <string name="account_creation_failed">Account creation failed</string>
+    <string name="create_your_account">Create Your Account</string>
+    <string name="forget_password">Forget Password</string>
+    <string name="please_enter_the_email_address">Please enter the email address</string>
+    <string name="send_email">Send Email</string>
+    <string name="verify_email">Verify Email</string>
+    <string name="don_t_receive_otp">Don\'t receive OTP?</string>
+    <string name="resend_otp">Resend OTP</string>
+    <string name="conferm">Continue</string>
+    <string name="your_otp_code_has_been_verified_successfully">Your OTP code has been verified successfully</string>
+    <string name="reset_your_password">Reset  your password</string>
+    <string name="please_enter_new_password">please enter new password</string>
+    <string name="password_changed_successfully">Password changed successfully</string>
+    <string name="password_change_failed">Password change failed</string>
+    <string name="not_admin_error">not admin</string>
+    <string name="user_not_found">user_not_found</string>
+    <string name="invalid_role_error">invalid_role_error</string>
+
+</resources>

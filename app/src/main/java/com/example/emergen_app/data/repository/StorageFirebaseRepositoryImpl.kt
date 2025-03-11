@@ -1,0 +1,33 @@
+package com.example.emergen_app.data.repository
+
+
+import android.util.Log
+import com.example.emergen_app.domain.repository.StorageFirebaseRepository
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
+
+class StorageFirebaseRepositoryImpl @Inject constructor(
+    private val fireStore: FirebaseFirestore
+) : StorageFirebaseRepository {
+
+    override suspend fun getUserRole(email: String): String? {
+        return try {
+            val querySnapshot = fireStore.collection("users")
+                .whereEqualTo("email", email)
+                .get()
+                .await()
+
+            val role = if (!querySnapshot.isEmpty) {
+                querySnapshot.documents[0].getString("role")
+            } else {
+                null
+            }
+            Log.d("FirebaseRepo", "User $email role: $role")
+            role
+        } catch (e: Exception) {
+            Log.e("FirebaseRepo", "Error fetching user role", e)
+            null
+        }
+    }
+}

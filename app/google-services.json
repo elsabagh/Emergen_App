@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "75405300136",
+    "project_id": "emergen-app",
+    "storage_bucket": "emergen-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:75405300136:android:441c153ebc2f8cfe324d9d",
+        "android_client_info": {
+          "package_name": "com.example.emergen_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC61gjeN49sg_ReyOQ02qA0IFys0DdBabw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
