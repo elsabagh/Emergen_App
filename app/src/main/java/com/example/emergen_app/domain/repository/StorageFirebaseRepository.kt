@@ -4,4 +4,6 @@ interface StorageFirebaseRepository {
 
     suspend fun getUserRole(email: String): String?
 
+    suspend fun getUserStatus(email: String): String?
+
 }

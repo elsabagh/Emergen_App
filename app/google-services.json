@@ -1,13 +1,14 @@
 {
   "project_info": {
-    "project_number": "75405300136",
-    "project_id": "emergen-app",
-    "storage_bucket": "emergen-app.firebasestorage.app"
+    "project_number": "194036768831",
+    "firebase_url": "https://notesapp-542be-default-rtdb.firebaseio.com",
+    "project_id": "notesapp-542be",
+    "storage_bucket": "notesapp-542be.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:75405300136:android:441c153ebc2f8cfe324d9d",
+        "mobilesdk_app_id": "1:194036768831:android:eaafec9c4ff645de9dd88a",
         "android_client_info": {
           "package_name": "com.example.emergen_app"
         }
@@ -15,7 +16,35 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyC61gjeN49sg_ReyOQ02qA0IFys0DdBabw"
+          "current_key": "AIzaSyAguHKVCr3o_-IYDZxxdFBR18NWJaPNFHQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:194036768831:android:dbd9caf28d9168129dd88a",
+        "android_client_info": {
+          "package_name": "com.example.notesapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "194036768831-fqfmc1lu2nbjbupo71cg1tqf42abqjlm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.notesapp",
+            "certificate_hash": "05d228b9cda9e1ad36ac7ff8c9ba9d8c527f5f17"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAguHKVCr3o_-IYDZxxdFBR18NWJaPNFHQ"
         }
       ],
       "services": {

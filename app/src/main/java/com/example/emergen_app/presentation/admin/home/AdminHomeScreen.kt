@@ -30,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,6 +46,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.emergen_app.R
+import com.example.emergen_app.navigation.AppDestination
 import com.example.emergen_app.ui.theme.EmergencyAppTheme
 import com.example.emergen_app.ui.theme.adminWelcomeCard
 import com.example.emergen_app.ui.theme.cardMenu
@@ -64,7 +66,6 @@ fun AdminHomeScreen(
 
         val homeViewModel: AdminHomeViewModel = hiltViewModel()
         val isAccountSignedOut by homeViewModel.isAccountSignedOut.collectAsStateWithLifecycle()
-
         // ✅ بمجرد تسجيل الخروج، يتم التنقل إلى شاشة تسجيل الدخول
         LaunchedEffect(isAccountSignedOut) {
             if (isAccountSignedOut) {
@@ -77,13 +78,15 @@ fun AdminHomeScreen(
             modifier = Modifier
                 .background(Color(0xFFFDF1D0)) // Light beige background
         ) {
-            AppHeader()
+            AppHeader(navController) // ✅ تمرير `navController` إلى `AppHeader`
 
             Spacer(modifier = Modifier.height(16.dp))
 
             // Admin Welcome Card
             AdminWelcomeCard(
-                homeViewModel
+                homeViewModel,
+                navController // ✅ تمرير `navController` حتى يمكن استخدامه داخل `AdminWelcomeCard`
+
             )
         }
 
@@ -106,7 +109,7 @@ fun AdminHomeScreen(
 }
 
 @Composable
-fun AppHeader() {
+fun AppHeader(navController: NavController) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
@@ -136,7 +139,9 @@ fun AppHeader() {
 
 @Composable
 fun AdminWelcomeCard(
-    viewModel: AdminHomeViewModel
+    viewModel: AdminHomeViewModel,
+    navController: NavController // ✅ تمرير `navController` إلى `AdminWelcomeCard`
+
 ) {
     Card(
         modifier = Modifier
@@ -170,7 +175,7 @@ fun AdminWelcomeCard(
                 )
             }
             Row {
-                IconButton(onClick = { /* Handle Notifications */ }) {
+                IconButton(onClick = { navController.navigate(AppDestination.NotificationDestination.route) }) { // ✅ التنقل إلى صفحة الإشعارات
                     Icon(
                         imageVector = Icons.Default.Notifications,
                         contentDescription = "Notifications",

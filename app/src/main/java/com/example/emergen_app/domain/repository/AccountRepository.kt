@@ -1,5 +1,6 @@
 package com.example.emergen_app.domain.repository
 
+import android.net.Uri
 import com.example.emergen_app.data.models.User
 import kotlinx.coroutines.flow.Flow
 
@@ -13,7 +14,7 @@ interface AccountRepository {
 
     suspend fun authenticate(email: String, password: String)
 
-    suspend fun createAccount(email: String, password: String)
+    suspend fun createAccount(email: String, password: String, userData: User, idFrontUri: Uri?, idBackUri: Uri?, userPhotoUri: Uri?)
 
     suspend fun linkAccount(email: String, password: String)
 

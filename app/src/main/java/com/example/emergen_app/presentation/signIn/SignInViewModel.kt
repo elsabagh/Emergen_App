@@ -1,5 +1,6 @@
 package com.example.emergen_app.presentation.signIn
 
+import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -32,22 +33,25 @@ class SignInViewModel @Inject constructor(
     private val _isSignInSucceeded = MutableStateFlow(false)
     val isSignInSucceeded: StateFlow<Boolean> = _isSignInSucceeded.asStateFlow()
 
-
-    private var _userRole = MutableStateFlow<String?>(null)
-    val userRole: StateFlow<String?> = _userRole
+    private val _userRole = MutableStateFlow<String?>(null)
+    val userRole: StateFlow<String?> = _userRole.asStateFlow()
 
     private var _isAccountReady = MutableStateFlow(false)
     val isAccountReady: StateFlow<Boolean> = _isAccountReady
 
     init {
+        loadUserRole()
+    }
+
+    private fun loadUserRole() {
         viewModelScope.launch {
             if (accountRepository.isUserSignedIn) {
                 val email = accountRepository.getCurrentUserEmail()
                 if (email != null) {
                     _userRole.value = storageFirebaseRepository.getUserRole(email)
-                    _isAccountReady.value = true
                 }
             }
+            _isAccountReady.value = true // ✅ يتم تحديث الحالة بعد استرجاع البيانات
         }
     }
 
@@ -81,24 +85,34 @@ class SignInViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
+                // التوثيق
                 accountRepository.authenticate(email, password)
-                validateUserRole(email, selectedRole)
+                validateUserRoleAndStatus(email, selectedRole)
             } catch (e: Exception) {
                 SnackBarManager.showMessage(R.string.authentication_failed)
             }
         }
     }
 
-    private suspend fun validateUserRole(email: String, selectedRole: String) {
+    private suspend fun validateUserRoleAndStatus(email: String, selectedRole: String) {
+        // جلب الدور من Firebase
         val role = storageFirebaseRepository.getUserRole(email)
+        val status = storageFirebaseRepository.getUserStatus(email) // جلب حالة الحساب
+
         _userRole.value = role
 
+        // التحقق من الدور وحالة الحساب
         if (role == selectedRole) {
-            _isSignInSucceeded.value = true
+            if (status == "accepted") {
+                _isSignInSucceeded.value = true
+            } else {
+                SnackBarManager.showMessage(R.string.account_status_not_accepted) // رسالة خطأ بناءً على حالة الحساب
+            }
         } else {
             SnackBarManager.showMessage(R.string.invalid_role_error)
         }
     }
+
 
 
     fun startTheApp() {

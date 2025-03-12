@@ -59,5 +59,10 @@
     <string name="not_admin_error">not admin</string>
     <string name="user_not_found">user_not_found</string>
     <string name="invalid_role_error">invalid_role_error</string>
+    <string name="empty_name_error">empty_name_error</string>
+    <string name="image_upload_error">image_upload_error</string>
+    <string name="please_upload_all_required_images">Please upload all required images</string>
+    <string name="created_account">created account</string>
+    <string name="account_status_not_accepted">Your account is not yet accepted. Please check your account status.</string>
 
 </resources>

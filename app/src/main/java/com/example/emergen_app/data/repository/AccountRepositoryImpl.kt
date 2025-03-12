@@ -1,10 +1,14 @@
 package com.example.emergen_app.data.repository
 
+import android.net.Uri
+import android.util.Log
 import androidx.compose.ui.util.trace
 import com.example.emergen_app.data.models.User
 import com.example.emergen_app.domain.repository.AccountRepository
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -15,6 +19,8 @@ import javax.inject.Inject
 
 class AccountRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
+    private val fireStore: FirebaseFirestore,
+    private val storage: FirebaseStorage
 ) : AccountRepository {
     override val currentUser: Flow<User>
         get() = callbackFlow {
@@ -53,15 +59,36 @@ class AccountRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun createAccount(email: String, password: String) {
+    override suspend fun createAccount(email: String, password: String, userData: User, idFrontUri: Uri?, idBackUri: Uri?, userPhotoUri: Uri?) {
         try {
-            firebaseAuth.createUserWithEmailAndPassword(email, password).await()
+            val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
+            val userId = result.user?.uid ?: throw Exception("User ID is null")
+
+            // رفع الصور إلى Firebase Storage
+            val idFrontUrl =  idFrontUri?.let { uploadImageToStorage(userId, it, "id_front") }
+            val idBackUrl = idBackUri?.let { uploadImageToStorage(userId, it, "id_back") }
+            val userPhotoUrl = userPhotoUri?.let { uploadImageToStorage(userId, it, "user_photo") }
+
+            // حفظ بيانات المستخدم في Firestore
+            val user = userData.copy(userId = userId, idFront = idFrontUrl.orEmpty(), idBack = idBackUrl.orEmpty(), userPhoto = userPhotoUrl.orEmpty())
+            fireStore.collection("users").document(userId).set(user).await()
+
         } catch (e: Exception) {
             throw Exception("Failed to create account: ${e.message}", e)
-        } catch (e: IOException) {
-            throw IOException("Network error occurred during account creation: ${e.message}", e)
         }
     }
+
+    private suspend fun uploadImageToStorage(userId: String, fileUri: Uri, fileName: String): String {
+        return try {
+            val ref = storage.reference.child("users/$userId/$fileName.jpg")
+            ref.putFile(fileUri).await()
+            ref.downloadUrl.await().toString()
+        } catch (e: Exception) {
+            Log.e("FirebaseStorage", "Error uploading image: $fileName", e)
+            throw Exception("Failed to link account: ${e.message}", e)
+        }
+    }
+
 
     override suspend fun linkAccount(email: String, password: String) {
         try {

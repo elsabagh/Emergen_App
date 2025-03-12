@@ -11,6 +11,9 @@ interface AppDestination {
         override val route = "SignUp"
     }
 
+    object SplashDestination: AppDestination {
+        override val route = "Splash"
+    }
     object UserHomeDestination : AppDestination {
         override val route = "UserHome"
     }
@@ -28,6 +31,10 @@ interface AppDestination {
 
     object ContractDestination : AppDestination{
         override val route = "Contract"
+    }
+
+    object NotificationDestination : AppDestination{
+        override val route = "Notification"
     }
 
 }

@@ -130,4 +130,7 @@ dependencies {
 
     implementation("androidx.datastore:datastore-preferences:1.1.3")
 
+    implementation ("com.google.firebase:firebase-storage-ktx")
+
+
 }

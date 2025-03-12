@@ -5,27 +5,43 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.emergen_app.ContainerAppState
+import com.example.emergen_app.SplashScreen
 import com.example.emergen_app.navigation.AppDestination.SignInDestination
+import com.example.emergen_app.navigation.AppDestination.SignUpDestination
 import com.example.emergen_app.presentation.admin.home.AdminHomeScreen
+import com.example.emergen_app.presentation.admin.notification.NotificationScreen
 import com.example.emergen_app.presentation.signIn.SignInScreen
-import com.example.emergen_app.presentation.user.UserHomeScreen
+import com.example.emergen_app.presentation.signUp.SignupScreen
+import com.example.emergen_app.presentation.user.UserMainScreen
 
 @Composable
 fun NavGraph(
     appState: ContainerAppState,
     userRole: String?,
+    isAccountReady: Boolean, // ✅ التأكد من الجاهزية قبل الانتقال
+    modifier: Modifier = Modifier
 ) {
-    val startDestination = when (userRole) {
-        "admin" -> AppDestination.AdminHomeDestination.route
-        "branch" -> AppDestination.BranchHomeDestination.route
-        "user" -> AppDestination.UserHomeDestination.route
-        else -> AppDestination.SignInDestination.route
-    }
-
     NavHost(
         navController = appState.navController,
-        startDestination = startDestination,
+        startDestination = "splash",
+        modifier = modifier
     ) {
+        // ✅ شاشة البداية
+        composable(route = "splash") {
+            SplashScreen(
+                isAccountReady = isAccountReady,
+                userRole = userRole,
+                onSplashFinished = {
+                    val destination = when {
+                        !isAccountReady || userRole == null -> AppDestination.SignInDestination.route
+                        userRole == "admin" -> AppDestination.AdminHomeDestination.route
+                        userRole == "branch" -> AppDestination.BranchHomeDestination.route
+                        else -> AppDestination.UserHomeDestination.route
+                    }
+                    appState.navigateSingleTopToAndPopupTo(destination, "splash")
+                }
+            )
+        }
         composable(route = SignInDestination.route) {
             SignInScreen(
                 onSignInClick = {
@@ -49,6 +65,13 @@ fun NavGraph(
 
             )
         }
+        composable(
+            route = SignUpDestination.route
+        ) {
+            SignupScreen(
+                navController = appState.navController,
+            )
+        }
         composable(route = AppDestination.AdminHomeDestination.route) {
             AdminHomeScreen(
                 navController = appState.navController,
@@ -57,11 +80,14 @@ fun NavGraph(
                         route = SignInDestination.route,
                         popUpToRoute = SignInDestination.route
                     )
-                }
+                },
             )
         }
+        composable(route = AppDestination.NotificationDestination.route) {
+            NotificationScreen(navController = appState.navController)
+        }
         composable(route = AppDestination.UserHomeDestination.route) {
-            UserHomeScreen(
+            UserMainScreen(
                 navController = appState.navController
             )
         }

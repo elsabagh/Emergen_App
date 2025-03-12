@@ -30,4 +30,24 @@ class StorageFirebaseRepositoryImpl @Inject constructor(
             null
         }
     }
+
+    override suspend fun getUserStatus(email: String): String? {
+        return try {
+            val querySnapshot = fireStore.collection("users")
+                .whereEqualTo("email", email)
+                .get()
+                .await()
+
+            val status = if (!querySnapshot.isEmpty) {
+                querySnapshot.documents[0].getString("statusAccount")
+            } else {
+                null
+            }
+            Log.d("FirebaseRepo", "User $email status: $status")
+            status
+        } catch (e: Exception) {
+            Log.e("FirebaseRepo", "Error fetching user status", e)
+            null
+        }
+    }
 }
