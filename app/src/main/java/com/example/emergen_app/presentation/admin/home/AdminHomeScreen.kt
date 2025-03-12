@@ -94,7 +94,7 @@ fun AdminHomeScreen(
 
         // Menu Buttons
         MenuButton(icon = Icons.Default.Person, text = "All Accounts") {
-            navController.navigate("all_accounts")
+            navController.navigate(AppDestination.AllAccountsDestination.route)
         }
         MenuButton(icon = Icons.Default.Business, text = "Branches") {
             navController.navigate("branches")

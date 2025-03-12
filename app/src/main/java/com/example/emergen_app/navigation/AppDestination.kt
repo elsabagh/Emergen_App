@@ -37,4 +37,8 @@ interface AppDestination {
         override val route = "Notification"
     }
 
+    object AllAccountsDestination : AppDestination{
+        override val route = " AllAccounts"
+    }
+
 }

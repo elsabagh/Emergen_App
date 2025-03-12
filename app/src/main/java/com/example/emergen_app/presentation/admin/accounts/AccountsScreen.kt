@@ -1,8 +1,5 @@
-package com.example.emergen_app.presentation.admin.notification
+package com.example.emergen_app.presentation.admin.accounts
 
-
-import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -18,43 +15,32 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
-import com.example.emergen_app.R
 import com.example.emergen_app.data.models.User
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NotificationScreen(navController: NavController) {
-    val notificationViewModel: NotificationViewModel = hiltViewModel()
-    val notifications = notificationViewModel.notifications.collectAsState(initial = emptyList())
+fun AccountsScreen(navController: NavController) {
 
-    // طباعة البيانات لمراجعتها
-    Log.d("NotificationScreen", "Notifications: ${notifications.value}")
+    val accountsViewModel: AccountsViewModel = hiltViewModel()
+    val accounts = accountsViewModel.accounts.collectAsState(initial = emptyList())
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Notifications") },
+                title = { Text("Accepted Accounts") },
                 navigationIcon = {
                     IconButton(onClick = {
                         if (navController.previousBackStackEntry != null) {
@@ -73,21 +59,19 @@ fun NotificationScreen(navController: NavController) {
                 .fillMaxSize()
         ) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
-                itemsIndexed(notifications.value) { _, notification ->
-                    NotificationItem(notification = notification)
+                itemsIndexed(accounts.value) { _, account ->
+                    AccountItem(account = account)
                 }
             }
         }
     }
 }
 
-
 @Composable
-fun NotificationItem(notification: User) {
+fun AccountItem(account: User) {
     Card(
         modifier = Modifier
-            .padding(8.dp)
-            .padding(horizontal = 8.dp)
+            .padding(8.dp).padding(horizontal = 8.dp)
             .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
@@ -95,7 +79,6 @@ fun NotificationItem(notification: User) {
             modifier = Modifier.padding(16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
@@ -107,8 +90,9 @@ fun NotificationItem(notification: User) {
                         CircleShape
                     )
             ) {
+                // عرض صورة المستخدم
                 Image(
-                    painter = rememberImagePainter(notification.userPhoto),
+                    painter = rememberImagePainter(account.userPhoto),
                     contentDescription = "User Photo",
                     modifier = Modifier
                         .size(50.dp)
@@ -116,26 +100,21 @@ fun NotificationItem(notification: User) {
                     contentScale = ContentScale.Crop
                 )
             }
-            Column(modifier = Modifier.fillMaxWidth()) {
-                Text(text = notification.userName, style = MaterialTheme.typography.bodySmall)
-                Text(
-                    text = stringResource(R.string.review_the_account_and_you_can_activate_it_by_accept_or_reject_the_account),
-                    style = MaterialTheme.typography.bodySmall
-                )
-            }
+            // عرض اسم المستخدم
+            Text(text = account.userName, style = MaterialTheme.typography.bodySmall)
         }
+
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
-fun NotificationItemPreview() {
-    val user = User(
+fun PreviewAccountsScreen() {
+    val sampleAccount = User(
         userName = "John Doe",
         userPhoto = "https://via.placeholder.com/150",
-        statusAccount = "Active",
-        role = "Admin"
+        statusAccount = "accepted",
+        role = "user"
     )
-    NotificationItem(notification = user)
+    AccountsScreen(navController = rememberNavController())
 }

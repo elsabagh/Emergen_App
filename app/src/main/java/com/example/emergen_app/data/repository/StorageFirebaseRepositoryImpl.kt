@@ -2,6 +2,7 @@ package com.example.emergen_app.data.repository
 
 
 import android.util.Log
+import com.example.emergen_app.data.models.User
 import com.example.emergen_app.domain.repository.StorageFirebaseRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -50,4 +51,30 @@ class StorageFirebaseRepositoryImpl @Inject constructor(
             null
         }
     }
+    override suspend fun getAllUsersWithStatus(status: String): List<User> {
+        return try {
+            val querySnapshot = fireStore.collection("users")
+                .whereEqualTo("statusAccount", status)
+                .whereEqualTo("role", "user")
+                .get()
+                .await()
+
+            // إذا كانت النتيجة غير فارغة، طباعة الوثائق المسترجعة
+            if (!querySnapshot.isEmpty) {
+                querySnapshot.documents.forEach { document ->
+                    Log.d("FirebaseRepo", "User Data: ${document.data}")
+                }
+            }
+
+            querySnapshot.documents.mapNotNull { doc ->
+                val user = doc.toObject(User::class.java)
+                user?.copy(userId = doc.id)
+            }
+        } catch (e: Exception) {
+            Log.e("FirebaseRepo", "Error fetching users with status: $status", e)
+            emptyList<User>()
+        }
+    }
+
+
 }

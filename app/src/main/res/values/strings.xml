@@ -64,5 +64,6 @@
     <string name="please_upload_all_required_images">Please upload all required images</string>
     <string name="created_account">created account</string>
     <string name="account_status_not_accepted">Your account is not yet accepted. Please check your account status.</string>
+    <string name="review_the_account_and_you_can_activate_it_by_accept_or_reject_the_account">Review the account and you can activate it by accept, or reject the account</string>
 
 </resources>

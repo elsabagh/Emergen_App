@@ -8,6 +8,7 @@ import com.example.emergen_app.ContainerAppState
 import com.example.emergen_app.SplashScreen
 import com.example.emergen_app.navigation.AppDestination.SignInDestination
 import com.example.emergen_app.navigation.AppDestination.SignUpDestination
+import com.example.emergen_app.presentation.admin.accounts.AccountsScreen
 import com.example.emergen_app.presentation.admin.home.AdminHomeScreen
 import com.example.emergen_app.presentation.admin.notification.NotificationScreen
 import com.example.emergen_app.presentation.signIn.SignInScreen
@@ -85,6 +86,10 @@ fun NavGraph(
         }
         composable(route = AppDestination.NotificationDestination.route) {
             NotificationScreen(navController = appState.navController)
+        }
+
+        composable(route = AppDestination.AllAccountsDestination.route) {
+            AccountsScreen(navController = appState.navController)
         }
         composable(route = AppDestination.UserHomeDestination.route) {
             UserMainScreen(
