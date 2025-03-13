@@ -14,7 +14,14 @@ interface AccountRepository {
 
     suspend fun authenticate(email: String, password: String)
 
-    suspend fun createAccount(email: String, password: String, userData: User, idFrontUri: Uri?, idBackUri: Uri?, userPhotoUri: Uri?)
+    suspend fun createAccount(
+        email: String,
+        password: String,
+        userData: User,
+        idFrontUri: Uri?,
+        idBackUri: Uri?,
+        userPhotoUri: Uri?
+    )
 
     suspend fun linkAccount(email: String, password: String)
 
@@ -23,5 +30,10 @@ interface AccountRepository {
     suspend fun signOut()
 
     suspend fun getCurrentUserEmail(): String? // ✅ إضافة هذه الدالة
+
+    suspend fun acceptUser(userId: String)
+
+    suspend fun rejectUser(userId: String)
+
 
 }

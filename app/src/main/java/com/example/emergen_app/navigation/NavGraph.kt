@@ -11,6 +11,7 @@ import com.example.emergen_app.navigation.AppDestination.SignUpDestination
 import com.example.emergen_app.presentation.admin.accounts.AccountsScreen
 import com.example.emergen_app.presentation.admin.home.AdminHomeScreen
 import com.example.emergen_app.presentation.admin.notification.NotificationScreen
+import com.example.emergen_app.presentation.admin.notification.userProfile.UserProfileScreen
 import com.example.emergen_app.presentation.signIn.SignInScreen
 import com.example.emergen_app.presentation.signUp.SignupScreen
 import com.example.emergen_app.presentation.user.UserMainScreen
@@ -64,7 +65,7 @@ fun NavGraph(
                     )
                 },
 
-            )
+                )
         }
         composable(
             route = SignUpDestination.route
@@ -96,6 +97,11 @@ fun NavGraph(
                 navController = appState.navController
             )
         }
+        composable("user_profile/{userId}") { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId") ?: ""
+            UserProfileScreen(navController = appState.navController, userId = userId)
+        }
+
     }
 }
 

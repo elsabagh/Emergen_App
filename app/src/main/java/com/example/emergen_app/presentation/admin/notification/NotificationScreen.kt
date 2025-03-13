@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.example.emergen_app.R
 import com.example.emergen_app.data.models.User
@@ -47,9 +49,6 @@ import com.example.emergen_app.data.models.User
 fun NotificationScreen(navController: NavController) {
     val notificationViewModel: NotificationViewModel = hiltViewModel()
     val notifications = notificationViewModel.notifications.collectAsState(initial = emptyList())
-
-    // طباعة البيانات لمراجعتها
-    Log.d("NotificationScreen", "Notifications: ${notifications.value}")
 
     Scaffold(
         topBar = {
@@ -74,16 +73,15 @@ fun NotificationScreen(navController: NavController) {
         ) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 itemsIndexed(notifications.value) { _, notification ->
-                    NotificationItem(notification = notification)
+                    NotificationItem(notification = notification, navController = navController)
                 }
             }
         }
     }
 }
 
-
 @Composable
-fun NotificationItem(notification: User) {
+fun NotificationItem(notification: User, navController: NavController) {
     Card(
         modifier = Modifier
             .padding(8.dp)
@@ -95,17 +93,14 @@ fun NotificationItem(notification: User) {
             modifier = Modifier.padding(16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-
             Box(
                 contentAlignment = Alignment.Center,
-                modifier = Modifier
+                modifier = Modifier.clickable{
+                    navController.navigate("user_profile/${notification.userId}")
+                }
                     .size(60.dp)
                     .clip(CircleShape)
-                    .border(
-                        2.dp,
-                        MaterialTheme.colorScheme.primary,
-                        CircleShape
-                    )
+                    .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
             ) {
                 Image(
                     painter = rememberImagePainter(notification.userPhoto),
@@ -119,10 +114,11 @@ fun NotificationItem(notification: User) {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(text = notification.userName, style = MaterialTheme.typography.bodySmall)
                 Text(
-                    text = stringResource(R.string.review_the_account_and_you_can_activate_it_by_accept_or_reject_the_account),
+                    text = "Review the account and you can activate it by accept or reject the account",
                     style = MaterialTheme.typography.bodySmall
                 )
             }
+
         }
     }
 }
@@ -137,5 +133,8 @@ fun NotificationItemPreview() {
         statusAccount = "Active",
         role = "Admin"
     )
-    NotificationItem(notification = user)
+    NotificationItem(
+        notification = user,
+        navController = rememberNavController()
+    )
 }

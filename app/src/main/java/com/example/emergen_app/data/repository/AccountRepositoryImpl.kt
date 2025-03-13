@@ -126,6 +126,75 @@ class AccountRepositoryImpl @Inject constructor(
         }
     }
 
+    // تحديث حالة المستخدم إلى accepted
+    override suspend fun acceptUser(userId: String) {
+        val userRef = fireStore.collection("users").document(userId)
+        userRef.update("statusAccount", "accepted").await()
+    }
+
+    // حذف المستخدم من Firestore و FirebaseAuth
+    override suspend fun rejectUser(userId: String) {
+        // الحصول على بيانات المستخدم من Firestore
+        val userRef = fireStore.collection("users").document(userId)
+        val user = userRef.get().await().toObject(User::class.java)
+
+        user?.let {
+            try {
+                // حذف الصور من Firebase Storage
+                deleteUserImagesFromStorage(userId)
+
+                // حذف المستخدم من Firestore
+                userRef.delete().await()
+
+                // حذف الحساب من FirebaseAuth
+                val firebaseUser = firebaseAuth.currentUser
+                if (firebaseUser?.uid == userId) {
+                    firebaseUser.delete().await() // حذف الحساب من FirebaseAuth
+                }
+
+                Log.d("UserProfile", "User account rejected and deleted successfully.")
+            } catch (e: Exception) {
+                Log.e("UserProfile", "Error rejecting user: ${e.message}")
+            }
+        } ?: Log.e("UserProfile", "User not found in Firestore.")
+    }
+
+
+    // حذف الصور من Firebase Storage
+    private suspend fun deleteUserImagesFromStorage(userId: String) {
+        try {
+            // تحديد مسارات الصور المرتبطة بالحساب
+            val idFrontRef = storage.reference.child("users/$userId/id_front.jpg")
+            val idBackRef = storage.reference.child("users/$userId/id_back.jpg")
+            val userPhotoRef = storage.reference.child("users/$userId/user_photo.jpg")
+
+            // تحقق من وجود الصورة قبل حذفها
+            try {
+                idFrontRef.delete().await()
+                Log.d("FirebaseStorage", "ID Front image deleted successfully.")
+            } catch (e: Exception) {
+                Log.e("FirebaseStorage", "Error deleting ID Front image: ${e.message}")
+            }
+
+            try {
+                idBackRef.delete().await()
+                Log.d("FirebaseStorage", "ID Back image deleted successfully.")
+            } catch (e: Exception) {
+                Log.e("FirebaseStorage", "Error deleting ID Back image: ${e.message}")
+            }
+
+            try {
+                userPhotoRef.delete().await()
+                Log.d("FirebaseStorage", "User photo image deleted successfully.")
+            } catch (e: Exception) {
+                Log.e("FirebaseStorage", "Error deleting User photo image: ${e.message}")
+            }
+
+        } catch (e: Exception) {
+            Log.e("FirebaseStorage", "Error deleting user images: ${e.message}")
+        }
+    }
+
     companion object {
         const val LINK_ACCOUNT_TRACE = "linkAccount"
 

@@ -31,5 +31,4 @@ class NotificationViewModel @Inject constructor(
             _notifications.value = userNotifications
         }
     }
-
 }

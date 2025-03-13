@@ -5,6 +5,8 @@ import android.util.Log
 import com.example.emergen_app.data.models.User
 import com.example.emergen_app.domain.repository.StorageFirebaseRepository
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -51,6 +53,7 @@ class StorageFirebaseRepositoryImpl @Inject constructor(
             null
         }
     }
+
     override suspend fun getAllUsersWithStatus(status: String): List<User> {
         return try {
             val querySnapshot = fireStore.collection("users")
@@ -73,6 +76,15 @@ class StorageFirebaseRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Log.e("FirebaseRepo", "Error fetching users with status: $status", e)
             emptyList<User>()
+        }
+    }
+
+    // جلب بيانات المستخدم من Firestore
+    override fun getUserById(userId: String): Flow<User> {
+        return flow {
+            val userDoc = fireStore.collection("users").document(userId).get().await()
+            val user = userDoc.toObject(User::class.java)
+            emit(user ?: User())  // إرسال بيانات المستخدم
         }
     }
 

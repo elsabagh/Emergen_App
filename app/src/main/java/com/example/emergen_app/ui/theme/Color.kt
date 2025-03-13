@@ -15,3 +15,5 @@ val cardMenu = Color(0xFF242424)
 val adminWelcomeCard = Color(0xFF09AFED)
 
 val colorBottomNavBar = Color(0xFFFAFAFA)
+
+val colorCardProfile = Color(0xFFF2F5F4)
