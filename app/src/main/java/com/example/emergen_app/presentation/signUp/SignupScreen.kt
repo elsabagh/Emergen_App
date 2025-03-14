@@ -1,25 +1,61 @@
 package com.example.emergen_app.presentation.signUp
 
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -28,7 +64,13 @@ import coil.compose.rememberImagePainter
 import com.example.emergen_app.R
 import com.example.emergen_app.navigation.AppDestination
 import com.example.emergen_app.presentation.components.snackbar.SnackBarManager
+import com.example.emergen_app.utils.checkIfGpsEnabled
+import com.example.emergen_app.utils.updateLocation
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.android.gms.location.LocationServices
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignupScreen(navController: NavController) {
     val viewModel: SignUpViewModel = hiltViewModel()
@@ -54,6 +96,7 @@ fun SignupScreen(navController: NavController) {
             idBackUri = uri
         }
 
+
     LaunchedEffect(isAccountCreated) {
         if (isAccountCreated) {
             SnackBarManager.showMessage(R.string.created_account)
@@ -65,53 +108,95 @@ fun SignupScreen(navController: NavController) {
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Sign up") },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        if (navController.previousBackStackEntry != null) {
+                            navController.popBackStack()
+                        }
+                    }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                    }
+                }
+            )
+        }
+    ) { paddingValues ->
         Column(
             modifier = Modifier
-                .verticalScroll(rememberScrollState())
+                .padding(paddingValues)
                 .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            UserPhotoSection(userPhotoUri, userPhotoPicker)
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .fillMaxSize()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                UserPhotoSection(userPhotoUri, userPhotoPicker)
 
-            UserDetailsSection(uiState, viewModel)
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+                UserDetailsSection(uiState, viewModel)
 
-            AddressSection(uiState, viewModel)
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+                AddressSection(uiState, viewModel)
 
-            UploadIDSection(idFrontUri, idBackUri, idFrontPicker, idBackPicker)
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            PasswordSection(uiState, viewModel)
+                UploadIDSection(
+                    idFrontUri = idFrontUri,
+                    idBackUri = idBackUri,
+                    idFrontPicker = idFrontPicker,
+                    idBackPicker = idBackPicker,
+                    onDeleteFront = { idFrontUri = null }, // حذف الصورة الأمامية
+                    onDeleteBack = { idBackUri = null } // حذف الصورة الخلفية
+                )
 
-            Spacer(modifier = Modifier.height(16.dp))
 
-            SignUpButton(uiState.isLoading) {
-                viewModel.createAccount(idFrontUri, idBackUri, userPhotoUri)
+                Spacer(modifier = Modifier.height(16.dp))
+
+                PasswordSection(uiState, viewModel)
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                SignUpButton(uiState.isLoading) {
+                    viewModel.createAccount(idFrontUri, idBackUri, userPhotoUri)
+                }
+            }
+
+            if (uiState.isLoading) {
+                LoadingOverlay()
             }
         }
-
-        if (uiState.isLoading) {
-            LoadingOverlay()
-        }
     }
+
 }
 
+
 @Composable
-fun UserPhotoSection(userPhotoUri: Uri?, userPhotoPicker: ManagedActivityResultLauncher<String, Uri?>) {
-    Box(
+fun UserPhotoSection(
+    userPhotoUri: Uri?,
+    userPhotoPicker: ManagedActivityResultLauncher<String, Uri?>
+) {
+    Column(
         modifier = Modifier
+            .fillMaxWidth()
             .size(100.dp)
             .clickable { userPhotoPicker.launch("image/*") },
-        contentAlignment = Alignment.Center
+        horizontalAlignment = Alignment.Start
     ) {
+        Text(
+            text = "User photo",
+            modifier = Modifier,
+            fontSize = 16.sp
+        )
         if (userPhotoUri != null) {
             Image(
                 painter = rememberImagePainter(userPhotoUri),
@@ -120,7 +205,7 @@ fun UserPhotoSection(userPhotoUri: Uri?, userPhotoPicker: ManagedActivityResultL
             )
         } else {
             Icon(
-                painter = painterResource(id = R.drawable.baseline_camera_alt_24),
+                painter = painterResource(id = R.drawable.add_user_photo),
                 contentDescription = "Upload Photo",
                 tint = Color.Gray,
                 modifier = Modifier.size(80.dp)
@@ -131,113 +216,290 @@ fun UserPhotoSection(userPhotoUri: Uri?, userPhotoPicker: ManagedActivityResultL
 
 @Composable
 fun UserDetailsSection(uiState: SignUpState, viewModel: SignUpViewModel) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth()
+    ) {
         OutlinedTextField(
             value = uiState.userName,
             onValueChange = viewModel::onUserNameChange,
-            label = { Text("Full Name") })
+            label = { Text("Full Name") },
+            modifier = Modifier.fillMaxWidth()
+        )
         OutlinedTextField(
             value = uiState.email,
             onValueChange = viewModel::onEmailChange,
-            label = { Text("Email") })
+            label = { Text("Email") },
+            modifier = Modifier.fillMaxWidth()
+        )
         OutlinedTextField(
             value = uiState.mobile,
             onValueChange = viewModel::onMobileChange,
             label = { Text("Mobile Number") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+            modifier = Modifier.fillMaxWidth()
+
         )
     }
 }
 
 @Composable
 fun AddressSection(uiState: SignUpState, viewModel: SignUpViewModel) {
+
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = "Address", style = MaterialTheme.typography.bodySmall)
         OutlinedTextField(
             value = uiState.governmentName,
             onValueChange = viewModel::onGovernmentChange,
-            label = { Text("Governorate Name") })
+            label = { Text("Governorate Name") },
+            modifier = Modifier.fillMaxWidth()
+        )
         OutlinedTextField(
             value = uiState.area,
             onValueChange = viewModel::onAreaChange,
-            label = { Text("Area") })
+            label = { Text("Area") },
+            modifier = Modifier.fillMaxWidth()
+        )
         OutlinedTextField(
             value = uiState.plotNumber,
             onValueChange = viewModel::onPlotNumberChange,
-            label = { Text("Plot Number") })
+            label = { Text("Plot Number") },
+            modifier = Modifier.fillMaxWidth()
+        )
         OutlinedTextField(
             value = uiState.streetName,
             onValueChange = viewModel::onStreetNameChange,
-            label = { Text("Street Name") })
+            label = { Text("Street Name") },
+            modifier = Modifier.fillMaxWidth()
+        )
         OutlinedTextField(
             value = uiState.buildNumber,
             onValueChange = viewModel::onBuildNumberChange,
-            label = { Text("Building Number") })
+            label = { Text("Building Number") },
+            modifier = Modifier.fillMaxWidth()
+        )
         OutlinedTextField(
             value = uiState.floorNumber,
             onValueChange = viewModel::onFloorNumberChange,
-            label = { Text("Floor Number (Optional)") })
+            label = { Text("Floor Number (Optional)") },
+            modifier = Modifier.fillMaxWidth()
+        )
         OutlinedTextField(
             value = uiState.apartmentNumber,
             onValueChange = viewModel::onApartmentNumberChange,
-            label = { Text("Apartment Number (Optional)") })
+            label = { Text("Apartment Number (Optional)") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        LocationButton(context = LocalContext.current, uiState, viewModel)
+
+    }
+}
+
+@Composable
+fun LocationButton(context: Context, uiState: SignUpState, viewModel: SignUpViewModel) {
+    var locationText by remember { mutableStateOf("Latitude and Longitude") }
+
+    // الحصول على FusedLocationProviderClient
+    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+
+    // عرض الإحداثيات في OutlinedTextField
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         OutlinedTextField(
             value = uiState.addressMaps,
             onValueChange = viewModel::onAddressMapsChange,
-            label = { Text("Address Location (Google Maps)") })
+            label = { Text("Address Location (Google Maps)") },
+            modifier = Modifier
+        )
+
+        // أيقونة تحديد الموقع
+        IconButton(onClick = {
+            // التحقق من تفعيل الـ GPS
+            if (!checkIfGpsEnabled(context)) {
+                Toast.makeText(context, "Please enable GPS", Toast.LENGTH_SHORT).show()
+                return@IconButton
+            }
+
+            // تحديث الموقع إذا كان الـ GPS مفعل
+            updateLocation(fusedLocationClient, context) { location ->
+                // تحديث uiState.addressMaps ليعكس الإحداثيات
+                viewModel.onAddressMapsChange(location)
+            }
+        }) {
+            // عرض أيقونة تحديد الموقع
+            Icon(
+                imageVector = Icons.Filled.LocationOn, // الأيقونة
+                contentDescription = "Get Location",
+                tint = Color.Black, // يمكنك تغيير اللون هنا
+                modifier = Modifier.size(40.dp)
+            )
+
+        }
     }
+
+
+    // عرض الإحداثيات داخل النص مع تفعيل النقر على النص لفتح Google Maps
+//    BasicText(
+//        text = locationText,
+//        style = MaterialTheme.typography.bodyMedium,
+//        modifier = Modifier
+//            .padding(16.dp)
+//            .clickable {
+//                // تحويل الإحداثيات إلى رابط Google Maps بشكل صحيح
+//                val uri = "geo:$locationText?q=$locationText"
+//                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
+//                intent.setPackage("com.google.android.apps.maps")
+//                context.startActivity(intent)
+//            }
+//    )
+
+
 }
+
 
 @Composable
 fun UploadIDSection(
     idFrontUri: Uri?,
     idBackUri: Uri?,
     idFrontPicker: ManagedActivityResultLauncher<String, Uri?>,
-    idBackPicker: ManagedActivityResultLauncher<String, Uri?>
+    idBackPicker: ManagedActivityResultLauncher<String, Uri?>,
+    onDeleteFront: () -> Unit,
+    onDeleteBack: () -> Unit
 ) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth()
+    ) {
         Text(text = "Upload ID", style = MaterialTheme.typography.bodySmall)
-        Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
+
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly,
+        ) {
+            // عمود لصورة الجهة الأمامية
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                idFrontUri?.let {
-                    Image(
-                        painter = rememberImagePainter(it),
-                        contentDescription = "ID Front",
-                        modifier = Modifier.size(80.dp)
-                    )
-                } ?: Icon(
-                    painter = painterResource(id = R.drawable.baseline_file_upload_24),
-                    contentDescription = "Upload Front ID",
+                Box(
                     modifier = Modifier
-                        .size(80.dp)
-                        .clickable { idFrontPicker.launch("image/*") }
-                )
-                Button(onClick = { idFrontPicker.launch("image/*") }) {
-                    Text("Front")
+                        .width(150.dp)
+                        .height(120.dp)
+                        .border(
+                            2.dp,
+                            Color.Gray,
+                            shape = MaterialTheme.shapes.medium
+                        )
+                        .padding(8.dp)
+                ) {
+                    // النص "Front" أعلى الصورة
+                    Text(
+                        text = "Front",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.Black,
+                        modifier = Modifier.align(Alignment.TopCenter)
+                    )
+
+                    idFrontUri?.let {
+                        Image(
+                            painter = rememberImagePainter(it),
+                            contentDescription = "ID Front",
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } ?: Box(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .size(120.dp)
+                            .clickable { idFrontPicker.launch("image/*") },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Button(onClick = { idFrontPicker.launch("image/*") }) {
+                            Text("Upload")
+                        }
+                    }
+
+                    // زر الحذف في الجزء السفلي داخل البوردر
+                    if (idFrontUri != null) {
+                        IconButton(
+                            onClick = onDeleteFront,
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Delete",
+                                tint = Color.Red
+                            )
+                        }
+                    }
                 }
             }
 
+            // عمود لصورة الجهة الخلفية
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                idBackUri?.let {
-                    Image(
-                        painter = rememberImagePainter(it),
-                        contentDescription = "ID Back",
-                        modifier = Modifier.size(80.dp)
-                    )
-                } ?: Icon(
-                    painter = painterResource(id = R.drawable.baseline_file_upload_24),
-                    contentDescription = "Upload Back ID",
+                Box(
                     modifier = Modifier
-                        .size(80.dp)
-                        .clickable { idBackPicker.launch("image/*") }
-                )
-                Button(onClick = { idBackPicker.launch("image/*") }) {
-                    Text("Back")
+                        .width(150.dp)
+                        .height(120.dp)
+                        .border(
+                            2.dp,
+                            Color.Gray,
+                            shape = MaterialTheme.shapes.medium
+                        )
+                        .padding(8.dp)
+                ) {
+                    // النص "Back" أعلى الصورة
+                    Text(
+                        text = "Back",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.Black,
+                        modifier = Modifier.align(Alignment.TopCenter)
+                    )
+
+                    idBackUri?.let {
+                        Image(
+                            painter = rememberImagePainter(it),
+                            contentDescription = "ID Back",
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } ?: Box(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .size(120.dp)
+                            .clickable { idBackPicker.launch("image/*") },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Button(onClick = { idBackPicker.launch("image/*") }) {
+                            Text("Upload")
+                        }
+                    }
+
+                    // زر الحذف في الجزء السفلي داخل البوردر
+                    if (idBackUri != null) {
+                        IconButton(
+                            onClick = onDeleteBack,
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd) // وضعه في أسفل يمين البوردر
+                                .padding(4.dp) // إضافة padding للتحكم في المسافة
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Delete",
+                                tint = Color.Red
+                            )
+                        }
+                    }
                 }
             }
         }
     }
 }
+
+
 
 @Composable
 fun PasswordSection(uiState: SignUpState, viewModel: SignUpViewModel) {
@@ -246,13 +508,17 @@ fun PasswordSection(uiState: SignUpState, viewModel: SignUpViewModel) {
             value = uiState.password,
             onValueChange = viewModel::onPasswordChange,
             label = { Text("Password") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            modifier = Modifier.fillMaxWidth()
+
         )
         OutlinedTextField(
             value = uiState.confirmPassword,
             onValueChange = viewModel::onConfirmPasswordChange,
             label = { Text("Confirm Password") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            modifier = Modifier.fillMaxWidth()
+
         )
     }
 }
@@ -260,7 +526,9 @@ fun PasswordSection(uiState: SignUpState, viewModel: SignUpViewModel) {
 @Composable
 fun SignUpButton(isLoading: Boolean, onClick: () -> Unit) {
     if (!isLoading) {
-        Button(onClick = onClick) {
+        Button(onClick = onClick,
+            modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp)
+        ) {
             Text("Sign Up")
         }
     }

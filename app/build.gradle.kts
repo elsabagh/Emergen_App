@@ -123,14 +123,21 @@ dependencies {
     // Extended Icons
     implementation(libs.androidx.material.icons.extended)
 
-    implementation ("com.google.android.gms:play-services-location:18.0.0")
-    // Make sure to have the necessary permissions in AndroidManifest.xml
 
     implementation ("com.google.accompanist:accompanist-swiperefresh:0.27.0")
 
     implementation("androidx.datastore:datastore-preferences:1.1.3")
 
     implementation ("com.google.firebase:firebase-storage-ktx")
+
+    //Google Services & Maps
+    implementation ("com.google.android.gms:play-services-location:21.0.1")
+    implementation ("com.google.maps.android:maps-compose:2.9.0")
+    implementation ("com.google.android.gms:play-services-maps:18.1.0")
+
+    //Accompanist (Permission)
+    implementation ("com.google.accompanist:accompanist-permissions:0.31.3-beta")
+
 
 
 }
