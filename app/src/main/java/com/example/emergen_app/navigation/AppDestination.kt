@@ -41,4 +41,8 @@ interface AppDestination {
         override val route = " AllAccounts"
     }
 
+    object AllBranchesDestination : AppDestination{
+        override val route = " AllBranches"
+    }
+
 }

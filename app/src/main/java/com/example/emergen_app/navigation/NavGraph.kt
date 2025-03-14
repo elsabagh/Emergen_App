@@ -9,9 +9,10 @@ import com.example.emergen_app.SplashScreen
 import com.example.emergen_app.navigation.AppDestination.SignInDestination
 import com.example.emergen_app.navigation.AppDestination.SignUpDestination
 import com.example.emergen_app.presentation.admin.accounts.AccountsScreen
+import com.example.emergen_app.presentation.admin.branches.AllBranchesScreen
 import com.example.emergen_app.presentation.admin.home.AdminHomeScreen
 import com.example.emergen_app.presentation.admin.notification.NotificationScreen
-import com.example.emergen_app.presentation.admin.notification.userProfile.UserProfileScreen
+import com.example.emergen_app.presentation.admin.userProfile.UserProfileScreen
 import com.example.emergen_app.presentation.signIn.SignInScreen
 import com.example.emergen_app.presentation.signUp.SignupScreen
 import com.example.emergen_app.presentation.user.UserMainScreen
@@ -97,11 +98,19 @@ fun NavGraph(
                 navController = appState.navController
             )
         }
-        composable("user_profile/{userId}") { backStackEntry ->
+        composable("user_profile/{userId}/{isFromNotification}") { backStackEntry ->
             val userId = backStackEntry.arguments?.getString("userId") ?: ""
-            UserProfileScreen(navController = appState.navController, userId = userId)
+            val isFromNotification =
+                backStackEntry.arguments?.getString("isFromNotification")?.toBoolean() ?: false
+            UserProfileScreen(
+                navController = appState.navController,
+                userId = userId,
+                isFromNotification = isFromNotification
+            )
         }
-
+        composable(route = AppDestination.AllBranchesDestination.route) {
+            AllBranchesScreen(navController = appState.navController)
+        }
     }
 }
 

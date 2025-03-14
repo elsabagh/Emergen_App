@@ -61,12 +61,8 @@ fun AdminHomeScreen(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        // App Header (Logo + Title)
-
-
         val homeViewModel: AdminHomeViewModel = hiltViewModel()
         val isAccountSignedOut by homeViewModel.isAccountSignedOut.collectAsStateWithLifecycle()
-        // ✅ بمجرد تسجيل الخروج، يتم التنقل إلى شاشة تسجيل الدخول
         LaunchedEffect(isAccountSignedOut) {
             if (isAccountSignedOut) {
                 onLogout()
@@ -76,16 +72,15 @@ fun AdminHomeScreen(
 
         Column(
             modifier = Modifier
-                .background(Color(0xFFFDF1D0)) // Light beige background
+                .background(Color(0xFFFDF1D0))
         ) {
-            AppHeader(navController) // ✅ تمرير `navController` إلى `AppHeader`
+            AppHeader(navController)
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Admin Welcome Card
             AdminWelcomeCard(
                 homeViewModel,
-                navController // ✅ تمرير `navController` حتى يمكن استخدامه داخل `AdminWelcomeCard`
+                navController
 
             )
         }
@@ -97,7 +92,7 @@ fun AdminHomeScreen(
             navController.navigate(AppDestination.AllAccountsDestination.route)
         }
         MenuButton(icon = Icons.Default.Business, text = "Branches") {
-            navController.navigate("branches")
+            navController.navigate(AppDestination.AllBranchesDestination.route)
         }
         MenuButton(icon = Icons.Default.Chat, text = "Contact") {
             navController.navigate("contact")
@@ -140,7 +135,7 @@ fun AppHeader(navController: NavController) {
 @Composable
 fun AdminWelcomeCard(
     viewModel: AdminHomeViewModel,
-    navController: NavController // ✅ تمرير `navController` إلى `AdminWelcomeCard`
+    navController: NavController
 
 ) {
     Card(
@@ -160,7 +155,7 @@ fun AdminWelcomeCard(
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
-                    painter = painterResource(id = R.drawable.group_371), // Replace with actual admin icon
+                    painter = painterResource(id = R.drawable.group_371),
                     contentDescription = "Admin Image",
                     modifier = Modifier
                         .size(50.dp)
@@ -175,7 +170,7 @@ fun AdminWelcomeCard(
                 )
             }
             Row {
-                IconButton(onClick = { navController.navigate(AppDestination.NotificationDestination.route) }) { // ✅ التنقل إلى صفحة الإشعارات
+                IconButton(onClick = { navController.navigate(AppDestination.NotificationDestination.route) }) {
                     Icon(
                         imageVector = Icons.Default.Notifications,
                         contentDescription = "Notifications",

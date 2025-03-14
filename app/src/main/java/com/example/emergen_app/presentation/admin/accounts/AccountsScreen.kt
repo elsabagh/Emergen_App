@@ -2,6 +2,7 @@ package com.example.emergen_app.presentation.admin.accounts
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -60,7 +61,10 @@ fun AccountsScreen(navController: NavController) {
         ) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 itemsIndexed(accounts.value) { _, account ->
-                    AccountItem(account = account)
+                    AccountItem(
+                        account = account,
+                        navController = navController
+                    )
                 }
             }
         }
@@ -68,10 +72,11 @@ fun AccountsScreen(navController: NavController) {
 }
 
 @Composable
-fun AccountItem(account: User) {
+fun AccountItem(account: User, navController: NavController) {
     Card(
         modifier = Modifier
-            .padding(8.dp).padding(horizontal = 8.dp)
+            .padding(8.dp)
+            .padding(horizontal = 8.dp)
             .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
@@ -84,13 +89,11 @@ fun AccountItem(account: User) {
                 modifier = Modifier
                     .size(60.dp)
                     .clip(CircleShape)
-                    .border(
-                        2.dp,
-                        MaterialTheme.colorScheme.primary,
-                        CircleShape
-                    )
+                    .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                    .clickable {
+                        navController.navigate("user_profile/${account.userId}/false")
+                    }
             ) {
-                // عرض صورة المستخدم
                 Image(
                     painter = rememberImagePainter(account.userPhoto),
                     contentDescription = "User Photo",
@@ -100,12 +103,17 @@ fun AccountItem(account: User) {
                     contentScale = ContentScale.Crop
                 )
             }
-            // عرض اسم المستخدم
-            Text(text = account.userName, style = MaterialTheme.typography.bodySmall)
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Text(text = account.userName, style = MaterialTheme.typography.bodySmall)
+                Text(
+                    text = "Accepted",
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
         }
-
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable

@@ -132,6 +132,13 @@ class AccountRepositoryImpl @Inject constructor(
         userRef.update("statusAccount", "accepted").await()
     }
 
+    // تحديث حالة المستخدم إلى accepted
+    override suspend fun disableUser(userId: String) {
+        val userRef = fireStore.collection("users").document(userId)
+        userRef.update("statusAccount", "Under Processing").await()
+    }
+
+
     // حذف المستخدم من Firestore و FirebaseAuth
     override suspend fun rejectUser(userId: String) {
         // الحصول على بيانات المستخدم من Firestore

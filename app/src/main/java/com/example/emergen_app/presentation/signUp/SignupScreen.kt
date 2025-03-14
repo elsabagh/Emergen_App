@@ -124,7 +124,7 @@ fun SignupScreen(navController: NavController) {
             )
         }
     ) { paddingValues ->
-        Column(
+        Box(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
@@ -341,24 +341,6 @@ fun LocationButton(context: Context, uiState: SignUpState, viewModel: SignUpView
 
         }
     }
-
-
-    // عرض الإحداثيات داخل النص مع تفعيل النقر على النص لفتح Google Maps
-//    BasicText(
-//        text = locationText,
-//        style = MaterialTheme.typography.bodyMedium,
-//        modifier = Modifier
-//            .padding(16.dp)
-//            .clickable {
-//                // تحويل الإحداثيات إلى رابط Google Maps بشكل صحيح
-//                val uri = "geo:$locationText?q=$locationText"
-//                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
-//                intent.setPackage("com.google.android.apps.maps")
-//                context.startActivity(intent)
-//            }
-//    )
-
-
 }
 
 
@@ -383,7 +365,6 @@ fun UploadIDSection(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly,
         ) {
-            // عمود لصورة الجهة الأمامية
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Box(
                     modifier = Modifier

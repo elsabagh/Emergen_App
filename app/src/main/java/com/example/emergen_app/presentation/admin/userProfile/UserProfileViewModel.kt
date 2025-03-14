@@ -1,4 +1,4 @@
-package com.example.emergen_app.presentation.admin.notification.userProfile
+package com.example.emergen_app.presentation.admin.userProfile
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -33,6 +33,17 @@ class UserProfileViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 accountRepository.acceptUser(userId)  // نقل المنطق إلى Repository
+            } catch (e: Exception) {
+                Log.e("UserProfileViewModel", "Error accepting user: ${e.message}")
+            }
+        }
+    }
+
+    // تغيير حالة المستخدم إلى Under Processing
+    fun disableUser(userId: String){
+        viewModelScope.launch {
+            try {
+                accountRepository.disableUser(userId)  // نقل المنطق إلى Repository
             } catch (e: Exception) {
                 Log.e("UserProfileViewModel", "Error accepting user: ${e.message}")
             }

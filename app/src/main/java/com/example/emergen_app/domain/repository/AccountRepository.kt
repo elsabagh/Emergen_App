@@ -33,6 +33,8 @@ interface AccountRepository {
 
     suspend fun acceptUser(userId: String)
 
+    suspend fun disableUser(userId: String)
+
     suspend fun rejectUser(userId: String)
 
 

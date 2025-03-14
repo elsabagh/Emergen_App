@@ -95,8 +95,8 @@ fun NotificationItem(notification: User, navController: NavController) {
         ) {
             Box(
                 contentAlignment = Alignment.Center,
-                modifier = Modifier.clickable{
-                    navController.navigate("user_profile/${notification.userId}")
+                modifier = Modifier.clickable {
+                    navController.navigate("user_profile/${notification.userId}/true")
                 }
                     .size(60.dp)
                     .clip(CircleShape)
@@ -114,14 +114,14 @@ fun NotificationItem(notification: User, navController: NavController) {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(text = notification.userName, style = MaterialTheme.typography.bodySmall)
                 Text(
-                    text = "Review the account and you can activate it by accept or reject the account",
+                    text = "Review the account and you can activate it by accepting or rejecting the account",
                     style = MaterialTheme.typography.bodySmall
                 )
             }
-
         }
     }
 }
+
 
 
 @Preview(showBackground = true)
