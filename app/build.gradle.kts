@@ -138,6 +138,7 @@ dependencies {
     //Accompanist (Permission)
     implementation ("com.google.accompanist:accompanist-permissions:0.31.3-beta")
 
+    implementation ("com.google.accompanist:accompanist-flowlayout:0.24.13-rc")
 
 
 }

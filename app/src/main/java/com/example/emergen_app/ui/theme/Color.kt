@@ -13,6 +13,7 @@ val Pink40 = Color(0xFF7D5260)
 
 val cardMenu = Color(0xFF242424)
 val adminWelcomeCard = Color(0xFF09AFED)
+val branchesCardColor = Color(0xFFD8E7EC)
 
 val colorBottomNavBar = Color(0xFFFAFAFA)
 

@@ -10,9 +10,12 @@ import com.example.emergen_app.navigation.AppDestination.SignInDestination
 import com.example.emergen_app.navigation.AppDestination.SignUpDestination
 import com.example.emergen_app.presentation.admin.accounts.AccountsScreen
 import com.example.emergen_app.presentation.admin.branches.AllBranchesScreen
+import com.example.emergen_app.presentation.admin.branches.addBranch.AddBranchScreen
+import com.example.emergen_app.presentation.admin.branches.branchDetails.BranchListScreen
 import com.example.emergen_app.presentation.admin.home.AdminHomeScreen
 import com.example.emergen_app.presentation.admin.notification.NotificationScreen
 import com.example.emergen_app.presentation.admin.userProfile.UserProfileScreen
+import com.example.emergen_app.presentation.branch.BranchScreen
 import com.example.emergen_app.presentation.signIn.SignInScreen
 import com.example.emergen_app.presentation.signUp.SignupScreen
 import com.example.emergen_app.presentation.user.UserMainScreen
@@ -65,6 +68,12 @@ fun NavGraph(
                         popUpToRoute = AppDestination.AdminHomeDestination.route
                     )
                 },
+                onBranchSignIn = {
+                    appState.navigateSingleTopToAndPopupTo(
+                        route = AppDestination.BranchHomeDestination.route,
+                        popUpToRoute = AppDestination.BranchHomeDestination.route
+                    )
+                }
 
                 )
         }
@@ -111,6 +120,18 @@ fun NavGraph(
         composable(route = AppDestination.AllBranchesDestination.route) {
             AllBranchesScreen(navController = appState.navController)
         }
+        composable("branch_details/{branchName}") { backStackEntry ->
+            val branchName = backStackEntry.arguments?.getString("branchName") ?: ""
+            BranchListScreen(navController = appState.navController, branchName = branchName)
+        }
+        composable("add_branch") {
+            AddBranchScreen(navController = appState.navController)
+        }
+        composable(AppDestination.BranchHomeDestination.route) {
+            BranchScreen()
+        }
+
+
     }
 }
 

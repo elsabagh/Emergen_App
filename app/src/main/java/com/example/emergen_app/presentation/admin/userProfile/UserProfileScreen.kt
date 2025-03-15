@@ -192,9 +192,8 @@ fun LocationText(label: String, location: String) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(colorCardProfile)
         ) {
-            BasicText(
+            Text(
                 text = locationText,
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier
@@ -228,7 +227,6 @@ fun ProfileDetailCard(label: String, value: String) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(colorCardProfile)
         ) {
             Text(
                 text = value,

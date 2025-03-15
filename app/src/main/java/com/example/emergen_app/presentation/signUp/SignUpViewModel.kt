@@ -141,6 +141,8 @@ class SignUpViewModel @Inject constructor(
                     idBackUri = idBackUri,
                     userPhotoUri = userPhotoUri
                 )
+                accountRepository.signOut()
+
 
                 _isAccountCreated.value = true
             } catch (e: Exception) {

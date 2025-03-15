@@ -13,6 +13,8 @@
     <string name="password_field_end_icon_hide_content_description">Hide password</string>
     <string name="password_field_end_icon_show_content_description">Show password</string>
     <string name="account">Account</string>
+    <string name="fill_all_fields">fill_all_fields</string>
+    <string name="branch_added_successfully">branch added successfully</string>
 
     <!-- LoginScreen -->
     <string name="sign_in">Sign in</string>
@@ -65,5 +67,9 @@
     <string name="created_account">created account</string>
     <string name="account_status_not_accepted">Your account is not yet accepted. Please check your account status.</string>
     <string name="review_the_account_and_you_can_activate_it_by_accept_or_reject_the_account">Review the account and you can activate it by accept, or reject the account</string>
+
+    <!--    Date and Time Picker-->
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
 
 </resources>

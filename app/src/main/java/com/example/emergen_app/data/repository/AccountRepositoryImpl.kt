@@ -3,6 +3,7 @@ package com.example.emergen_app.data.repository
 import android.net.Uri
 import android.util.Log
 import androidx.compose.ui.util.trace
+import com.example.emergen_app.data.models.Branch
 import com.example.emergen_app.data.models.User
 import com.example.emergen_app.domain.repository.AccountRepository
 import com.google.firebase.auth.EmailAuthProvider
@@ -59,18 +60,28 @@ class AccountRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun createAccount(email: String, password: String, userData: User, idFrontUri: Uri?, idBackUri: Uri?, userPhotoUri: Uri?) {
+    override suspend fun createAccount(
+        email: String,
+        password: String,
+        userData: User,
+        idFrontUri: Uri?,
+        idBackUri: Uri?,
+        userPhotoUri: Uri?
+    ) {
         try {
             val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
             val userId = result.user?.uid ?: throw Exception("User ID is null")
 
-            // رفع الصور إلى Firebase Storage
-            val idFrontUrl =  idFrontUri?.let { uploadImageToStorage(userId, it, "id_front") }
+            val idFrontUrl = idFrontUri?.let { uploadImageToStorage(userId, it, "id_front") }
             val idBackUrl = idBackUri?.let { uploadImageToStorage(userId, it, "id_back") }
             val userPhotoUrl = userPhotoUri?.let { uploadImageToStorage(userId, it, "user_photo") }
 
-            // حفظ بيانات المستخدم في Firestore
-            val user = userData.copy(userId = userId, idFront = idFrontUrl.orEmpty(), idBack = idBackUrl.orEmpty(), userPhoto = userPhotoUrl.orEmpty())
+            val user = userData.copy(
+                userId = userId,
+                idFront = idFrontUrl.orEmpty(),
+                idBack = idBackUrl.orEmpty(),
+                userPhoto = userPhotoUrl.orEmpty()
+            )
             fireStore.collection("users").document(userId).set(user).await()
 
         } catch (e: Exception) {
@@ -78,7 +89,48 @@ class AccountRepositoryImpl @Inject constructor(
         }
     }
 
-    private suspend fun uploadImageToStorage(userId: String, fileUri: Uri, fileName: String): String {
+    override suspend fun createAccountBranch(
+        email: String,
+        password: String,
+        branchData: Branch
+    ) {
+        try {
+            val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
+            val userId = result.user?.uid ?: throw Exception("User ID is null")
+
+            val branch = branchData.copy(userId = userId)
+            val branchDataMap = mapOf(
+                "branchName" to branch.branchName,
+                "branchCapacity" to branch.branchCapacity,
+                "email" to branch.email,
+                "mobileNumber" to branch.mobileNumber,
+                "workDays" to branch.workDays,
+                "startTime" to branch.startTime,
+                "endTime" to branch.endTime,
+                "userId" to userId,
+                "statusAccount" to branch.statusAccount,
+                "password" to branch.password
+            )
+
+            val userData = mapOf(
+                "email" to branch.email,
+                "role" to "branch",
+                "branch" to branchDataMap
+            )
+            fireStore.collection("users").document(userId).set(userData).await()
+
+        } catch (e: Exception) {
+            throw Exception("Failed to create account branch: ${e.message}", e)
+        }
+    }
+
+
+
+    private suspend fun uploadImageToStorage(
+        userId: String,
+        fileUri: Uri,
+        fileName: String
+    ): String {
         return try {
             val ref = storage.reference.child("users/$userId/$fileName.jpg")
             ref.putFile(fileUri).await()

@@ -1,6 +1,7 @@
 package com.example.emergen_app.presentation.admin.branches
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.emergen_app.presentation.components.TopAppBar
-import com.example.emergen_app.ui.theme.colorCardProfile
 import com.example.emergen_app.ui.theme.colorFireEmergency
 import com.example.emergen_app.ui.theme.colorMedicalEmergency
 import com.example.emergen_app.ui.theme.colorPoliceEmergency
@@ -29,9 +28,10 @@ import com.example.emergen_app.ui.theme.colorUrgent
 
 @Composable
 fun AllBranchesScreen(navController: NavController) {
-
     Scaffold(
-        topBar = { TopAppBar("All branches", navController) },
+        topBar = {
+            TopAppBar("All branches", navController)
+        },
         content = { paddingValues ->
             Column(
                 modifier = Modifier
@@ -39,19 +39,18 @@ fun AllBranchesScreen(navController: NavController) {
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
-                BranchesCard(colorUrgent, "Urgent")
-                BranchesCard(colorMedicalEmergency, "Medical Emergency")
-                BranchesCard(colorPoliceEmergency, "Police Emergency")
-                BranchesCard(colorFireEmergency, "Fire Emergency")
-
+                // نمرر اسم الفرع عند الضغط
+                BranchesCard(navController, colorUrgent, "Urgent")
+                BranchesCard(navController, colorMedicalEmergency, "Medical Emergency")
+                BranchesCard(navController, colorPoliceEmergency, "Police Emergency")
+                BranchesCard(navController, colorFireEmergency, "Fire Emergency")
             }
         }
     )
 }
 
 @Composable
-fun BranchesCard(color: Color, value: String) {
+fun BranchesCard(navController: NavController, color: Color, value: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -60,19 +59,22 @@ fun BranchesCard(color: Color, value: String) {
     ) {
         Card(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .clickable {
+                    navController.navigate("branch_details/$value")
+                }
         ) {
             Text(
                 text = value,
-                modifier = Modifier.background(color)
+                modifier = Modifier
+                    .background(color)
                     .fillMaxWidth()
-                    .padding(8.dp).padding(vertical = 12.dp)
+                    .padding(8.dp)
+                    .padding(vertical = 12.dp)
                     .align(Alignment.Start),
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 18.sp,
-
-
-                )
+            )
         }
         Spacer(modifier = Modifier.height(8.dp))
     }
