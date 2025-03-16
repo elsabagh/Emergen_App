@@ -1,4 +1,4 @@
-package com.example.emergen_app.presentation.admin.branches.addBranch
+package com.example.emergen_app.presentation.admin.branches.editBranch
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -49,17 +49,17 @@ import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddBranchScreen(navController: NavController, branchName: String) {
-    val addBranchViewModel: AddBranchViewModel = hiltViewModel()
-    val state by addBranchViewModel.state.collectAsStateWithLifecycle()
+fun EditBranchScreen(navController: NavController, branchId: String) {
+    val editBranchViewModel: EditBranchViewModel = hiltViewModel()
+    val state by editBranchViewModel.state.collectAsStateWithLifecycle()
 
-    // تعيين typeBranch عند فتح الشاشة
-    LaunchedEffect(branchName) {
-        addBranchViewModel.onTypeBranchChange(branchName)
+    // ✅ تحميل بيانات الفرع عند فتح الشاشة
+    LaunchedEffect(branchId) {
+        editBranchViewModel.loadBranchData(branchId)
     }
 
     Scaffold(
-        topBar = { TopAppBar("Add Branch", navController) },
+        topBar = { TopAppBar("Edit Branch", navController) },
         content = { paddingValues ->
             Column(
                 modifier = Modifier
@@ -72,7 +72,7 @@ fun AddBranchScreen(navController: NavController, branchName: String) {
                 // Branch Name
                 OutlinedTextField(
                     value = state.branchName,
-                    onValueChange = { addBranchViewModel.onBranchNameChange(it) },
+                    onValueChange = { editBranchViewModel.onBranchNameChange(it) },
                     label = { Text("Branch name") },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -80,7 +80,7 @@ fun AddBranchScreen(navController: NavController, branchName: String) {
                 // Branch Capacity
                 OutlinedTextField(
                     value = state.branchCapacity,
-                    onValueChange = { addBranchViewModel.onBranchCapacityChange(it) },
+                    onValueChange = { editBranchViewModel.onBranchCapacityChange(it) },
                     label = { Text("Branch capacity / hour") },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -88,7 +88,7 @@ fun AddBranchScreen(navController: NavController, branchName: String) {
                 // Email
                 OutlinedTextField(
                     value = state.email,
-                    onValueChange = { addBranchViewModel.onEmailChange(it) },
+                    onValueChange = { editBranchViewModel.onEmailChange(it) },
                     label = { Text("Email") },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -96,7 +96,7 @@ fun AddBranchScreen(navController: NavController, branchName: String) {
                 // Mobile Number
                 OutlinedTextField(
                     value = state.mobileNumber,
-                    onValueChange = { addBranchViewModel.onMobileNumberChange(it) },
+                    onValueChange = { editBranchViewModel.onMobileNumberChange(it) },
                     label = { Text("Mobile number") },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -104,7 +104,7 @@ fun AddBranchScreen(navController: NavController, branchName: String) {
                 // Address
                 OutlinedTextField(
                     value = state.address,
-                    onValueChange = { addBranchViewModel.onAddressChange(it) },
+                    onValueChange = { editBranchViewModel.onAddressChange(it) },
                     label = { Text("Address") },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -112,7 +112,7 @@ fun AddBranchScreen(navController: NavController, branchName: String) {
                 // Address Map
                 OutlinedTextField(
                     value = state.addressMaps,
-                    onValueChange = { addBranchViewModel.onAddressMapsChange(it) },
+                    onValueChange = { editBranchViewModel.onAddressMapsChange(it) },
                     label = { Text("Address Map") },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -120,30 +120,27 @@ fun AddBranchScreen(navController: NavController, branchName: String) {
                 // Password
                 OutlinedTextField(
                     value = state.password,
-                    onValueChange = { addBranchViewModel.onPasswordChange(it) },
+                    onValueChange = { editBranchViewModel.onPasswordChange(it) },
                     label = { Text("Password") },
                     modifier = Modifier.fillMaxWidth(),
                 )
 
                 // Work Days Buttons
-                WorkDaysSection(state.workDays, addBranchViewModel)
+                WorkDaysSection(state.workDays, editBranchViewModel)
 
                 // Work Time Section
-                WorkTimeSection(state.startTime, state.endTime, addBranchViewModel)
+                WorkTimeSection(state.startTime, state.endTime, editBranchViewModel)
 
                 // Add Branch Button
                 Button(
                     onClick = {
-                        if (state.branchName.isNotEmpty() && state.email.isNotEmpty()) {
-                            addBranchViewModel.createBranchAccount(navController)
-                        } else {
-                            SnackBarManager.showMessage(R.string.fill_all_fields)
-                        }
+                        editBranchViewModel.updateBranch(navController) // ✅ استدعاء تحديث البيانات
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Add Branch")
+                    Text("Save Changes")
                 }
+
             }
         }
     )
@@ -152,7 +149,7 @@ fun AddBranchScreen(navController: NavController, branchName: String) {
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun WorkDaysSection(workDays: List<String>, addBranchViewModel: AddBranchViewModel) {
+fun WorkDaysSection(workDays: List<String>, addBranchViewModel: EditBranchViewModel) {
     val days = listOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
     var selectedDays by remember { mutableStateOf(workDays) }
 
@@ -192,7 +189,7 @@ fun WorkDaysSection(workDays: List<String>, addBranchViewModel: AddBranchViewMod
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WorkTimeSection(startTime: String, endTime: String, addBranchViewModel: AddBranchViewModel) {
+fun WorkTimeSection(startTime: String, endTime: String, addBranchViewModel: EditBranchViewModel) {
     var isStartTimeDialogVisible by remember { mutableStateOf(false) }
     var isEndTimeDialogVisible by remember { mutableStateOf(false) }
 
@@ -329,9 +326,9 @@ private fun TimePickerDialogPreview() {
 @Composable
 fun PreviewAddBranchScreen() {
     EmergencyAppTheme {
-        AddBranchScreen(
+        EditBranchScreen(
             navController = rememberNavController(),
-            branchName = "ugert"
+            branchId = "1"
         )
     }
 }

@@ -61,7 +61,7 @@ fun BranchesCard(navController: NavController, color: Color, value: String) {
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
-                    navController.navigate("branch_details/$value")
+                    navController.navigate("branch_list/$value")
                 }
         ) {
             Text(

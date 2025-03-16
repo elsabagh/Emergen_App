@@ -240,6 +240,8 @@ fun ProfileDetailCard(label: String, value: String) {
     }
 }
 
+
+
 @Composable
 fun ImageDialog(openDialog: MutableState<Boolean>, selectedImage: MutableState<String>) {
     if (openDialog.value) {

@@ -1,7 +1,8 @@
-package com.example.emergen_app.presentation.admin.branches.addBranch
+package com.example.emergen_app.presentation.admin.branches.editBranch
 
 
-data class AddBranchState(
+data class EditBranchState(
+    val userId: String = "",
     val branchName: String = "",
     val branchCapacity: String = "",
     val email: String = "",

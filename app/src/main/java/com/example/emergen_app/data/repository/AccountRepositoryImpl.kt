@@ -98,26 +98,11 @@ class AccountRepositoryImpl @Inject constructor(
             val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
             val userId = result.user?.uid ?: throw Exception("User ID is null")
 
-            val branch = branchData.copy(userId = userId)
-            val branchDataMap = mapOf(
-                "branchName" to branch.branchName,
-                "branchCapacity" to branch.branchCapacity,
-                "email" to branch.email,
-                "mobileNumber" to branch.mobileNumber,
-                "workDays" to branch.workDays,
-                "startTime" to branch.startTime,
-                "endTime" to branch.endTime,
-                "userId" to userId,
-                "statusAccount" to branch.statusAccount,
-                "password" to branch.password
+            val branch = branchData.copy(
+                userId = userId
             )
 
-            val userData = mapOf(
-                "email" to branch.email,
-                "role" to "branch",
-                "branch" to branchDataMap
-            )
-            fireStore.collection("users").document(userId).set(userData).await()
+            fireStore.collection("users").document(userId).set(branch).await()
 
         } catch (e: Exception) {
             throw Exception("Failed to create account branch: ${e.message}", e)

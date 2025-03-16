@@ -11,7 +11,9 @@ import com.example.emergen_app.navigation.AppDestination.SignUpDestination
 import com.example.emergen_app.presentation.admin.accounts.AccountsScreen
 import com.example.emergen_app.presentation.admin.branches.AllBranchesScreen
 import com.example.emergen_app.presentation.admin.branches.addBranch.AddBranchScreen
-import com.example.emergen_app.presentation.admin.branches.branchDetails.BranchListScreen
+import com.example.emergen_app.presentation.admin.branches.branchList.BranchListScreen
+import com.example.emergen_app.presentation.admin.branches.branchList.branchDetails.BranchDetailsScreen
+import com.example.emergen_app.presentation.admin.branches.editBranch.EditBranchScreen
 import com.example.emergen_app.presentation.admin.home.AdminHomeScreen
 import com.example.emergen_app.presentation.admin.notification.NotificationScreen
 import com.example.emergen_app.presentation.admin.userProfile.UserProfileScreen
@@ -120,15 +122,30 @@ fun NavGraph(
         composable(route = AppDestination.AllBranchesDestination.route) {
             AllBranchesScreen(navController = appState.navController)
         }
-        composable("branch_details/{branchName}") { backStackEntry ->
+        composable("branch_list/{branchName}") { backStackEntry ->
             val branchName = backStackEntry.arguments?.getString("branchName") ?: ""
             BranchListScreen(navController = appState.navController, branchName = branchName)
         }
-        composable("add_branch") {
-            AddBranchScreen(navController = appState.navController)
+        composable("add_branch/{branchName}") { backStackEntry ->
+            val branchName = backStackEntry.arguments?.getString("branchName") ?: ""
+            AddBranchScreen(navController = appState.navController, branchName = branchName)
         }
+
+        composable("edit_branch/{branchId}") { backStackEntry ->
+            val branchId = backStackEntry.arguments?.getString("branchId") ?: ""
+            EditBranchScreen(
+                navController = appState.navController,
+                branchId = branchId // ✅ تمرير ID للصفحة
+            )
+        }
+
+
         composable(AppDestination.BranchHomeDestination.route) {
             BranchScreen()
+        }
+        composable("branch_details/{branchId}") { backStackEntry ->
+            val branchId = backStackEntry.arguments?.getString("branchId") ?: ""
+            BranchDetailsScreen(navController = appState.navController, branchId = branchId)
         }
 
 
