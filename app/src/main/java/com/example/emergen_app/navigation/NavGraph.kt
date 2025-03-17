@@ -21,6 +21,10 @@ import com.example.emergen_app.presentation.branch.BranchScreen
 import com.example.emergen_app.presentation.signIn.SignInScreen
 import com.example.emergen_app.presentation.signUp.SignupScreen
 import com.example.emergen_app.presentation.user.UserMainScreen
+import com.example.emergen_app.presentation.user.home.specificAppeal.FireEmergency
+import com.example.emergen_app.presentation.user.home.specificAppeal.MedicalEmergency
+import com.example.emergen_app.presentation.user.home.specificAppeal.PoliceEmergency
+import com.example.emergen_app.presentation.user.profile.ProfileDetails
 
 @Composable
 fun NavGraph(
@@ -77,7 +81,7 @@ fun NavGraph(
                     )
                 }
 
-                )
+            )
         }
         composable(
             route = SignUpDestination.route
@@ -148,6 +152,27 @@ fun NavGraph(
             BranchDetailsScreen(navController = appState.navController, branchId = branchId)
         }
 
+        composable(AppDestination.FireEmergencyDestination.route) {
+            FireEmergency(
+                navController = appState.navController
+            )
+        }
+        composable(AppDestination.MedicalEmergencyDestination.route) {
+            MedicalEmergency(
+                navController = appState.navController
+            )
+        }
+        composable(AppDestination.PoliceEmergencyDestination.route) {
+            PoliceEmergency(
+                navController = appState.navController
+            )
+        }
+
+        composable(AppDestination.ProfileDetailsDestination.route) {
+            ProfileDetails(
+                navController = appState.navController
+            )
+        }
 
     }
 }

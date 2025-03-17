@@ -49,4 +49,22 @@ interface AppDestination {
         override val route = " BranchList"
     }
 
+    object PoliceEmergencyDestination : AppDestination{
+        override val route = " PoliceEmergency"
+    }
+
+    object MedicalEmergencyDestination : AppDestination{
+        override val route = " MedicalEmergency"
+    }
+
+    object FireEmergencyDestination : AppDestination{
+        override val route = " FireEmergency"
+    }
+
+    object ProfileDetailsDestination : AppDestination{
+        override val route = " ProfileDetails"
+    }
+
+
+
 }

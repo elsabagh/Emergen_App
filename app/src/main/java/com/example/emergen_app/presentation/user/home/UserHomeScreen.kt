@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.emergen_app.R
+import com.example.emergen_app.navigation.AppDestination
 import com.example.emergen_app.ui.theme.EmergencyAppTheme
 
 @Composable
@@ -58,7 +59,8 @@ fun UserHomeScreen(
     ) {
         AppHeader()
 
-        UserCard()
+        UserCard(navController) // ✅ تمرير navController
+
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -71,8 +73,9 @@ fun UserHomeScreen(
         if (selectedTab == 0) {
             UrgentAppealContent()
         } else {
-            SpecificAppealContent()
+            SpecificAppealContent(navController) // ✅ تمرير الـ NavController
         }
+
 
 
     }
@@ -111,7 +114,7 @@ fun AppHeader() {
 }
 
 @Composable
-fun UserCard() {
+fun UserCard(navController: NavController) { // ✅ تمرير navController هنا
     Card(
         modifier = Modifier
             .padding(horizontal = 16.dp)
@@ -126,7 +129,7 @@ fun UserCard() {
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
-                    painter = painterResource(id = R.drawable.ic_launcher_foreground), // استبدل بالصورة الصحيحة
+                    painter = painterResource(id = R.drawable.ic_launcher_foreground),
                     contentDescription = "User Image",
                     modifier = Modifier
                         .size(50.dp)
@@ -148,7 +151,6 @@ fun UserCard() {
                         color = Color.White
                     )
                 }
-
             }
             IconButton(onClick = { /* إشعارات */ }) {
                 Icon(
@@ -157,10 +159,10 @@ fun UserCard() {
                     tint = Color.White
                 )
             }
-            IconButton(onClick = { /* إشعارات */ }) {
+            IconButton(onClick = { navController.navigate(AppDestination.ProfileDetailsDestination.route) }) { // ✅ التنقل عند الضغط
                 Icon(
                     imageVector = Icons.Default.Person,
-                    contentDescription = "Notifications",
+                    contentDescription = "Profile",
                     tint = Color.White
                 )
             }
@@ -236,38 +238,54 @@ fun UrgentAppealContent() {
 }
 
 @Composable
-fun SpecificAppealContent() {
+fun SpecificAppealContent(navController: NavController) {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
-            .verticalScroll(rememberScrollState())
-        ,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         EmergencyOption(
             title = "Medical Emergency",
             imageRes = R.drawable.ambulance_pana,
             backgroundColor = Color(0xFF60D394)
-        )
+        ) {
+            navController.navigate(AppDestination.MedicalEmergencyDestination.route) // ✅ تنقل للطوارئ الطبية
+        }
+
         EmergencyOption(
             title = "Police Emergency",
             imageRes = R.drawable.police_car_rafiki,
             backgroundColor = Color(0xFF4285F4)
-        )
+        ) {
+            navController.navigate(AppDestination.PoliceEmergencyDestination.route) // ✅ تنقل للشرطة
+        }
+
         EmergencyOption(
             title = "Fire Emergency",
             imageRes = R.drawable.fire_emergency,
             backgroundColor = Color(0xFFFF6F61)
-        )
+        ) {
+            navController.navigate(AppDestination.FireEmergencyDestination.route) // ✅ تنقل للحريق
+        }
     }
 }
 
+
 @Composable
-fun EmergencyOption(title: String, imageRes: Int, backgroundColor: Color) {
+fun EmergencyOption(
+    title: String,
+    imageRes: Int,
+    backgroundColor: Color,
+    onClick: () -> Unit // ✅ تمرير حدث النقر
+) {
     Card(
         modifier = Modifier
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .fillMaxWidth()
-            .height(100.dp),
+            .height(100.dp)
+            .clickable { onClick() }, // ✅ تنفيذ التنقل عند النقر
         colors = CardDefaults.cardColors(backgroundColor),
         shape = RoundedCornerShape(12.dp)
     ) {

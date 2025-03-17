@@ -3,6 +3,7 @@ package com.example.emergen_app.presentation.signUp
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -317,29 +318,31 @@ fun LocationButton(context: Context, uiState: SignUpState, viewModel: SignUpView
             modifier = Modifier
         )
 
-        // أيقونة تحديد الموقع
         IconButton(onClick = {
-            // التحقق من تفعيل الـ GPS
-            if (!checkIfGpsEnabled(context)) {
+            Log.d("LocationDebug", "Location button clicked")
+
+            val isGpsEnabled = checkIfGpsEnabled(context)
+            if (!isGpsEnabled) {
+                Log.e("LocationDebug", "GPS is disabled")
                 Toast.makeText(context, "Please enable GPS", Toast.LENGTH_SHORT).show()
                 return@IconButton
             }
 
-            // تحديث الموقع إذا كان الـ GPS مفعل
+            Log.d("LocationDebug", "GPS is enabled, fetching location...")
+
             updateLocation(fusedLocationClient, context) { location ->
-                // تحديث uiState.addressMaps ليعكس الإحداثيات
+                Log.d("LocationDebug", "Location received: $location")
                 viewModel.onAddressMapsChange(location)
             }
         }) {
-            // عرض أيقونة تحديد الموقع
             Icon(
-                imageVector = Icons.Filled.LocationOn, // الأيقونة
+                imageVector = Icons.Filled.LocationOn,
                 contentDescription = "Get Location",
-                tint = Color.Black, // يمكنك تغيير اللون هنا
+                tint = Color.Black,
                 modifier = Modifier.size(40.dp)
             )
-
         }
+
     }
 }
 

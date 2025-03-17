@@ -42,7 +42,7 @@ fun BottomNavBar(
             title = "Report",
             icon = Icons.Rounded.Report
         ), BottomItem(
-            title = "Contract",
+            title = "Contact",
             icon = Icons.Rounded.Chat
         )
     )

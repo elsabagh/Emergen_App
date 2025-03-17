@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.location.LocationManager
 import android.os.Looper
+import android.widget.Toast
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -45,14 +46,34 @@ fun checkIfGpsEnabled(context: Context): Boolean {
     return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
 }
 
+@SuppressLint("MissingPermission")
 fun updateLocation(
     fusedLocationClient: FusedLocationProviderClient,
     context: Context,
-    onLocationUpdated: (String) -> Unit // تعديل المعامل ليقبل نصًا فقط
+    onLocationUpdated: (String) -> Unit
 ) {
-    fetchLocation(fusedLocationClient, context) { lat, lon ->
-        // تنسيق الإحداثيات في نص واحد
-        val location = "$lat,$lon"
-        onLocationUpdated(location) // تمرير النص بدلاً من المعاملات المنفصلة
+    val locationRequest = LocationRequest.create().apply {
+        priority = Priority.PRIORITY_HIGH_ACCURACY
+        interval = 5000 // جلب الموقع كل 5 ثواني
     }
+
+    val locationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            locationResult.lastLocation?.let { location ->
+                val locationString = "${location.latitude},${location.longitude}"
+                onLocationUpdated(locationString)
+            } ?: run {
+                Toast.makeText(context, "Failed to get location", Toast.LENGTH_SHORT).show()
+            }
+
+            // تأكد من عدم إلغاء التحديثات قبل الحصول على الموقع
+            fusedLocationClient.removeLocationUpdates(this)
+        }
+    }
+
+    fusedLocationClient.requestLocationUpdates(
+        locationRequest,
+        locationCallback,
+        Looper.getMainLooper()
+    )
 }

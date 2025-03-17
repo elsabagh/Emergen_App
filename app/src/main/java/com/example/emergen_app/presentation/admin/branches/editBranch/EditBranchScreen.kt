@@ -42,7 +42,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.emergen_app.R
 import com.example.emergen_app.presentation.components.TopAppBar
-import com.example.emergen_app.presentation.components.snackbar.SnackBarManager
 import com.example.emergen_app.ui.theme.EmergencyAppTheme
 import com.example.emergen_app.ui.theme.branchesCardColor
 import java.util.Calendar
@@ -90,6 +89,7 @@ fun EditBranchScreen(navController: NavController, branchId: String) {
                     value = state.email,
                     onValueChange = { editBranchViewModel.onEmailChange(it) },
                     label = { Text("Email") },
+                    readOnly = true,
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -122,6 +122,7 @@ fun EditBranchScreen(navController: NavController, branchId: String) {
                     value = state.password,
                     onValueChange = { editBranchViewModel.onPasswordChange(it) },
                     label = { Text("Password") },
+                    readOnly = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
 
