@@ -1,18 +1,21 @@
 package com.example.emergen_app.data.repository
 
 
+import android.net.Uri
 import android.util.Log
 import com.example.emergen_app.data.models.Branch
 import com.example.emergen_app.data.models.User
 import com.example.emergen_app.domain.repository.StorageFirebaseRepository
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class StorageFirebaseRepositoryImpl @Inject constructor(
-    private val fireStore: FirebaseFirestore
+    private val fireStore: FirebaseFirestore,
+    private val storage: FirebaseStorage
 ) : StorageFirebaseRepository {
 
     override suspend fun getUserRole(email: String): String? {
@@ -122,7 +125,8 @@ class StorageFirebaseRepositoryImpl @Inject constructor(
                 .await()
 
             if (docSnapshot.exists()) {
-                docSnapshot.toObject(Branch::class.java)?.copy(userId = branchId)  // ✅ تحويل البيانات إلى كائن Branch
+                docSnapshot.toObject(Branch::class.java)
+                    ?.copy(userId = branchId)  // ✅ تحويل البيانات إلى كائن Branch
             } else {
                 null  // ❌ لا يوجد فرع بهذا الـ ID
             }
@@ -131,6 +135,7 @@ class StorageFirebaseRepositoryImpl @Inject constructor(
             null
         }
     }
+
     override suspend fun updateBranch(branch: Branch) {
         try {
             val branchRef = fireStore.collection("users").document(branch.userId)
@@ -158,6 +163,49 @@ class StorageFirebaseRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Log.e("FirebaseRepo", "Error updating branch ${branch.userId}: ${e.message}")
             throw Exception("Failed to update branch: ${e.message}", e)
+        }
+    }
+
+    override suspend fun updateUserProfile(updatedUser: User) {
+        try {
+            val userRef = fireStore.collection("users").document(updatedUser.userId)
+
+            userRef.update(
+                mapOf(
+                    "userName" to updatedUser.userName,
+                    "email" to updatedUser.email,
+                    "mobile" to updatedUser.mobile,
+                    "governmentName" to updatedUser.governmentName,
+                    "area" to updatedUser.area,
+                    "plotNumber" to updatedUser.plotNumber,
+                    "streetName" to updatedUser.streetName,
+                    "buildNumber" to updatedUser.buildNumber,
+                    "floorNumber" to updatedUser.floorNumber,
+                    "apartmentNumber" to updatedUser.apartmentNumber,
+                    "addressMaps" to updatedUser.addressMaps,
+                    "userPhoto" to updatedUser.userPhoto,
+                    "idFront" to updatedUser.idFront,
+                    "idBack" to updatedUser.idBack,
+                )
+            ).await()
+        } catch (e: Exception) {
+            Log.e("ProfileDetailsViewModel", "Failed to update profile: ${e.message}")
+            throw e
+        }
+    }
+
+    override suspend fun uploadImageToStorage(
+        userId: String,
+        fileUri: Uri,
+        fileName: String
+    ): String {
+        return try {
+            val ref = storage.reference.child("users/$userId/$fileName.jpg")
+            ref.putFile(fileUri).await()
+            ref.downloadUrl.await().toString()
+        } catch (e: Exception) {
+            Log.e("FirebaseStorage", "Error uploading image: $fileName", e)
+            throw Exception("Failed to link account: ${e.message}", e)
         }
     }
 

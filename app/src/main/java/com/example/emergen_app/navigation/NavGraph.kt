@@ -24,6 +24,7 @@ import com.example.emergen_app.presentation.user.UserMainScreen
 import com.example.emergen_app.presentation.user.home.specificAppeal.FireEmergency
 import com.example.emergen_app.presentation.user.home.specificAppeal.MedicalEmergency
 import com.example.emergen_app.presentation.user.home.specificAppeal.PoliceEmergency
+import com.example.emergen_app.presentation.user.profile.EditProfile
 import com.example.emergen_app.presentation.user.profile.ProfileDetails
 
 @Composable
@@ -171,6 +172,13 @@ fun NavGraph(
         composable(AppDestination.ProfileDetailsDestination.route) {
             ProfileDetails(
                 navController = appState.navController
+            )
+        }
+        composable("Edit_Profile/{userId}") { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId") ?: ""
+            EditProfile(
+                navController = appState.navController,
+                userId = userId
             )
         }
 

@@ -17,6 +17,7 @@
     <string name="branch_added_successfully">branch added successfully</string>
     <string name="updated_account">updated account successfully</string>
     <string name="account_update_failed">account update failed</string>
+    <string name="profile_updated_successfully">profile updated successfully</string>
 
     <!-- LoginScreen -->
     <string name="sign_in">Sign in</string>

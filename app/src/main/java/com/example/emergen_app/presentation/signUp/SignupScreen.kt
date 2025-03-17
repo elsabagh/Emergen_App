@@ -1,7 +1,6 @@
 package com.example.emergen_app.presentation.signUp
 
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
@@ -24,7 +23,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -32,7 +30,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -67,7 +64,6 @@ import com.example.emergen_app.navigation.AppDestination
 import com.example.emergen_app.presentation.components.snackbar.SnackBarManager
 import com.example.emergen_app.utils.checkIfGpsEnabled
 import com.example.emergen_app.utils.updateLocation
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.android.gms.location.LocationServices
 
 
@@ -511,7 +507,9 @@ fun PasswordSection(uiState: SignUpState, viewModel: SignUpViewModel) {
 fun SignUpButton(isLoading: Boolean, onClick: () -> Unit) {
     if (!isLoading) {
         Button(onClick = onClick,
-            modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 24.dp)
         ) {
             Text("Sign Up")
         }

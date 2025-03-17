@@ -39,10 +39,12 @@ class ProfileDetailsViewModel @Inject constructor(
         }
     }
 
+
     fun signOutFromAccount() {
         viewModelScope.launch {
             accountRepository.signOut()
             _isAccountSignedOut.value = true
         }
     }
+
 }

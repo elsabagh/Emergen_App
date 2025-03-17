@@ -13,9 +13,9 @@ data class User(
     val floorNumber: String = "",
     val apartmentNumber: String = "",
     val addressMaps: String = "",
-    val userPhoto: String = "",
-    val idFront: String = "",
-    val idBack: String = "",
+    var userPhoto: String = "",
+    var idFront: String = "",
+    var idBack: String = "",
     val role: String = "user",
     val statusAccount: String = "pending"
 )

@@ -89,6 +89,21 @@ class AccountRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun changePassword(newPassword: String) {
+        val user = firebaseAuth.currentUser
+        if (user != null) {
+            try {
+                user.updatePassword(newPassword).await()
+            } catch (e: Exception) {
+                throw Exception("Failed to change password: ${e.message}", e)
+            } catch (e: IOException) {
+                throw IOException("Network error occurred during password change: ${e.message}", e)
+            }
+        } else {
+            throw Exception("No authenticated user found")
+        }
+    }
+
     override suspend fun createAccountBranch(
         email: String,
         password: String,
@@ -109,7 +124,35 @@ class AccountRepositoryImpl @Inject constructor(
         }
     }
 
+    // دالة لإنشاء الحساب (تعديلها لتكون أكثر توافقًا مع التحديثات الجديدة)
+    override suspend fun updateUserProfile(
+        userId: String,
+        updatedUserData: User,
+        userPhotoUri: Uri?,
+        idFrontUri: Uri?,
+        idBackUri: Uri?
+    ) {
+        try {
+            // رفع الصور وتخزين روابطها
+            val userPhotoUrl = userPhotoUri?.let { uploadImageToStorage(userId, it, "user_photo") }
+            val idFrontUrl = idFrontUri?.let { uploadImageToStorage(userId, it, "id_front") }
+            val idBackUrl = idBackUri?.let { uploadImageToStorage(userId, it, "id_back") }
 
+            // إنشاء نسخة جديدة للمستخدم مع الروابط المحدثة
+            val user = updatedUserData.copy(
+                userId = userId,
+                userPhoto = userPhotoUrl.orEmpty(),
+                idFront = idFrontUrl.orEmpty(),
+                idBack = idBackUrl.orEmpty()
+            )
+
+            // تحديث بيانات المستخدم في Firestore
+            fireStore.collection("users").document(userId).set(user).await()
+
+        } catch (e: Exception) {
+            throw Exception("Failed to update profile: ${e.message}", e)
+        }
+    }
 
     private suspend fun uploadImageToStorage(
         userId: String,

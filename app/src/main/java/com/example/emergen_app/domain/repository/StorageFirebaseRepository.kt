@@ -1,5 +1,6 @@
 package com.example.emergen_app.domain.repository
 
+import android.net.Uri
 import com.example.emergen_app.data.models.Branch
 import com.example.emergen_app.data.models.User
 import kotlinx.coroutines.flow.Flow
@@ -20,5 +21,8 @@ interface StorageFirebaseRepository {
 
     suspend fun updateBranch(branch: Branch)
 
+    suspend fun updateUserProfile(updatedUser: User)
+
+    suspend fun uploadImageToStorage(userId: String, fileUri: Uri, fileName: String): String
 
 }

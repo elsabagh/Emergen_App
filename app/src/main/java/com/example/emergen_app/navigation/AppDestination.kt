@@ -65,6 +65,7 @@ interface AppDestination {
         override val route = " ProfileDetails"
     }
 
-
-
+    object EditProfileDestination : AppDestination{
+        override val route = " EditProfile"
+    }
 }

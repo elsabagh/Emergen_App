@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -61,7 +62,7 @@ fun ProfileDetails(
     val selectedImage = remember { mutableStateOf("") } // To hold the image URL for the dialog
 
     Scaffold(
-        topBar = { ProfileDetailsTopAppBar(navController) },
+        topBar = { ProfileDetailsTopAppBar(navController, user) },
         content = { paddingValues ->
             Column(
                 modifier = Modifier
@@ -247,7 +248,9 @@ fun LogoutButton(
             }
         },
         colors = ButtonDefaults.buttonColors(colorButtonRed),
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
     ) {
         Text("Logout")
     }
@@ -256,13 +259,24 @@ fun LogoutButton(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileDetailsTopAppBar(navController: NavController) {
+fun ProfileDetailsTopAppBar(navController: NavController, user: User?) {
     TopAppBar(
         title = { Text("My Profile") },
         navigationIcon = {
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(Icons.Default.ArrowBack, contentDescription = "Back")
             }
+        },
+        actions = {
+            IconButton(onClick = {
+                // التوجيه إلى صفحة تعديل الملف الشخصي مع تمرير userId
+                val userId = user?.userId
+                navController.navigate("Edit_Profile/${userId}")
+            }) {
+                Icon(Icons.Default.Edit, contentDescription = "Edit Profile")
+            }
         }
     )
 }
+
+

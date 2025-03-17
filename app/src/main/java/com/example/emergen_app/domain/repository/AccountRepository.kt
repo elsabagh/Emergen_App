@@ -24,6 +24,8 @@ interface AccountRepository {
         userPhotoUri: Uri?
     )
 
+    suspend fun changePassword(newPassword: String)
+
     suspend fun linkAccount(email: String, password: String)
 
     suspend fun deleteAccount()
@@ -42,5 +44,13 @@ interface AccountRepository {
         email: String,
         password: String,
         branchData: Branch
+    )
+
+    suspend fun updateUserProfile(
+        userId: String,
+        updatedUserData: User,
+        userPhotoUri: Uri?,
+        idFrontUri: Uri?,
+        idBackUri: Uri?
     )
 }
