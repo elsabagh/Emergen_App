@@ -1,13 +1,11 @@
 package com.example.emergen_app
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.runtime.Composable
@@ -31,7 +29,7 @@ fun ContainerApp(
     val isAccountReady = signInViewModel.isAccountReady.collectAsState().value
 
     EmergencyAppTheme {
-        Box(modifier = modifier.fillMaxSize().padding(top = 36.dp)) {
+        Box(modifier = modifier.fillMaxSize()) {
             // ✅ `NavGraph` لعرض المحتوى الرئيسي
             NavGraph(
                 appState = appState,

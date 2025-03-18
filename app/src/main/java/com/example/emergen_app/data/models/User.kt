@@ -18,5 +18,8 @@ data class User(
     var idBack: String = "",
     val role: String = "user",
     val statusAccount: String = "pending",
-    val timeOfRequest: String = "" // الحقل الجديد للوقت
+    val timeOfRequest: String = "",
+    val typeOfRequest: String = "",
+    val textOther: String = "",
+    val typeReason: String = "",
 )

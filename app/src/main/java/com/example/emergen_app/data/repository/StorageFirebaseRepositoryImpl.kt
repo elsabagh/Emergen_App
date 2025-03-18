@@ -231,9 +231,10 @@ class StorageFirebaseRepositoryImpl @Inject constructor(
                 "userPhoto" to user.userPhoto,
                 "idFront" to user.idFront,
                 "idBack" to user.idBack,
-                "typeRequest" to "urgent",
-                "textOther" to "",
-                "typeReason" to ""
+                "typeOfRequest" to user.typeOfRequest,
+                "textOther" to user.textOther,
+                "typeReason" to user.typeReason,
+                "timeOfRequest" to user.timeOfRequest
             )
 
             // إنشاء مستند جديد داخل collection 'reports'

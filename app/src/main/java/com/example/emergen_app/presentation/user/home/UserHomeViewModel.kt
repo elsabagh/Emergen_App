@@ -2,9 +2,11 @@ package com.example.emergen_app.presentation.user.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.emergen_app.R
 import com.example.emergen_app.data.models.User
 import com.example.emergen_app.domain.repository.AccountRepository
 import com.example.emergen_app.domain.repository.StorageFirebaseRepository
+import com.example.emergen_app.presentation.components.snackbar.SnackBarManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,7 +32,7 @@ class UserHomeViewModel @Inject constructor(
 
     private fun loadCurrentUser() {
         viewModelScope.launch {
-            _user.value = accountRepository.getCurrentUser() // جلب بيانات المستخدم من الـ Repository
+            _user.value = accountRepository.getCurrentUser()
         }
     }
 
@@ -40,6 +42,7 @@ class UserHomeViewModel @Inject constructor(
             try {
                 storageRepository.createUrgentHelpRequest(user)
                 _helpRequestStatus.value = Result.Success
+                SnackBarManager.showMessage(R.string.your_help_request_was_successful)
             } catch (e: Exception) {
                 _helpRequestStatus.value = Result.Failure(e.message ?: "Unknown Error")
             }

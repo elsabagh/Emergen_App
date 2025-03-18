@@ -3,8 +3,10 @@ package com.example.emergen_app.presentation.user.home
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,6 +27,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -38,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -48,11 +52,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.rememberImagePainter
 import com.example.emergen_app.R
 import com.example.emergen_app.data.models.User
 import com.example.emergen_app.navigation.AppDestination
 import com.example.emergen_app.presentation.components.snackbar.SnackBarManager
 import com.example.emergen_app.ui.theme.EmergencyAppTheme
+import com.example.emergen_app.ui.theme.colorButtonRed
 import com.example.emergen_app.utils.checkIfGpsEnabled
 import com.example.emergen_app.utils.fetchLocation
 import com.google.android.gms.location.LocationServices
@@ -75,47 +81,52 @@ fun UserHomeScreen(
     ) {
         AppHeader()
 
-        UserCard(navController) // ✅ تمرير navController
+        user?.let { user ->
+            UserCard(navController, user)
 
+            Spacer(modifier = Modifier.height(8.dp))
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        AppealTabs(selectedTab) { newTab ->
-            selectedTab = newTab
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // التعامل مع حالة الطلب (مراقبة الـ StateFlow)
-        when (helpRequestStatus) {
-            is UserHomeViewModel.Result.Success -> {
-                SnackBarManager.showMessage(stringResource(R.string.your_help_request_was_successful))
-
+            AppealTabs(selectedTab) { newTab ->
+                selectedTab = newTab
             }
 
-            is UserHomeViewModel.Result.Failure -> {
-                Text(
-                    text = "Error: ${(helpRequestStatus as UserHomeViewModel.Result.Failure).errorMessage}",
-                    color = Color.Red,
-                    modifier = Modifier.padding(16.dp)
-                )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            when (helpRequestStatus) {
+                is UserHomeViewModel.Result.Success -> {
+                    SnackBarManager.showMessage(stringResource(R.string.your_help_request_was_successful))
+
+                }
+
+                is UserHomeViewModel.Result.Failure -> {
+                    Text(
+                        text = "Error: ${(helpRequestStatus as UserHomeViewModel.Result.Failure).errorMessage}",
+                        color = Color.Red,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+
+                is UserHomeViewModel.Result.Pending -> {
+                }
             }
 
-            is UserHomeViewModel.Result.Pending -> {
-            }
-        }
-
-        if (user != null) {
-            if (selectedTab == 0) {
-                UrgentAppealContent(user!!, userHomeViewModel)
+            if (user != null) {
+                if (selectedTab == 0) {
+                    UrgentAppealContent(user!!, userHomeViewModel)
+                } else {
+                    SpecificAppealContent(navController)
+                }
             } else {
-                SpecificAppealContent(navController)
+                Text("Loading user data...")
             }
-        } else {
-            Text("Loading user data...")
+        } ?:
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            CircularProgressIndicator()
         }
-
-
     }
 }
 
@@ -125,7 +136,7 @@ fun AppHeader() {
         modifier = Modifier
             .fillMaxWidth()
             .background(Color(0xFFFDF1D0)) // اللون البيج الفاتح
-            .padding(top = 46.dp),
+            .padding(vertical = 8.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -152,13 +163,17 @@ fun AppHeader() {
 }
 
 @Composable
-fun UserCard(navController: NavController) { // ✅ تمرير navController هنا
+fun UserCard(
+    navController: NavController,
+    user: User,
+) {
     Card(
         modifier = Modifier
             .padding(horizontal = 16.dp)
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp)),
-        colors = CardDefaults.cardColors(Color(0xFF22B8F5))
+        colors = CardDefaults.cardColors(Color(0xFF22B8F5)),
+        elevation = CardDefaults.cardElevation(8.dp)
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
@@ -166,13 +181,24 @@ fun UserCard(navController: NavController) { // ✅ تمرير navController ه�
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                    contentDescription = "User Image",
+                Box(
+                    contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .size(50.dp)
                         .clip(CircleShape)
-                )
+                        .border(2.dp, Color.White, CircleShape)
+                        .background(Color.White)
+                ) {
+                    Image(
+                        painter = rememberImagePainter(user.userPhoto),
+                        contentDescription = "User Photo",
+                        modifier = Modifier.padding(2.dp)
+                            .size(50.dp)
+                            .fillMaxWidth()
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                }
                 Spacer(modifier = Modifier.width(8.dp))
                 Column {
                     Text(
@@ -183,13 +209,14 @@ fun UserCard(navController: NavController) { // ✅ تمرير navController ه�
                     )
 
                     Text(
-                        text = "Osman Yasser mohamed",
+                        text = user.userName,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )
                 }
             }
+            Spacer(modifier = Modifier.weight(1f))
             IconButton(onClick = { /* إشعارات */ }) {
                 Icon(
                     imageVector = Icons.Default.Notifications,
@@ -197,7 +224,7 @@ fun UserCard(navController: NavController) { // ✅ تمرير navController ه�
                     tint = Color.White
                 )
             }
-            IconButton(onClick = { navController.navigate(AppDestination.ProfileDetailsDestination.route) }) { // ✅ التنقل عند الضغط
+            IconButton(onClick = { navController.navigate(AppDestination.ProfileDetailsDestination.route) }) {
                 Icon(
                     imageVector = Icons.Default.Person,
                     contentDescription = "Profile",
@@ -230,16 +257,24 @@ fun TabItem(text: String, isSelected: Boolean, onClick: () -> Unit) {
     ) {
         Text(
             text = text,
-            fontSize = 16.sp,
+            fontSize = 20.sp,
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-            color = if (isSelected) Color(0xFF22B8F5) else Color.Gray
+            color = if (isSelected) Color(0xFF22B8F5) else Color.Gray,
+
         )
         if (isSelected) {
             Spacer(
-                modifier = Modifier
+                modifier = Modifier.padding(top = 4.dp)
                     .height(2.dp)
-                    .width(120.dp)
+                    .width(170.dp)
                     .background(Color(0xFF22B8F5))
+            )
+        }else{
+            Spacer(
+                modifier = Modifier.padding(top = 4.dp)
+                    .height(2.dp)
+                    .width(190.dp)
+                    .background(Color.Gray)
             )
         }
     }
@@ -265,7 +300,7 @@ fun UrgentAppealContent(user: User, userHomeViewModel: UserHomeViewModel) {
         Image(
             painter = painterResource(id = R.drawable.ic_siren),
             contentDescription = "Siren",
-            modifier = Modifier.size(200.dp)
+            modifier = Modifier.size(320.dp)
         )
         Spacer(modifier = Modifier.height(24.dp))
         Button(
@@ -274,7 +309,7 @@ fun UrgentAppealContent(user: User, userHomeViewModel: UserHomeViewModel) {
                 if (!isGpsEnabled) {
                     Log.e("LocationDebug", "GPS is disabled")
                     SnackBarManager.showMessage(R.string.please_enable_gps)
-                }else{
+                } else {
                     fetchLocation(fusedLocationClient, context) { latitude, longitude ->
                         currentLocation = Pair(latitude, longitude)
 
@@ -286,14 +321,20 @@ fun UrgentAppealContent(user: User, userHomeViewModel: UserHomeViewModel) {
                         userHomeViewModel.createUrgentHelpRequest(
                             user.copy(
                                 addressMaps = "${currentLocation?.first},${currentLocation?.second}",
-                                timeOfRequest = currentTime
+                                timeOfRequest = currentTime,
+                                typeOfRequest = "Urgent"
                             )
                         )
                     }
                 }
             },
-            colors = ButtonDefaults.buttonColors(Color.Red),
-            modifier = Modifier.padding(16.dp)
+            colors = ButtonDefaults.buttonColors(colorButtonRed),
+            shape = RoundedCornerShape(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(84.dp)
+                .padding(16.dp)
+                .padding(horizontal = 46.dp)
         ) {
             Text(
                 text = "Help Request",
@@ -315,25 +356,25 @@ fun SpecificAppealContent(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         EmergencyOption(
-            title = "Medical Emergency",
+            title = "Medical",
             imageRes = R.drawable.ambulance_pana,
-            backgroundColor = Color(0xFF60D394)
+            backgroundColor = Color(0xFF63D759)
         ) {
             navController.navigate(AppDestination.MedicalEmergencyDestination.route) // ✅ تنقل للطوارئ الطبية
         }
 
-        EmergencyOption(
-            title = "Police Emergency",
+        PoliceEmergencyOption(
+            title = "Police",
             imageRes = R.drawable.police_car_rafiki,
-            backgroundColor = Color(0xFF4285F4)
+            backgroundColor = Color(0xFF57BFF3)
         ) {
             navController.navigate(AppDestination.PoliceEmergencyDestination.route) // ✅ تنقل للشرطة
         }
 
         EmergencyOption(
-            title = "Fire Emergency",
+            title = "Fire",
             imageRes = R.drawable.fire_emergency,
-            backgroundColor = Color(0xFFFF6F61)
+            backgroundColor = Color(0xFFF39357)
         ) {
             navController.navigate(AppDestination.FireEmergencyDestination.route) // ✅ تنقل للحريق
         }
@@ -352,7 +393,7 @@ fun EmergencyOption(
         modifier = Modifier
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .fillMaxWidth()
-            .height(100.dp)
+            .height(120.dp)
             .clickable { onClick() }, // ✅ تنفيذ التنقل عند النقر
         colors = CardDefaults.cardColors(backgroundColor),
         shape = RoundedCornerShape(12.dp)
@@ -360,21 +401,78 @@ fun EmergencyOption(
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(8.dp)
+                .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = title,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
-            )
+            Column {
+                Text(
+                    text = title,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+                Text(
+                    text = "Emergency",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+            }
             Spacer(modifier = Modifier.weight(1f))
             Image(
                 painter = painterResource(id = imageRes),
                 contentDescription = title,
-                modifier = Modifier.size(80.dp)
+                modifier = Modifier.size(160.dp)
             )
+        }
+    }
+}
+
+@Composable
+fun PoliceEmergencyOption(
+    title: String,
+    imageRes: Int,
+    backgroundColor: Color,
+    onClick: () -> Unit // ✅ تمرير حدث النقر
+) {
+    Card(
+        modifier = Modifier
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .fillMaxWidth()
+            .height(120.dp)
+            .clickable { onClick() }, // ✅ تنفيذ التنقل عند النقر
+        colors = CardDefaults.cardColors(backgroundColor),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp)
+                .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(id = imageRes),
+                contentDescription = title,
+                modifier = Modifier.size(160.dp)
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Column {
+                Text(
+                    text = title,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+                Text(
+                    text = "Emergency",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+            }
+
         }
     }
 }
