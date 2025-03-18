@@ -25,4 +25,5 @@ interface StorageFirebaseRepository {
 
     suspend fun uploadImageToStorage(userId: String, fileUri: Uri, fileName: String): String
 
+    suspend fun createUrgentHelpRequest(user: User)
 }

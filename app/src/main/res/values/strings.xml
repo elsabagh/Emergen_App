@@ -74,5 +74,7 @@
     <!--    Date and Time Picker-->
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
+    <string name="your_help_request_was_successful">Your help request was successful!</string>
+    <string name="please_enable_gps">Please enable GPS</string>
 
 </resources>

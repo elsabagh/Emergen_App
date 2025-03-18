@@ -210,6 +210,41 @@ class StorageFirebaseRepositoryImpl @Inject constructor(
     }
 
 
+    override suspend fun createUrgentHelpRequest(user: User) {
+        try {
+            val db = FirebaseFirestore.getInstance()
 
+            // إنشاء بيانات جديدة للتقرير
+            val reportData = mapOf(
+                "userId" to user.userId,
+                "userName" to user.userName,
+                "email" to user.email,
+                "mobile" to user.mobile,
+                "governmentName" to user.governmentName,
+                "area" to user.area,
+                "plotNumber" to user.plotNumber,
+                "streetName" to user.streetName,
+                "buildNumber" to user.buildNumber,
+                "floorNumber" to user.floorNumber,
+                "apartmentNumber" to user.apartmentNumber,
+                "addressMaps" to user.addressMaps,
+                "userPhoto" to user.userPhoto,
+                "idFront" to user.idFront,
+                "idBack" to user.idBack,
+                "typeRequest" to "urgent",
+                "textOther" to "",
+                "typeReason" to ""
+            )
+
+            // إنشاء مستند جديد داخل collection 'reports'
+            db.collection("reports")
+                .add(reportData)
+                .await()
+
+            Log.d("HelpRequest", "Urgent Help Request created successfully.")
+        } catch (e: Exception) {
+            Log.e("HelpRequest", "Error creating urgent help request: ${e.message}")
+        }
+    }
 
 }

@@ -14,6 +14,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,11 +24,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -45,9 +48,9 @@ fun EditProfile(
 ) {
     val editUserViewModel: EditProfileViewModel = hiltViewModel()
     val state by editUserViewModel.editUserState.collectAsStateWithLifecycle()
-    val onPasswordChange: (String) -> Unit = remember { editUserViewModel::onPasswordChange }
-    val onConfirmPasswordChange: (String) -> Unit =
-        remember { editUserViewModel::onConfirmPasswordChange }
+    val openDialog = remember { mutableStateOf(false) }  // لحفظ حالة ظهور الـ Dialog
+
+
     LaunchedEffect(userId) {
         editUserViewModel.fetchUserData(userId)
     }
@@ -132,26 +135,24 @@ fun EditProfile(
                 // Address Map
                 LocationButton(context = LocalContext.current, state, editUserViewModel)
 
-                OutlinedTextField(
-                    value = state.password,
-                    onValueChange = { editUserViewModel.onPasswordChange(it) },
-                    label = { Text("Old Password") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                OutlinedTextField(
-                    value = state.newPassword,
-                    onValueChange = { editUserViewModel.onNewPasswordChange(it) },
-                    label = { Text("New Password") },
-                    modifier = Modifier.fillMaxWidth()
-                )
                 Button(
-                    onClick = {
-                        editUserViewModel.changePassword()
-                    },
+                    onClick = { openDialog.value = true },  // عند الضغط على الزر نفتح الـ Dialog
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(" Change password")
+                    Text("Change password")
+                }
+
+                // إظهار الـ Dialog عند الضغط على زر Change password
+                if (openDialog.value) {
+                    ChangePasswordDialog(
+                        onDismiss = { openDialog.value = false },
+                        onChangePassword = { oldPassword, newPassword ->
+                            editUserViewModel.onPasswordChange(oldPassword)
+                            editUserViewModel.onNewPasswordChange(newPassword)
+                            editUserViewModel.changePassword()
+                            openDialog.value = false
+                        }
+                    )
                 }
 
                 Button(
@@ -169,6 +170,63 @@ fun EditProfile(
                 }
 
             }
+        }
+    )
+}
+
+@Composable
+fun ChangePasswordDialog(
+    onDismiss: () -> Unit,
+    onChangePassword: (String, String) -> Unit
+) {
+    val oldPassword = remember { mutableStateOf("") }
+    val newPassword = remember { mutableStateOf("") }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Change Password") },
+        text = {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                OutlinedTextField(
+                    value = oldPassword.value,
+                    onValueChange = { oldPassword.value = it },
+                    label = { Text("Old Password") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = newPassword.value,
+                    onValueChange = { newPassword.value = it },
+                    label = { Text("New Password") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    onChangePassword(oldPassword.value, newPassword.value)
+                }
+            ) {
+                Text("Confirm")
+            }
+        },
+        dismissButton = {
+            Button(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewChangePasswordDialog() {
+    ChangePasswordDialog(
+        onDismiss = { /* Do nothing on dismiss */ },
+        onChangePassword = { old, new ->
+            println("Old Password: $old, New Password: $new")
         }
     )
 }

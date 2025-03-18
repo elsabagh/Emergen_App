@@ -1,5 +1,6 @@
 package com.example.emergen_app.presentation.user.home
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,6 +29,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,21 +38,35 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.emergen_app.R
+import com.example.emergen_app.data.models.User
 import com.example.emergen_app.navigation.AppDestination
+import com.example.emergen_app.presentation.components.snackbar.SnackBarManager
 import com.example.emergen_app.ui.theme.EmergencyAppTheme
+import com.example.emergen_app.utils.checkIfGpsEnabled
+import com.example.emergen_app.utils.fetchLocation
+import com.google.android.gms.location.LocationServices
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun UserHomeScreen(
     navController: NavController,
 ) {
+    val userHomeViewModel: UserHomeViewModel = hiltViewModel()
+    val user by userHomeViewModel.user.collectAsState()
+    val helpRequestStatus by userHomeViewModel.helpRequestStatus.collectAsState()
 
     var selectedTab by remember { mutableStateOf(0) }
 
@@ -70,12 +86,34 @@ fun UserHomeScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (selectedTab == 0) {
-            UrgentAppealContent()
-        } else {
-            SpecificAppealContent(navController) // ✅ تمرير الـ NavController
+        // التعامل مع حالة الطلب (مراقبة الـ StateFlow)
+        when (helpRequestStatus) {
+            is UserHomeViewModel.Result.Success -> {
+                SnackBarManager.showMessage(stringResource(R.string.your_help_request_was_successful))
+
+            }
+
+            is UserHomeViewModel.Result.Failure -> {
+                Text(
+                    text = "Error: ${(helpRequestStatus as UserHomeViewModel.Result.Failure).errorMessage}",
+                    color = Color.Red,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+
+            is UserHomeViewModel.Result.Pending -> {
+            }
         }
 
+        if (user != null) {
+            if (selectedTab == 0) {
+                UrgentAppealContent(user!!, userHomeViewModel)
+            } else {
+                SpecificAppealContent(navController)
+            }
+        } else {
+            Text("Loading user data...")
+        }
 
 
     }
@@ -208,7 +246,15 @@ fun TabItem(text: String, isSelected: Boolean, onClick: () -> Unit) {
 }
 
 @Composable
-fun UrgentAppealContent() {
+fun UrgentAppealContent(user: User, userHomeViewModel: UserHomeViewModel) {
+
+    val context = LocalContext.current
+    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+
+    // متغير لتخزين الموقع
+    var currentLocation by remember { mutableStateOf<Pair<Double, Double>?>(null) }
+    var currentTime by remember { mutableStateOf<String>("") }
+
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
@@ -223,7 +269,29 @@ fun UrgentAppealContent() {
         )
         Spacer(modifier = Modifier.height(24.dp))
         Button(
-            onClick = { /* إرسال طلب الاستغاثة */ },
+            onClick = {
+                val isGpsEnabled = checkIfGpsEnabled(context)
+                if (!isGpsEnabled) {
+                    Log.e("LocationDebug", "GPS is disabled")
+                    SnackBarManager.showMessage(R.string.please_enable_gps)
+                }else{
+                    fetchLocation(fusedLocationClient, context) { latitude, longitude ->
+                        currentLocation = Pair(latitude, longitude)
+
+                        val currentDate = Date()
+                        val dateFormat =
+                            SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                        currentTime = dateFormat.format(currentDate)
+
+                        userHomeViewModel.createUrgentHelpRequest(
+                            user.copy(
+                                addressMaps = "${currentLocation?.first},${currentLocation?.second}",
+                                timeOfRequest = currentTime
+                            )
+                        )
+                    }
+                }
+            },
             colors = ButtonDefaults.buttonColors(Color.Red),
             modifier = Modifier.padding(16.dp)
         ) {

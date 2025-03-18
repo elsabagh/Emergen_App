@@ -50,6 +50,19 @@ class AccountRepositoryImpl @Inject constructor(
         return firebaseAuth.currentUser?.email
     }
 
+    // داخل AccountRepositoryImpl
+    override suspend fun getCurrentUser(): User? {
+        val userId = firebaseAuth.currentUser?.uid ?: return null
+        return try {
+            val userDoc = fireStore.collection("users").document(userId).get().await()
+            userDoc.toObject(User::class.java)
+        } catch (e: Exception) {
+            Log.e("AccountRepository", "Error fetching current user: ${e.message}")
+            null
+        }
+    }
+
+
     override suspend fun authenticate(email: String, password: String) {
         try {
             firebaseAuth.signInWithEmailAndPassword(email, password).await()

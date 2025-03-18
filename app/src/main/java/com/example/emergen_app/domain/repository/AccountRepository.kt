@@ -34,6 +34,8 @@ interface AccountRepository {
 
     suspend fun getCurrentUserEmail(): String? // ✅ إضافة هذه الدالة
 
+    suspend fun getCurrentUser(): User?
+
     suspend fun acceptUser(userId: String)
 
     suspend fun disableUser(userId: String)

@@ -12,10 +12,11 @@ data class User(
     val buildNumber: String = "",
     val floorNumber: String = "",
     val apartmentNumber: String = "",
-    val addressMaps: String = "",
+    var addressMaps: String = "",
     var userPhoto: String = "",
     var idFront: String = "",
     var idBack: String = "",
     val role: String = "user",
-    val statusAccount: String = "pending"
+    val statusAccount: String = "pending",
+    val timeOfRequest: String = "" // الحقل الجديد للوقت
 )

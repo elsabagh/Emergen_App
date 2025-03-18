@@ -128,38 +128,33 @@ class EditProfileViewModel @Inject constructor(
     fun updateUserProfile(navController: NavController) {
         viewModelScope.launch {
             try {
-                // التأكد من أنه تم تغيير كلمة السر قبل حفظ البيانات
-                if (_editUserState.value.isPasswordChanged) {
-                    val updatedUser = User(
-                        userId = _editUserState.value.userId,
-                        userName = _editUserState.value.userName,
-                        email = _editUserState.value.email,
-                        mobile = _editUserState.value.mobile,
-                        governmentName = _editUserState.value.governmentName,
-                        area = _editUserState.value.area,
-                        plotNumber = _editUserState.value.plotNumber,
-                        streetName = _editUserState.value.streetName,
-                        buildNumber = _editUserState.value.buildNumber,
-                        floorNumber = _editUserState.value.floorNumber,
-                        apartmentNumber = _editUserState.value.apartmentNumber,
-                        addressMaps = _editUserState.value.addressMaps,
-                        userPhoto = _editUserState.value.userPhoto,
-                        idFront = _editUserState.value.idFront,
-                        idBack = _editUserState.value.idBack
-                    )
+                val updatedUser = User(
+                    userId = _editUserState.value.userId,
+                    userName = _editUserState.value.userName,
+                    email = _editUserState.value.email,
+                    mobile = _editUserState.value.mobile,
+                    governmentName = _editUserState.value.governmentName,
+                    area = _editUserState.value.area,
+                    plotNumber = _editUserState.value.plotNumber,
+                    streetName = _editUserState.value.streetName,
+                    buildNumber = _editUserState.value.buildNumber,
+                    floorNumber = _editUserState.value.floorNumber,
+                    apartmentNumber = _editUserState.value.apartmentNumber,
+                    addressMaps = _editUserState.value.addressMaps,
+                    userPhoto = _editUserState.value.userPhoto,
+                    idFront = _editUserState.value.idFront,
+                    idBack = _editUserState.value.idBack
+                )
 
-                    // حفظ البيانات بعد تغيير كلمة السر
-                    storageRepository.updateUserProfile(updatedUser)
+                // حفظ البيانات بعد تغيير كلمة السر
+                storageRepository.updateUserProfile(updatedUser)
 
-                    // الانتقال إلى صفحة تفاصيل الملف الشخصي بعد النجاح
+                // الانتقال إلى صفحة تفاصيل الملف الشخصي بعد النجاح
+                navController.popBackStack()
+                navController.navigate(AppDestination.ProfileDetailsDestination.route) {
                     navController.popBackStack()
-                    navController.navigate(AppDestination.ProfileDetailsDestination.route) {
-                        navController.popBackStack()
-                    }
-                } else {
-                    // إذا لم يتم تغيير كلمة السر بنجاح
-                    SnackBarManager.showMessage("Please change your password first.")
                 }
+
             } catch (e: Exception) {
                 _editUserState.value =
                     _editUserState.value.copy(errorMessage = "Failed to update profile")
@@ -168,7 +163,7 @@ class EditProfileViewModel @Inject constructor(
     }
 
     fun changePassword() {
-        // التحقق من أن كلمة السر القديمة صحيحة
+
         if (!password.isPasswordValid()) {
             SnackBarManager.showMessage(R.string.invalid_password_error)
             return
@@ -182,18 +177,16 @@ class EditProfileViewModel @Inject constructor(
         viewModelScope.launch {
             _editUserState.value = _editUserState.value.copy(isLoading = true, error = null)
             try {
-                // تغيير كلمة السر في الـ Firebase
                 accountRepository.changePassword(newPassword)
                 _editUserState.value = _editUserState.value.copy(isPasswordChanged = true)
                 SnackBarManager.showMessage(R.string.password_changed_successfully)
             } catch (e: Exception) {
-                _editUserState.value = _editUserState.value.copy(isLoading = false, error = e.message)
+                _editUserState.value =
+                    _editUserState.value.copy(isLoading = false, error = e.message)
             } finally {
                 _editUserState.value = _editUserState.value.copy(isLoading = false)
             }
         }
     }
-
-
 
 }
