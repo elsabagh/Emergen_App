@@ -210,7 +210,7 @@ class StorageFirebaseRepositoryImpl @Inject constructor(
     }
 
 
-    override suspend fun createUrgentHelpRequest(user: User) {
+    override suspend fun createHelpRequest(user: User) {
         try {
             val db = FirebaseFirestore.getInstance()
 
@@ -234,7 +234,8 @@ class StorageFirebaseRepositoryImpl @Inject constructor(
                 "typeOfRequest" to user.typeOfRequest,
                 "textOther" to user.textOther,
                 "typeReason" to user.typeReason,
-                "timeOfRequest" to user.timeOfRequest
+                "timeOfRequest" to user.timeOfRequest,
+                "statusRequest" to user.statusRequest
             )
 
             // إنشاء مستند جديد داخل collection 'reports'
@@ -247,5 +248,19 @@ class StorageFirebaseRepositoryImpl @Inject constructor(
             Log.e("HelpRequest", "Error creating urgent help request: ${e.message}")
         }
     }
+
+    override suspend fun getAllHelpRequests(): List<User> {
+        return try {
+            val querySnapshot = fireStore.collection("reports").get().await()
+            querySnapshot.documents.mapNotNull { doc ->
+                val request = doc.toObject(User::class.java)
+                request?.copy(userId = doc.id)
+            }
+        } catch (e: Exception) {
+            Log.e("FirebaseRepo", "Error fetching help requests: ${e.message}")
+            emptyList()
+        }
+    }
+
 
 }

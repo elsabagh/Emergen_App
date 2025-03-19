@@ -242,7 +242,7 @@ fun AppealTabs(selectedTab: Int, onTabSelected: (Int) -> Unit) {
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
             .padding(top = 16.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly
+        horizontalArrangement = Arrangement.Center
     ) {
         TabItem("Urgent Appeal", selectedTab == 0) { onTabSelected(0) }
         TabItem("Specific Appeal", selectedTab == 1) { onTabSelected(1) }
@@ -273,7 +273,7 @@ fun TabItem(text: String, isSelected: Boolean, onClick: () -> Unit) {
             Spacer(
                 modifier = Modifier.padding(top = 4.dp)
                     .height(2.dp)
-                    .width(190.dp)
+                    .width(170.dp)
                     .background(Color.Gray)
             )
         }
@@ -322,7 +322,8 @@ fun UrgentAppealContent(user: User, userHomeViewModel: UserHomeViewModel) {
                             user.copy(
                                 addressMaps = "${currentLocation?.first},${currentLocation?.second}",
                                 timeOfRequest = currentTime,
-                                typeOfRequest = "Urgent"
+                                typeOfRequest = "Urgent",
+                                statusRequest = "Being Processed"
                             )
                         )
                     }
@@ -360,7 +361,7 @@ fun SpecificAppealContent(navController: NavController) {
             imageRes = R.drawable.ambulance_pana,
             backgroundColor = Color(0xFF63D759)
         ) {
-            navController.navigate(AppDestination.MedicalEmergencyDestination.route) // ✅ تنقل للطوارئ الطبية
+            navController.navigate(AppDestination.MedicalEmergencyDestination.route)
         }
 
         PoliceEmergencyOption(
@@ -368,7 +369,7 @@ fun SpecificAppealContent(navController: NavController) {
             imageRes = R.drawable.police_car_rafiki,
             backgroundColor = Color(0xFF57BFF3)
         ) {
-            navController.navigate(AppDestination.PoliceEmergencyDestination.route) // ✅ تنقل للشرطة
+            navController.navigate(AppDestination.PoliceEmergencyDestination.route)
         }
 
         EmergencyOption(
@@ -376,7 +377,7 @@ fun SpecificAppealContent(navController: NavController) {
             imageRes = R.drawable.fire_emergency,
             backgroundColor = Color(0xFFF39357)
         ) {
-            navController.navigate(AppDestination.FireEmergencyDestination.route) // ✅ تنقل للحريق
+            navController.navigate(AppDestination.FireEmergencyDestination.route)
         }
     }
 }
@@ -387,7 +388,7 @@ fun EmergencyOption(
     title: String,
     imageRes: Int,
     backgroundColor: Color,
-    onClick: () -> Unit // ✅ تمرير حدث النقر
+    onClick: () -> Unit
 ) {
     Card(
         modifier = Modifier

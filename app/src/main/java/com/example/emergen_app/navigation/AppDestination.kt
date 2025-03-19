@@ -15,7 +15,7 @@ interface AppDestination {
         override val route = "Splash"
     }
     object UserHomeDestination : AppDestination {
-        override val route = "UserHome"
+        override val route = "user_home"
     }
     object AdminHomeDestination: AppDestination {
         override val route = "AdminHome"
@@ -30,7 +30,7 @@ interface AppDestination {
     }
 
     object ContractDestination : AppDestination{
-        override val route = "Contract"
+        override val route = "Contact"
     }
 
     object NotificationDestination : AppDestination{

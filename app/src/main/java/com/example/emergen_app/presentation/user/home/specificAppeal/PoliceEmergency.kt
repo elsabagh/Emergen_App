@@ -83,7 +83,7 @@ fun PoliceEmergency(navController: NavController) {
                         user = validUser,
                         selectedOption = selectedOption,
                         otherText = otherText,
-                        typeOfRequest = typeOfRequest
+                        typeOfRequest = typeOfRequest,
                     )
                 } ?: run {
                     CircularProgressIndicator()

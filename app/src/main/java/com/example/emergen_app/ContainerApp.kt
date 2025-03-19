@@ -30,14 +30,12 @@ fun ContainerApp(
 
     EmergencyAppTheme {
         Box(modifier = modifier.fillMaxSize()) {
-            // ✅ `NavGraph` لعرض المحتوى الرئيسي
             NavGraph(
                 appState = appState,
                 userRole = userRole,
                 isAccountReady = isAccountReady
             )
 
-            // ✅ `SnackbarHost` لعرض الإشعارات في مقدمة الشاشة
             SnackbarHost(
                 hostState = appState.scaffoldState.snackbarHostState,
                 modifier = Modifier

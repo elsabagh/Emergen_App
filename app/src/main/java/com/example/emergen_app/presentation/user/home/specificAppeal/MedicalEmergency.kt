@@ -220,14 +220,15 @@ fun HelpRequestButton(
                         SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                     currentTime = dateFormat.format(currentDate)
 
-                    // استدعاء دالة `createUrgentHelpRequest`
+                    // استدعاء دالة `createHelpRequest`
                     userHomeViewModel.createUrgentHelpRequest(
                         user.copy(
                             timeOfRequest = currentTime,
                             typeOfRequest = typeOfRequest,
                             textOther = otherText,
                             typeReason = selectedOption ?: "",
-                            addressMaps = "${currentLocation?.first},${currentLocation?.second}"
+                            addressMaps = "${currentLocation?.first},${currentLocation?.second}",
+                            statusRequest = "Being Processed"
                         )
                     )
                 }

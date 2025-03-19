@@ -22,4 +22,5 @@ data class User(
     val typeOfRequest: String = "",
     val textOther: String = "",
     val typeReason: String = "",
+    val statusRequest: String = "",
 )

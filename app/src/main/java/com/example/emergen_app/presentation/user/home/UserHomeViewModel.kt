@@ -40,7 +40,7 @@ class UserHomeViewModel @Inject constructor(
     fun createUrgentHelpRequest(user: User) {
         viewModelScope.launch {
             try {
-                storageRepository.createUrgentHelpRequest(user)
+                storageRepository.createHelpRequest(user)
                 _helpRequestStatus.value = Result.Success
                 SnackBarManager.showMessage(R.string.your_help_request_was_successful)
             } catch (e: Exception) {

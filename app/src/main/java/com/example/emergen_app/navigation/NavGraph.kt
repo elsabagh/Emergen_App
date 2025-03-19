@@ -21,11 +21,13 @@ import com.example.emergen_app.presentation.branch.BranchScreen
 import com.example.emergen_app.presentation.signIn.SignInScreen
 import com.example.emergen_app.presentation.signUp.SignupScreen
 import com.example.emergen_app.presentation.user.UserMainScreen
+import com.example.emergen_app.presentation.user.contact.ContactScreen
 import com.example.emergen_app.presentation.user.home.specificAppeal.FireEmergency
 import com.example.emergen_app.presentation.user.home.specificAppeal.MedicalEmergency
 import com.example.emergen_app.presentation.user.home.specificAppeal.PoliceEmergency
 import com.example.emergen_app.presentation.user.profile.EditProfile
 import com.example.emergen_app.presentation.user.profile.ProfileDetails
+import com.example.emergen_app.presentation.user.report.ReportScreen
 
 @Composable
 fun NavGraph(
@@ -111,6 +113,16 @@ fun NavGraph(
         }
         composable(route = AppDestination.UserHomeDestination.route) {
             UserMainScreen(
+                navController = appState.navController
+            )
+        }
+        composable(route = AppDestination.ReportDestination.route) {
+            ReportScreen(
+                navController = appState.navController
+            )
+        }
+        composable(route = AppDestination.ContractDestination.route) {
+            ContactScreen(
                 navController = appState.navController
             )
         }
