@@ -45,7 +45,7 @@ fun UserMainScreen(navController: NavController) {
         ) {
             composable(BottomNavItem.Home.route) { UserHomeScreen(navController) }
             composable(BottomNavItem.Report.route) { ReportScreen(navController) }
-            composable(BottomNavItem.Contract.route) { ContactScreen(navController) }
+            composable(BottomNavItem.Contact.route) { ContactScreen(navController) }
         }
     }
 }

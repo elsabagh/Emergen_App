@@ -76,5 +76,6 @@
     <string name="confirm">Confirm</string>
     <string name="your_help_request_was_successful">Your help request was successful!</string>
     <string name="please_enable_gps">Please enable GPS</string>
+    <string name="email_changed_successfully">email changed successfully</string>
 
 </resources>

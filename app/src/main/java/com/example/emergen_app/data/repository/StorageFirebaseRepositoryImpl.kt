@@ -1,11 +1,11 @@
 package com.example.emergen_app.data.repository
 
 
-import android.net.Uri
 import android.util.Log
 import com.example.emergen_app.data.models.Branch
 import com.example.emergen_app.data.models.User
 import com.example.emergen_app.domain.repository.StorageFirebaseRepository
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.flow.Flow
@@ -194,22 +194,6 @@ class StorageFirebaseRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun uploadImageToStorage(
-        userId: String,
-        fileUri: Uri,
-        fileName: String
-    ): String {
-        return try {
-            val ref = storage.reference.child("users/$userId/$fileName.jpg")
-            ref.putFile(fileUri).await()
-            ref.downloadUrl.await().toString()
-        } catch (e: Exception) {
-            Log.e("FirebaseStorage", "Error uploading image: $fileName", e)
-            throw Exception("Failed to link account: ${e.message}", e)
-        }
-    }
-
-
     override suspend fun createHelpRequest(user: User) {
         try {
             val db = FirebaseFirestore.getInstance()
@@ -251,10 +235,22 @@ class StorageFirebaseRepositoryImpl @Inject constructor(
 
     override suspend fun getAllHelpRequests(): List<User> {
         return try {
-            val querySnapshot = fireStore.collection("reports").get().await()
-            querySnapshot.documents.mapNotNull { doc ->
-                val request = doc.toObject(User::class.java)
-                request?.copy(userId = doc.id)
+            val currentUser = FirebaseAuth.getInstance().currentUser
+            val userId = currentUser?.uid
+
+
+            if (userId != null) {
+                val querySnapshot = fireStore.collection("reports")
+                    .whereEqualTo("userId", userId)
+                    .get()
+                    .await()
+
+                querySnapshot.documents.mapNotNull { doc ->
+                    val request = doc.toObject(User::class.java)
+                    request?.copy(userId = doc.id)
+                }
+            } else {
+                emptyList<User>()
             }
         } catch (e: Exception) {
             Log.e("FirebaseRepo", "Error fetching help requests: ${e.message}")

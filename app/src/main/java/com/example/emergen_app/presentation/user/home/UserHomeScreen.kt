@@ -76,10 +76,11 @@ fun UserHomeScreen(
 
     var selectedTab by remember { mutableStateOf(0) }
 
+    AppHeader()
     Column(
         modifier = Modifier.fillMaxSize()
+            .padding(top = 96.dp)
     ) {
-        AppHeader()
 
         user?.let { user ->
             UserCard(navController, user)
@@ -135,13 +136,14 @@ fun AppHeader() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFFFDF1D0)) // اللون البيج الفاتح
-            .padding(vertical = 8.dp),
+            .background(Color(0xFFFDF1D0))
+            .padding(vertical = 8.dp)
+            .padding(bottom = 36.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            painter = painterResource(id = R.drawable.group_366), // استبدل بالأيقونة الصحيحة
+            painter = painterResource(id = R.drawable.group_366),
             contentDescription = "App Logo",
             modifier = Modifier.size(80.dp)
         )

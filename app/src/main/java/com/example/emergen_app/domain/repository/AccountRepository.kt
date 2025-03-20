@@ -55,4 +55,7 @@ interface AccountRepository {
         idFrontUri: Uri?,
         idBackUri: Uri?
     )
+
+    suspend fun updateUserEmail(currentPassword: String, newEmail: String): Result<Unit>
+
 }

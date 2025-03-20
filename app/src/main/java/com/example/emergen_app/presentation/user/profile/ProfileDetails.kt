@@ -30,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -40,16 +41,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.example.emergen_app.data.models.User
 import com.example.emergen_app.navigation.AppDestination
 import com.example.emergen_app.presentation.admin.userProfile.ImageDialog
+import com.example.emergen_app.ui.theme.adminWelcomeCard
 import com.example.emergen_app.ui.theme.colorButtonRed
 
 @Composable
@@ -67,9 +71,9 @@ fun ProfileDetails(
             Column(
                 modifier = Modifier
                     .padding(paddingValues)
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .padding(top = 36.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
             ) {
                 user?.let { user ->
                     ProfileContent(user, openDialog, selectedImage)
@@ -91,7 +95,6 @@ fun ProfileContent(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // User photo with click listener to open the dialog
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
@@ -112,6 +115,7 @@ fun ProfileContent(
         Text(
             text = user.userName,
             style = MaterialTheme.typography.bodySmall,
+            fontSize = 18.sp,
             modifier = Modifier.padding(top = 8.dp)
         )
 
@@ -119,14 +123,22 @@ fun ProfileContent(
         ProfileDetailCard("Email", user.email)
         ProfileDetailCard("Mobile", user.mobile)
         ProfileDetailCard("Address", user.governmentName)
-        LocationText("Location", location = user.addressMaps)
+        LocationText("Location (Google maps)", location = user.addressMaps)
 
         Spacer(modifier = Modifier.height(8.dp))
 
 
-        // Upload ID images
+        Text(
+            text = "Upload ID", modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .padding(
+                    bottom = 8.dp
+                )
+                .align(Alignment.Start)
+        )
         Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
@@ -164,7 +176,7 @@ fun ProfileContent(
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
     }
 }
@@ -189,9 +201,9 @@ fun LocationText(label: String, location: String) {
                 .fillMaxWidth()
         ) {
             Text(
-                text = locationText,
+                text = "Location Link",
                 style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier
+                modifier = Modifier.fillMaxWidth()
                     .padding(8.dp)
                     .clickable {
                         // تحويل الإحداثيات إلى رابط Google Maps بشكل صحيح
@@ -199,10 +211,31 @@ fun LocationText(label: String, location: String) {
                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
                         intent.setPackage("com.google.android.apps.maps")
                         context.startActivity(intent)
-                    }
+                    },
+                color = adminWelcomeCard
 
             )
         }
+//        // إضافة الأيقونة أسفل النص
+//        IconButton(
+//            onClick = {
+//                // تحويل الإحداثيات إلى رابط Google Maps عند الضغط على الأيقونة
+//                val uri = "geo:$locationText?q=$locationText"
+//                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
+//                intent.setPackage("com.google.android.apps.maps")
+//                context.startActivity(intent)
+//            },
+//            modifier = Modifier
+//                .align(Alignment.CenterHorizontally)
+//                .padding(top = 8.dp)
+//        ) {
+//            Icon(
+//                imageVector = Icons.Default.LocationOn, // اختر أيقونة الموقع
+//                contentDescription = "Open in Maps",
+//                tint = adminWelcomeCard // اختيار اللون المناسب للأيقونة
+//            )
+//        }
+
         Spacer(modifier = Modifier.height(8.dp))
     }
 }
@@ -217,7 +250,8 @@ fun ProfileDetailCard(label: String, value: String) {
         Text(
             text = label, modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.Start)
+                .align(Alignment.Start),
+            fontSize = 14.sp
         )
         Card(
             modifier = Modifier
@@ -252,7 +286,8 @@ fun LogoutButton(
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ) {
-        Text("Logout")
+        Text("Logout",
+            fontSize = 18.sp)
     }
 }
 
@@ -269,13 +304,15 @@ fun ProfileDetailsTopAppBar(navController: NavController, user: User?) {
         },
         actions = {
             IconButton(onClick = {
-                // التوجيه إلى صفحة تعديل الملف الشخصي مع تمرير userId
                 val userId = user?.userId
                 navController.navigate("Edit_Profile/${userId}")
             }) {
                 Icon(Icons.Default.Edit, contentDescription = "Edit Profile")
             }
-        }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color(0xFFFFF6DD)
+        )
     )
 }
 

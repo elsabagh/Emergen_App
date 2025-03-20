@@ -17,10 +17,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.emergen_app.presentation.components.TopAppBar
+import com.example.emergen_app.ui.theme.EmergencyAppTheme
 import com.example.emergen_app.ui.theme.colorFireEmergency
 import com.example.emergen_app.ui.theme.colorMedicalEmergency
 import com.example.emergen_app.ui.theme.colorPoliceEmergency
@@ -77,5 +80,14 @@ fun BranchesCard(navController: NavController, color: Color, value: String) {
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
+    }
+}
+
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PreviewAllBranchesScreen() {
+    EmergencyAppTheme {
+        AllBranchesScreen(navController = rememberNavController())
     }
 }

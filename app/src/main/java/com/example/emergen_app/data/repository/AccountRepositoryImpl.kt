@@ -295,6 +295,31 @@ class AccountRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun updateUserEmail(currentPassword: String, newEmail: String): Result<Unit> {
+        val user = firebaseAuth.currentUser ?: return Result.failure(Exception("No authenticated user found"))
+
+        return try {
+            // إعادة التحقق من هوية المستخدم
+            val credential = EmailAuthProvider.getCredential(user.email!!, currentPassword)
+            user.reauthenticate(credential).await()
+
+            // تحديث الإيميل في Firebase Auth
+            user.updateEmail(newEmail).await()
+
+            // تحديث الإيميل في Firestore
+            fireStore.collection("users").document(user.uid)
+                .update("email", newEmail).await()
+
+            // إعادة تسجيل الدخول لضمان استمرارية الجلسة
+            firebaseAuth.signOut()
+            firebaseAuth.signInWithEmailAndPassword(newEmail, currentPassword).await()
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     companion object {
         const val LINK_ACCOUNT_TRACE = "linkAccount"
 

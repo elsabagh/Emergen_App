@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -34,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,11 +43,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.emergen_app.data.models.User
+import com.example.emergen_app.presentation.user.home.AppHeader
+import com.example.emergen_app.ui.theme.adminWelcomeCard
 
 @Composable
 fun ReportScreen(navController: NavController) {
     val viewModel: ReportViewModel = hiltViewModel()
-    val emergencyOptions = listOf("Fire Emergency", "Medical Emergency", "Police Emergency")
+    val emergencyOptions = listOf("Fire Emergency", "Medical Emergency", "Police Emergency", "All")
     val emergencyTypeOptions = remember { mutableStateOf(emptyList<String>()) }
 
     val selectedEmergency = remember { mutableStateOf("All") }
@@ -53,15 +57,16 @@ fun ReportScreen(navController: NavController) {
 
     val helpRequests by viewModel.helpRequests.collectAsState()
 
-    val filteredRequests = helpRequests.filter {
-        (selectedEmergency.value == "All" || it.typeOfRequest == selectedEmergency.value) &&
-                (selectedEmergencyType.value == "All" || it.typeReason == selectedEmergencyType.value)
-    }
+    val filteredRequests = remember { mutableStateOf<List<User>>(emptyList()) }
 
+    val showResults = remember { mutableStateOf(false) }
+
+    AppHeader()
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(horizontal = 16.dp)
+            .padding(top = 106.dp)
     ) {
         EmergencyDropdown(
             title = "Emergency",
@@ -95,7 +100,6 @@ fun ReportScreen(navController: NavController) {
             }
         )
 
-        // اختيار نوع الحادث
         EmergencyDropdown(
             title = "Emergency Type",
             selectedValue = selectedEmergencyType,
@@ -105,15 +109,33 @@ fun ReportScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // عرض الطلبات المسترجعة من Firebase بدون الضغط عليها
-        LazyColumn {
-            itemsIndexed(filteredRequests) { _, request ->
-                HelpRequestItem(request)
+        Button(
+            onClick = {
+                filteredRequests.value = helpRequests.filter {
+                    (selectedEmergency.value == "All" || it.typeOfRequest == selectedEmergency.value) &&
+                            (selectedEmergencyType.value == "All" || it.typeReason == selectedEmergencyType.value)
+                }
+                showResults.value = true
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(64.dp),
+            colors = ButtonDefaults.buttonColors(adminWelcomeCard),
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Text(text = "Show Results")
+        }
+
+        // عرض النتائج عند الضغط على الزر
+        if (showResults.value) {
+            LazyColumn {
+                itemsIndexed(filteredRequests.value) { _, request ->
+                    HelpRequestItem(request)
+                }
             }
         }
     }
 }
-
 
 @Composable
 fun EmergencyDropdown(
@@ -129,7 +151,7 @@ fun EmergencyDropdown(
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .clickable { expanded.value = true }
-            .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
+            .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
             .height(56.dp),
     ) {
         Row(
@@ -176,26 +198,45 @@ fun EmergencyDropdown(
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+fun PreviewEmergencyDropdown() {
+    val selectedValue = remember { mutableStateOf("All") }
+    val options = listOf("All", "Fire Emergency", "Medical Emergency", "Police Emergency")
+    EmergencyDropdown(
+        title = "Emergency",
+        selectedValue = selectedValue,
+        options = options,
+        onSelected = { selectedValue.value = it }
+    )
+}
+
 
 @Composable
 fun HelpRequestItem(request: User) {
+    val statusColor = when (request.statusRequest) {
+        "Completed" -> Color(0xFFBBE9B7)
+        "Team On the Way" -> Color(0xFFFAE0B0)
+        "Being Processed" -> Color(0xFFE0E0E0)
+        else -> Color.Gray
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .border(2.dp, Color.Gray, RoundedCornerShape(8.dp)),
-                colors = CardDefaults.cardColors(Color(0xFFFBFBFB))
-
+            .padding(vertical = 12.dp)
+            .border(1.dp, Color.Gray, RoundedCornerShape(12.dp)),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background)
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-
+                .fillMaxWidth()
+                .padding(16.dp)
         ) {
             Text(
                 text = request.typeOfRequest,
                 style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold,
                 fontSize = 18.sp
             )
             Text(
@@ -213,21 +254,21 @@ fun HelpRequestItem(request: User) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp)
-                    .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
-
+                    .padding(vertical = 8.dp),
+                shape = RoundedCornerShape(5.dp),
+                colors = CardDefaults.cardColors(statusColor)
             ) {
                 Column(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.background)
-                        .padding(16.dp),
+                        .fillMaxWidth()
+                        .padding(8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
                         text = request.statusRequest,
                         style = MaterialTheme.typography.bodyMedium,
-                        fontSize = 18.sp
+                        fontSize = 18.sp,
+                        color = Color.White
                     )
                 }
             }
@@ -236,8 +277,23 @@ fun HelpRequestItem(request: User) {
 }
 
 
-@Preview
+@Preview(showBackground = true)
+@Composable
+fun PreviewHelpRequestItem() {
+    val sampleRequest = User(
+        typeOfRequest = "Medical Emergency",
+        typeReason = "Cardiac Arrest",
+        textOther = "",
+        timeOfRequest = "2023-10-01 12:34:56",
+        statusRequest = "Being Processed"
+    )
+    HelpRequestItem(request = sampleRequest)
+}
+
+
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewReportScreen() {
-    ReportScreen(navController = rememberNavController())
+    val navController = rememberNavController()
+    ReportScreen(navController = navController)
 }

@@ -10,9 +10,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -95,8 +95,8 @@ fun BottomNavigationBar(selectedItem: BottomNavItem, onItemSelected: (BottomNavI
 
 enum class BottomNavItem(val title: String, val icon: ImageVector, val route: String) {
     Home("Home", Icons.Default.Home, "home"),
-    Report("Report", Icons.Default.Receipt, "report"),
-    Contract("Contact", Icons.Default.Description, "contact")
+    Report("Report", Icons.Default.Folder, "report"),
+    Contact("Contact", Icons.Default.Chat, "contact")
 }
 
 
