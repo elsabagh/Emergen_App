@@ -62,6 +62,17 @@ class AccountRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getCurrentBranch(): Branch? {
+       val branchId = firebaseAuth.currentUser?.uid ?: return null
+        return try {
+            val branchDoc = fireStore.collection("users").document(branchId).get().await()
+            branchDoc.toObject(Branch::class.java)
+        } catch (e: Exception) {
+            Log.e("AccountRepository", "Error fetching current branch: ${e.message}")
+            null
+        }
+    }
+
 
     override suspend fun authenticate(email: String, password: String) {
         try {

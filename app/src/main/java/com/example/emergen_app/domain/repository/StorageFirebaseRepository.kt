@@ -12,11 +12,17 @@ interface StorageFirebaseRepository {
 
     suspend fun getAllUsersWithStatus(status: String): List<User>
 
+    suspend fun getAllReports(): List<User>
+
+    suspend fun getFilteredReportsByBranchType(typeBranch: String): List<User>
+
     fun getUserById(userId: String): Flow<User>
+
+    fun getBranchUserById(branchId: String): Flow<Branch>
 
     suspend fun getBranchesByType(typeBranch: String): List<Branch>
 
-    suspend fun getBranchById(branchId: String): Branch? // ✅ دالة جديدة لجلب بيانات الفرع
+    suspend fun getBranchById(branchId: String): Branch?
 
     suspend fun updateBranch(branch: Branch)
 

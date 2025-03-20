@@ -56,6 +56,7 @@ import coil.compose.rememberImagePainter
 import com.example.emergen_app.R
 import com.example.emergen_app.data.models.User
 import com.example.emergen_app.navigation.AppDestination
+import com.example.emergen_app.presentation.components.AppHeader
 import com.example.emergen_app.presentation.components.snackbar.SnackBarManager
 import com.example.emergen_app.ui.theme.EmergencyAppTheme
 import com.example.emergen_app.ui.theme.colorButtonRed
@@ -131,38 +132,7 @@ fun UserHomeScreen(
     }
 }
 
-@Composable
-fun AppHeader() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color(0xFFFDF1D0))
-            .padding(vertical = 8.dp)
-            .padding(bottom = 36.dp),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.group_366),
-            contentDescription = "App Logo",
-            modifier = Modifier.size(80.dp)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Column {
-            Text(
-                text = "Emergency APP",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-            Text(
-                text = "For Deaf and Mute People",
-                fontSize = 14.sp,
-                color = Color.Gray
-            )
-        }
-    }
-}
+
 
 @Composable
 fun UserCard(

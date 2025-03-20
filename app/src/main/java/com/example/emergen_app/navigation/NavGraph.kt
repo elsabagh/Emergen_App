@@ -18,6 +18,7 @@ import com.example.emergen_app.presentation.admin.home.AdminHomeScreen
 import com.example.emergen_app.presentation.admin.notification.NotificationScreen
 import com.example.emergen_app.presentation.admin.userProfile.UserProfileScreen
 import com.example.emergen_app.presentation.branch.BranchScreen
+import com.example.emergen_app.presentation.branch.branchInfo.BranchInfoScreen
 import com.example.emergen_app.presentation.signIn.SignInScreen
 import com.example.emergen_app.presentation.signUp.SignupScreen
 import com.example.emergen_app.presentation.user.UserMainScreen
@@ -158,7 +159,7 @@ fun NavGraph(
 
 
         composable(AppDestination.BranchHomeDestination.route) {
-            BranchScreen()
+            BranchScreen(navController = appState.navController)
         }
         composable("branch_details/{branchId}") { backStackEntry ->
             val branchId = backStackEntry.arguments?.getString("branchId") ?: ""
@@ -193,6 +194,10 @@ fun NavGraph(
                 userId = userId
             )
         }
+        composable(AppDestination.BranchInfoDestination.route) {
+            BranchInfoScreen(navController = appState.navController)
+        }
+
 
     }
 }

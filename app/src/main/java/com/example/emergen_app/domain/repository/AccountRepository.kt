@@ -36,6 +36,9 @@ interface AccountRepository {
 
     suspend fun getCurrentUser(): User?
 
+    suspend fun getCurrentBranch(): Branch?
+
+
     suspend fun acceptUser(userId: String)
 
     suspend fun disableUser(userId: String)

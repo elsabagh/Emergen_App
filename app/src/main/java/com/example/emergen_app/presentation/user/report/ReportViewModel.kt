@@ -27,4 +27,5 @@ class ReportViewModel @Inject constructor(
             _helpRequests.value = repository.getAllHelpRequests()
         }
     }
+
 }

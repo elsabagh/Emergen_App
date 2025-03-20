@@ -17,7 +17,7 @@ val branchesCardColor = Color(0xFFD8E7EC)
 
 val colorBottomNavBar = Color(0xFFFAFAFA)
 
-val colorCardProfile = Color(0xFFF2F5F4)
+val colorCardProfile = Color(0xFFF3F5F4)
 
 val colorButtonRed = Color(0xFFE30202)
 val colorButtonGreen = Color(0xFF57BC4E)

@@ -131,7 +131,6 @@ class EditProfileViewModel @Inject constructor(
             val result = accountRepository.updateUserEmail(currentPassword, newEmail)
             result.fold(
                 onSuccess = {
-                    // ✅ تحديث التنقل بعد نجاح تغيير الإيميل
                     navController.popBackStack()
                     navController.navigate(AppDestination.ProfileDetailsDestination.route) {
                         navController.popBackStack()

@@ -83,12 +83,56 @@ class StorageFirebaseRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getAllReports(): List<User> {
+        return try {
+            val querySnapshot = fireStore.collection("reports").get().await()
+            querySnapshot.documents.mapNotNull { doc ->
+                val request = doc.toObject(User::class.java)
+                request?.copy(userId = doc.id)
+            }
+        } catch (e: Exception) {
+            Log.e("FirebaseRepo", "Error fetching help requests: ${e.message}")
+            emptyList()
+        }
+    }
+
+    override suspend fun getFilteredReportsByBranchType(typeBranch: String): List<User> {
+        return try {
+            // جلب جميع التقارير
+            val querySnapshot = fireStore.collection("reports").get().await()
+
+            // فلترة التقارير بناءً على نوع الفرع
+            val filteredReports = querySnapshot.documents.mapNotNull { doc ->
+                val request = doc.toObject(User::class.java)
+                if (request?.typeOfRequest == typeBranch) {  // هنا المقارنة بين نوع الطلب ونوع الفرع
+                    request.copy(userId = doc.id)
+                } else {
+                    null
+                }
+            }
+
+            filteredReports
+        } catch (e: Exception) {
+            Log.e("FirebaseRepo", "Error fetching filtered help requests: ${e.message}")
+            emptyList<User>()
+        }
+    }
+
+
     // جلب بيانات المستخدم من Firestore
     override fun getUserById(userId: String): Flow<User> {
         return flow {
             val userDoc = fireStore.collection("users").document(userId).get().await()
             val user = userDoc.toObject(User::class.java)
             emit(user ?: User())  // إرسال بيانات المستخدم
+        }
+    }
+
+    override fun getBranchUserById(branchId: String): Flow<Branch> {
+        return flow {
+            val branchDoc = fireStore.collection("users").document(branchId).get().await()
+            val branch = branchDoc.toObject(Branch::class.java)
+            emit(branch ?: Branch())  // إرسال بيانات الفرع
         }
     }
 
@@ -222,7 +266,6 @@ class StorageFirebaseRepositoryImpl @Inject constructor(
                 "statusRequest" to user.statusRequest
             )
 
-            // إنشاء مستند جديد داخل collection 'reports'
             db.collection("reports")
                 .add(reportData)
                 .await()
@@ -257,6 +300,7 @@ class StorageFirebaseRepositoryImpl @Inject constructor(
             emptyList()
         }
     }
+
 
 
 }

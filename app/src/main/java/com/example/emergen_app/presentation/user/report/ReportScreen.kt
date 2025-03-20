@@ -43,7 +43,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.emergen_app.data.models.User
-import com.example.emergen_app.presentation.user.home.AppHeader
+import com.example.emergen_app.presentation.components.AppHeader
 import com.example.emergen_app.ui.theme.adminWelcomeCard
 
 @Composable
@@ -216,7 +216,7 @@ fun PreviewEmergencyDropdown() {
 fun HelpRequestItem(request: User) {
     val statusColor = when (request.statusRequest) {
         "Completed" -> Color(0xFFBBE9B7)
-        "Team On the Way" -> Color(0xFFFAE0B0)
+        "Team On Way" -> Color(0xFFFAE0B0)
         "Being Processed" -> Color(0xFFE0E0E0)
         else -> Color.Gray
     }

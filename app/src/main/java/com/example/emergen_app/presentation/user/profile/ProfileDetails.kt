@@ -63,7 +63,7 @@ fun ProfileDetails(
     val viewModel: ProfileDetailsViewModel = hiltViewModel()
     val user by viewModel.user.collectAsState()
     val openDialog = remember { mutableStateOf(false) }
-    val selectedImage = remember { mutableStateOf("") } // To hold the image URL for the dialog
+    val selectedImage = remember { mutableStateOf("") }
 
     Scaffold(
         topBar = { ProfileDetailsTopAppBar(navController, user) },
@@ -119,7 +119,6 @@ fun ProfileContent(
             modifier = Modifier.padding(top = 8.dp)
         )
 
-        // Profile details (email, mobile, address, etc.)
         ProfileDetailCard("Email", user.email)
         ProfileDetailCard("Mobile", user.mobile)
         ProfileDetailCard("Address", user.governmentName)
@@ -206,7 +205,6 @@ fun LocationText(label: String, location: String) {
                 modifier = Modifier.fillMaxWidth()
                     .padding(8.dp)
                     .clickable {
-                        // تحويل الإحداثيات إلى رابط Google Maps بشكل صحيح
                         val uri = "geo:$locationText?q=$locationText"
                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
                         intent.setPackage("com.google.android.apps.maps")

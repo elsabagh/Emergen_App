@@ -68,4 +68,8 @@ interface AppDestination {
     object EditProfileDestination : AppDestination{
         override val route = " EditProfile"
     }
+
+    object BranchInfoDestination : AppDestination{
+        override val route = " BranchInfo"
+    }
 }
