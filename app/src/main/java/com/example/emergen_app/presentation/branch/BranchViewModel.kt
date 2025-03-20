@@ -50,5 +50,21 @@ class BranchViewModel @Inject constructor(
         }
     }
 
+    fun updateRequestStatus(userId: String, currentStatus: String) {
+        viewModelScope.launch {
+            val newStatus = when (currentStatus) {
+                "Being Processed" -> "Team On Way"
+                "Team On Way" -> "Completed"
+                else -> return@launch // لا يتم التحديث إذا كان بالفعل "Completed"
+            }
+            storageRepository.updateReportStatus(userId, newStatus)
+
+            // تحديث الحالة محليًا في القائمة لضمان التحديث الفوري دون الحاجة إلى إعادة تحميل كاملة
+            _helpRequests.value = _helpRequests.value.map { request ->
+                if (request.userId == userId) request.copy(statusRequest = newStatus) else request
+            }
+        }
+    }
+
 
 }

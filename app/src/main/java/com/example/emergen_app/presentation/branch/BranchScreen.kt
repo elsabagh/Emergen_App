@@ -92,7 +92,9 @@ fun BranchScreen(
         ) {
             LazyColumn {
                 itemsIndexed(filteredRequests) { _, request ->
-                    HelpRequestItem(request)
+                    HelpRequestItem(request) { userId, currentStatus ->
+                        viewModel.updateRequestStatus(userId, currentStatus)
+                    }
                 }
             }
         }
@@ -216,7 +218,7 @@ fun BranchCard(
 }
 
 @Composable
-fun HelpRequestItem(request: User) {
+fun HelpRequestItem(request: User, onStatusUpdate: (String, String) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -224,7 +226,6 @@ fun HelpRequestItem(request: User) {
             .border(1.dp, Color.Gray, RoundedCornerShape(8.dp)),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background)
     ) {
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -253,17 +254,15 @@ fun HelpRequestItem(request: User) {
                 }
                 Column(
                     modifier = Modifier
-
                 ) {
                     Text(text = request.userName, style = MaterialTheme.typography.bodySmall)
                     Text(text = request.mobile, style = MaterialTheme.typography.bodySmall)
                 }
                 Spacer(modifier = Modifier.weight(1f))
-                LocationText(
-                    location = request.addressMaps
-                )
+                LocationText(location = request.addressMaps)
             }
             Spacer(modifier = Modifier.height(8.dp))
+
             AddressCard(
                 label = "Address",
                 value = "${request.governmentName}, ${request.area}, ${request.plotNumber}," +
@@ -273,9 +272,8 @@ fun HelpRequestItem(request: User) {
 
         Spacer(
             modifier = Modifier
-                .fillMaxWidth().padding(
-                    horizontal = 16.dp
-                )
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
                 .height(1.dp)
                 .background(Color.Gray)
         )
@@ -308,14 +306,13 @@ fun HelpRequestItem(request: User) {
                 else -> request.statusRequest
             }
 
-            // تغيير لون الخلفية إذا كانت Completed
             val backgroundColor = if (request.statusRequest == "Completed") Color.Gray else adminWelcomeCard
-
 
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp),
+                    .padding(vertical = 8.dp)
+                    .clickable { onStatusUpdate(request.userId, request.statusRequest) }, // تحديث الحالة عند الضغط
                 shape = RoundedCornerShape(5.dp),
             ) {
                 Column(
@@ -336,6 +333,7 @@ fun HelpRequestItem(request: User) {
         }
     }
 }
+
 
 @Composable
 fun AddressCard(label: String, value: String) {
@@ -409,5 +407,8 @@ fun PreviewHelpRequestItem() {
         userName = "Ahmed Mohamed Ali",
         mobile = "1234567890",
     )
-    HelpRequestItem(request = sampleRequest)
+    HelpRequestItem(
+        request = sampleRequest,
+        onStatusUpdate = TODO(),
+    )
 }

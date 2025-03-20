@@ -31,4 +31,6 @@ interface StorageFirebaseRepository {
     suspend fun createHelpRequest(user: User)
 
     suspend fun getAllHelpRequests(): List<User>
+
+    suspend fun updateReportStatus(userId: String, newStatus: String)
 }

@@ -301,6 +301,18 @@ class StorageFirebaseRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun updateReportStatus(userId: String, newStatus: String) {
+        try {
+            fireStore.collection("reports")
+                .document(userId)
+                .update("statusRequest", newStatus)
+                .await()
+            Log.d("FirebaseRepo", "Successfully updated report status to $newStatus for user $userId")
+        } catch (e: Exception) {
+            Log.e("FirebaseRepo", "Error updating report status: ${e.message}")
+        }
+    }
+
 
 
 }
