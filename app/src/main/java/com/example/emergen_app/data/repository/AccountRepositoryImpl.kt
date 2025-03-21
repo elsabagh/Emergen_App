@@ -13,6 +13,7 @@ import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import java.io.IOException
 import javax.inject.Inject
@@ -72,6 +73,27 @@ class AccountRepositoryImpl @Inject constructor(
             null
         }
     }
+
+    override fun getUserById(userId: String): Flow<User> {
+        return flow {
+            try {
+                val userDoc = fireStore.collection("users").document(userId).get().await()
+                val user = userDoc.toObject(User::class.java)
+
+                if (user != null) {
+                    Log.d("FirebaseReposs", "User found: $userId")
+                    emit(user)  // إرسال بيانات المستخدم
+                } else {
+                    Log.d("FirebaseReposs", "No user found with ID: $userId")
+                    emit(User())  // في حالة عدم العثور على المستخدم، إرسال كائن فارغ
+                }
+            } catch (e: Exception) {
+                Log.e("FirebaseReposs", "Error fetching user by ID: ${e.message}")
+                emit(User())  // في حالة حدوث خطأ، إرسال كائن فارغ
+            }
+        }
+    }
+
 
 
     override suspend fun authenticate(email: String, password: String) {

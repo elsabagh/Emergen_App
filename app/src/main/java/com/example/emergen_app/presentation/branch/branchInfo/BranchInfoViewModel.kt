@@ -21,6 +21,9 @@ class BranchInfoViewModel@Inject constructor(
     private val _branch = MutableStateFlow<Branch?>(null)
     val branch: StateFlow<Branch?> = _branch
 
+    private val _isAccountSignedOut = MutableStateFlow(false)
+    val isAccountSignedOut get() = _isAccountSignedOut
+
     init {
         fetchBranchDetails()
     }
@@ -37,5 +40,15 @@ class BranchInfoViewModel@Inject constructor(
             }
         }
     }
+    
+    fun signOutFromAccount() {
+        viewModelScope.launch {
+            accountRepository.signOut()
+            _isAccountSignedOut.value = true
+        }
+    }
 
+    fun resetIsAccountSignedOut() {
+        _isAccountSignedOut.value = false
+    }
 }

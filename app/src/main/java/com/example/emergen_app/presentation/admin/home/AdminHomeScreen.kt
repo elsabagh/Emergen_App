@@ -30,7 +30,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,6 +46,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.emergen_app.R
 import com.example.emergen_app.navigation.AppDestination
+import com.example.emergen_app.presentation.components.AppHeader
 import com.example.emergen_app.ui.theme.EmergencyAppTheme
 import com.example.emergen_app.ui.theme.adminWelcomeCard
 import com.example.emergen_app.ui.theme.cardMenu
@@ -57,9 +57,10 @@ fun AdminHomeScreen(
     navController: NavController,
     onLogout: () -> Unit,
 ) {
+    AppHeader()
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxSize().padding(top = 116.dp),
     ) {
         val homeViewModel: AdminHomeViewModel = hiltViewModel()
         val isAccountSignedOut by homeViewModel.isAccountSignedOut.collectAsStateWithLifecycle()
@@ -72,9 +73,7 @@ fun AdminHomeScreen(
 
         Column(
             modifier = Modifier
-                .background(Color(0xFFFDF1D0))
         ) {
-            AppHeader(navController)
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -98,36 +97,7 @@ fun AdminHomeScreen(
             navController.navigate("contact")
         }
         MenuButton(icon = Icons.Default.Assignment, text = "Report Status") {
-            navController.navigate("report_status")
-        }
-    }
-}
-
-@Composable
-fun AppHeader(navController: NavController) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.group_366), // Replace with your logo
-            contentDescription = "App Logo",
-            modifier = Modifier.size(80.dp)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Column {
-            Text(
-                text = "Emergency APP",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-            Text(
-                text = "For Deaf and Mute People",
-                fontSize = 14.sp,
-                color = Color.Gray
-            )
+            navController.navigate(AppDestination.AdminReportDestination.route)
         }
     }
 }

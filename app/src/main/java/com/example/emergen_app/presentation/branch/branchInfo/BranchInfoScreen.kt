@@ -15,6 +15,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -38,8 +40,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.emergen_app.data.models.Branch
+import com.example.emergen_app.navigation.AppDestination
 import com.example.emergen_app.ui.theme.EmergencyAppTheme
 import com.example.emergen_app.ui.theme.adminWelcomeCard
+import com.example.emergen_app.ui.theme.colorButtonRed
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -70,6 +74,8 @@ fun BranchInfoScreen(
                     BranchInfoContent(
                         branch = branch
                     )
+                    LogoutButton(userViewModel = viewModel, navController = navController)
+
                 }
             }
         }
@@ -241,6 +247,30 @@ fun getWorkingHours(startTime: String, endTime: String): String {
     } catch (e: ParseException) {
         e.printStackTrace()
         return "Invalid time format"
+    }
+}
+
+@Composable
+fun LogoutButton(
+    userViewModel: BranchInfoViewModel,
+    navController: NavController
+) {
+    Button(
+        onClick = {
+            userViewModel.signOutFromAccount()
+            navController.navigate(AppDestination.SignInDestination.route) {
+                // هذا يزيل جميع الشاشات السابقة من stack
+                popUpTo(AppDestination.SignInDestination.route) { inclusive = true }
+                // إضافة flags لضمان أنه لا يمكن العودة إلى الشاشة السابقة
+                launchSingleTop = true
+            }
+        },
+        colors = ButtonDefaults.buttonColors(colorButtonRed),
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Text("Logout",
+            fontSize = 18.sp)
     }
 }
 

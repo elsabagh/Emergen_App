@@ -33,6 +33,10 @@ interface AppDestination {
         override val route = "Contact"
     }
 
+    object AdminReportDestination : AppDestination{
+        override val route = "AdminReport"
+    }
+
     object NotificationDestination : AppDestination{
         override val route = "Notification"
     }

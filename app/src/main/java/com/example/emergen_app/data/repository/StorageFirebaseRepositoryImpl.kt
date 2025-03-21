@@ -96,6 +96,17 @@ class StorageFirebaseRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getReportById(reportId: String): User? {
+        return try {
+            val reportSnapshot = fireStore.collection("reports").document(reportId).get().await()
+            val report = reportSnapshot.toObject(User::class.java)
+            report // إرجاع بيانات التقرير (المستخدم موجود داخل التقرير)
+        } catch (e: Exception) {
+            Log.e("FirebaseRepo", "Error fetching report by ID: ${e.message}")
+            null
+        }
+    }
+
     override suspend fun getFilteredReportsByBranchType(typeBranch: String): List<User> {
         return try {
             // جلب جميع التقارير

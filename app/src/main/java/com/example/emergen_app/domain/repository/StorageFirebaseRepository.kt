@@ -14,6 +14,8 @@ interface StorageFirebaseRepository {
 
     suspend fun getAllReports(): List<User>
 
+    suspend fun getReportById(reportId: String): User?
+
     suspend fun getFilteredReportsByBranchType(typeBranch: String): List<User>
 
     fun getUserById(userId: String): Flow<User>

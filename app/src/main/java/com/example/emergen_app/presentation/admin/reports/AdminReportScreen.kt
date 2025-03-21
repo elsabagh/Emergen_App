@@ -1,4 +1,4 @@
-package com.example.emergen_app.presentation.branch
+package com.example.emergen_app.presentation.admin.reports
 
 import android.content.Intent
 import android.net.Uri
@@ -17,19 +17,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -43,7 +42,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -51,59 +49,57 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
-import com.example.emergen_app.R
-import com.example.emergen_app.data.models.Branch
 import com.example.emergen_app.data.models.User
-import com.example.emergen_app.navigation.AppDestination
-import com.example.emergen_app.presentation.components.AppHeader
+import com.example.emergen_app.presentation.branch.FilterButtons
+import com.example.emergen_app.presentation.components.TopAppBar
 import com.example.emergen_app.ui.theme.adminWelcomeCard
 
 @Composable
-fun BranchScreen(
+fun AdminReportScreen(
     navController: NavController
 ) {
-    val viewModel: BranchViewModel = hiltViewModel()
-    val branch by viewModel.branch.collectAsState()
+    val viewModel: AdminReportViewModel = hiltViewModel()
     val helpRequests by viewModel.helpRequests.collectAsState()
-
     var selectedStatus by remember { mutableStateOf("Being Processed") }
 
-    AppHeader()
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 130.dp)
-    ) {
-        branch?.let { branch ->
-            BranchCard(navController = navController, branch = branch)
-            viewModel.getFilteredReports(branch.typeBranch)
-        }
 
-        // أزرار الفلترة مع الشكل المطلوب
-        FilterButtons(selectedStatus) { status ->
-            selectedStatus = status
-        }
+    Scaffold(
+        topBar = { TopAppBar("Reports status",navController) },
+        content = { paddingValues ->
+            Column(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize()
+                    .padding(top = 36.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
 
-        val filteredRequests = helpRequests.filter { it.statusRequest == selectedStatus }
+                FilterButtons(selectedStatus) { status ->
+                    selectedStatus = status
+                }
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            LazyColumn {
-                itemsIndexed(filteredRequests) { _, request ->
-                    HelpRequestItem(request, onStatusUpdate = { userId, currentStatus ->
-                        viewModel.updateRequestStatus(userId, currentStatus)
-                    }) { userId ->
-                        Log.d("HelpRequestItem", "Navigating to user details: $userId")
-                        navController.navigate("user_details/$userId")  // الانتقال إلى صفحة تفاصيل المستخدم
+                val filteredRequests = helpRequests.filter { it.statusRequest == selectedStatus }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                ) {
+                    LazyColumn {
+                        itemsIndexed(filteredRequests) { _, request ->
+                            HelpRequestItem(request, onStatusUpdate = { userId, currentStatus ->
+                                viewModel.updateRequestStatus(userId, currentStatus)
+                            }) { userId ->
+                                Log.d("HelpRequestItem", "Navigating to user details: $userId")
+                                navController.navigate("user_details/$userId")
+                            }
+
+                        }
                     }
-
                 }
             }
         }
-    }
+    )
 }
 
 @Composable
@@ -155,72 +151,6 @@ fun PreviewFilterButtons() {
     }
 }
 
-
-@Composable
-fun BranchCard(
-    navController: NavController,
-    branch: Branch,
-) {
-    Card(
-        modifier = Modifier
-            .padding(horizontal = 16.dp)
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp)),
-        colors = CardDefaults.cardColors(Color(0xFF22B8F5)),
-        elevation = CardDefaults.cardElevation(8.dp)
-    ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .size(50.dp)
-                        .clip(CircleShape)
-                        .border(2.dp, Color.White, CircleShape)
-                        .background(Color.White)
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.group_371),
-                        contentDescription = "Branch Image",
-                        modifier = Modifier
-                            .size(50.dp)
-                            .clip(CircleShape)
-                    )
-                }
-                Spacer(modifier = Modifier.width(8.dp))
-                Column {
-                    Text(
-                        text = "Hello!",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-
-                    Text(
-                        text = branch.branchName,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            IconButton(onClick = {
-                navController.navigate(AppDestination.BranchInfoDestination.route)
-            }) {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = "Profile",
-                    tint = Color.White
-                )
-            }
-        }
-    }
-}
 
 @Composable
 fun HelpRequestItem(

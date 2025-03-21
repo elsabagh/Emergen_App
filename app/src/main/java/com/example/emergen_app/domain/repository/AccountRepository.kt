@@ -38,6 +38,8 @@ interface AccountRepository {
 
     suspend fun getCurrentBranch(): Branch?
 
+    fun getUserById(userId: String): Flow<User>
+
 
     suspend fun acceptUser(userId: String)
 

@@ -16,8 +16,10 @@ import com.example.emergen_app.presentation.admin.branches.branchList.branchDeta
 import com.example.emergen_app.presentation.admin.branches.editBranch.EditBranchScreen
 import com.example.emergen_app.presentation.admin.home.AdminHomeScreen
 import com.example.emergen_app.presentation.admin.notification.NotificationScreen
+import com.example.emergen_app.presentation.admin.reports.AdminReportScreen
 import com.example.emergen_app.presentation.admin.userProfile.UserProfileScreen
 import com.example.emergen_app.presentation.branch.BranchScreen
+import com.example.emergen_app.presentation.branch.UserDetailsScreen
 import com.example.emergen_app.presentation.branch.branchInfo.BranchInfoScreen
 import com.example.emergen_app.presentation.signIn.SignInScreen
 import com.example.emergen_app.presentation.signUp.SignupScreen
@@ -198,6 +200,19 @@ fun NavGraph(
             BranchInfoScreen(navController = appState.navController)
         }
 
+        composable("user_details/{userId}") { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId") ?: ""
+            UserDetailsScreen(
+                navController = appState.navController,
+                userId = userId
+            )  // الانتقال إلى شاشة تفاصيل المستخدم
+        }
+
+        composable(AppDestination.AdminReportDestination.route) {
+            AdminReportScreen(
+                navController = appState.navController
+            )
+        }
 
     }
 }

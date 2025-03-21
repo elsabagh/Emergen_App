@@ -23,4 +23,5 @@ data class User(
     val textOther: String = "",
     val typeReason: String = "",
     val statusRequest: String = "",
+    val nameBranch: String = "",
 )

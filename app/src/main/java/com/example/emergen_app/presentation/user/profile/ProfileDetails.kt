@@ -214,25 +214,6 @@ fun LocationText(label: String, location: String) {
 
             )
         }
-//        // إضافة الأيقونة أسفل النص
-//        IconButton(
-//            onClick = {
-//                // تحويل الإحداثيات إلى رابط Google Maps عند الضغط على الأيقونة
-//                val uri = "geo:$locationText?q=$locationText"
-//                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
-//                intent.setPackage("com.google.android.apps.maps")
-//                context.startActivity(intent)
-//            },
-//            modifier = Modifier
-//                .align(Alignment.CenterHorizontally)
-//                .padding(top = 8.dp)
-//        ) {
-//            Icon(
-//                imageVector = Icons.Default.LocationOn, // اختر أيقونة الموقع
-//                contentDescription = "Open in Maps",
-//                tint = adminWelcomeCard // اختيار اللون المناسب للأيقونة
-//            )
-//        }
 
         Spacer(modifier = Modifier.height(8.dp))
     }
