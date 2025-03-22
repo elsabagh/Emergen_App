@@ -57,6 +57,7 @@ import com.example.emergen_app.data.models.User
 import com.example.emergen_app.navigation.AppDestination
 import com.example.emergen_app.presentation.components.AppHeader
 import com.example.emergen_app.ui.theme.adminWelcomeCard
+import com.example.emergen_app.ui.theme.colorCardIcon
 
 @Composable
 fun BranchScreen(
@@ -68,7 +69,25 @@ fun BranchScreen(
 
     var selectedStatus by remember { mutableStateOf("Being Processed") }
 
-    AppHeader()
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFFFDF1D0))
+                .padding(bottom = 26.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {}
+        AppHeader()
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFFFDF1D0))
+                .padding(bottom = 26.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {}
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -114,7 +133,6 @@ fun FilterButtons(selectedStatus: String, onStatusSelected: (String) -> Unit) {
         modifier = Modifier
             .background(Color(0xFFF2FBFE))
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
             .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceAround
     ) {
@@ -123,21 +141,24 @@ fun FilterButtons(selectedStatus: String, onStatusSelected: (String) -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .clickable { onStatusSelected(status) }
-                    .padding(8.dp)
             ) {
+                Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = status,
                     color = if (status == selectedStatus) Color(0xFF009EFF) else Color(0x993987A4),
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 if (status == selectedStatus) {
                     Box(
                         modifier = Modifier
-                            .height(3.dp)
-                            .fillMaxWidth(fraction = 0.3f) // ✅ العرض متناسب مع النص
-                            .background(Color(0xFF009EFF), shape = RoundedCornerShape(2.dp))
+                            .height(4.dp)
+                            .fillMaxWidth(fraction = 0.3f)
+                            .background(
+                                Color(0xFF009EFF),
+                                shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp)
+                            )
                     )
                 }
             }
@@ -192,14 +213,14 @@ fun BranchCard(
                     )
                 }
                 Spacer(modifier = Modifier.width(8.dp))
-                Column {
+                Row {
                     Text(
-                        text = "Hello!",
+                        text = "Hello!,",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )
-
+                    Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = branch.branchName,
                         fontSize = 14.sp,
@@ -209,15 +230,24 @@ fun BranchCard(
                 }
             }
             Spacer(modifier = Modifier.weight(1f))
-            IconButton(onClick = {
-                navController.navigate(AppDestination.BranchInfoDestination.route)
-            }) {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = "Profile",
-                    tint = Color.White
-                )
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(36.dp)
+                    .clip(CircleShape)
+                    .background(colorCardIcon)
+            ) {
+                IconButton(onClick = {
+                    navController.navigate(AppDestination.BranchInfoDestination.route)
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = "Profile",
+                        tint = Color.White
+                    )
+                }
             }
+
         }
     }
 }

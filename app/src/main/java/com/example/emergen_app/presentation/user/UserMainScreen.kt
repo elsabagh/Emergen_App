@@ -15,7 +15,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.emergen_app.presentation.components.BottomNavItem
 import com.example.emergen_app.presentation.components.BottomNavigationBar
-import com.example.emergen_app.presentation.user.contact.ContactScreen
 import com.example.emergen_app.presentation.user.home.UserHomeScreen
 import com.example.emergen_app.presentation.user.report.ReportScreen
 
@@ -45,7 +44,7 @@ fun UserMainScreen(navController: NavController) {
         ) {
             composable(BottomNavItem.Home.route) { UserHomeScreen(navController) }
             composable(BottomNavItem.Report.route) { ReportScreen(navController) }
-            composable(BottomNavItem.Contact.route) { ContactScreen(navController) }
+            composable(BottomNavItem.Contact.route) { UserChatScreen(navController) }
         }
     }
 }

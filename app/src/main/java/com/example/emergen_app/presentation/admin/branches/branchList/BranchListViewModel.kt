@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@HiltViewModel  // ✅ تأكد من وجود هذه التعليمة
+@HiltViewModel
 class BranchListViewModel @Inject constructor(
     private val repository: StorageFirebaseRepository
 ) : ViewModel() {
@@ -21,6 +21,17 @@ class BranchListViewModel @Inject constructor(
     fun fetchBranches(branchName: String) {
         viewModelScope.launch {
             _branches.value = repository.getBranchesByType(branchName)
+        }
+    }
+
+    fun deleteBranch(branchId: String) {
+        viewModelScope.launch {
+            try {
+                repository.deleteBranchById(branchId)
+                fetchBranches(branchName = "branch")
+            } catch (e: Exception) {
+
+            }
         }
     }
 }

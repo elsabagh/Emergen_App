@@ -50,13 +50,14 @@ fun FireEmergency(navController: NavController) {
                     )
                     .padding(paddingValues)
                     .fillMaxSize()
-                    .padding(16.dp),
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.fire_emergency),
                     contentDescription = "Ambulance",
-                    modifier = Modifier.size(240.dp)
+                    modifier = Modifier.size(220.dp)
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))

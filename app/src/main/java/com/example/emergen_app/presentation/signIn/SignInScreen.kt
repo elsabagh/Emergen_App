@@ -51,7 +51,6 @@ fun SignInScreen(
     val isAccountReady by signInViewModel.isAccountReady.collectAsStateWithLifecycle()
     val userRole by signInViewModel.userRole.collectAsStateWithLifecycle()
 
-
     LaunchedEffect(isSignInSucceeded) {
         if (isSignInSucceeded) {
             when (userRole) {
@@ -60,6 +59,7 @@ fun SignInScreen(
                 "user" -> onSignInClick()
             }
             signInViewModel.resetIsSignInSucceeded()
+
         }
     }
 

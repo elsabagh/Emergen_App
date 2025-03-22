@@ -23,13 +23,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -38,7 +39,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -61,7 +61,9 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.example.emergen_app.R
 import com.example.emergen_app.navigation.AppDestination
+import com.example.emergen_app.presentation.components.TopAppBar
 import com.example.emergen_app.presentation.components.snackbar.SnackBarManager
+import com.example.emergen_app.ui.theme.adminWelcomeCard
 import com.example.emergen_app.utils.checkIfGpsEnabled
 import com.example.emergen_app.utils.updateLocation
 import com.google.android.gms.location.LocationServices
@@ -107,24 +109,14 @@ fun SignupScreen(navController: NavController) {
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Sign up") },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        if (navController.previousBackStackEntry != null) {
-                            navController.popBackStack()
-                        }
-                    }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                }
-            )
+            TopAppBar("Sign up", navController)
         }
     ) { paddingValues ->
         Box(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
+                .padding(bottom = 16.dp),
         ) {
 
             Column(
@@ -480,7 +472,6 @@ fun UploadIDSection(
 }
 
 
-
 @Composable
 fun PasswordSection(uiState: SignUpState, viewModel: SignUpViewModel) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -506,10 +497,13 @@ fun PasswordSection(uiState: SignUpState, viewModel: SignUpViewModel) {
 @Composable
 fun SignUpButton(isLoading: Boolean, onClick: () -> Unit) {
     if (!isLoading) {
-        Button(onClick = onClick,
+        Button(
+            onClick = onClick,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 24.dp)
+                .height(64.dp),
+            colors = ButtonDefaults.buttonColors(adminWelcomeCard),
+            shape = RoundedCornerShape(8.dp)
         ) {
             Text("Sign Up")
         }

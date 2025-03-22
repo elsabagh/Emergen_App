@@ -29,8 +29,12 @@ interface AppDestination {
         override val route = "Report"
     }
 
-    object ContractDestination : AppDestination{
+    object ContactDestination : AppDestination{
         override val route = "Contact"
+    }
+
+    object ListContactDestination : AppDestination{
+        override val route = "user_contacts"
     }
 
     object AdminReportDestination : AppDestination{

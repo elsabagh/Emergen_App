@@ -14,6 +14,8 @@ import com.example.emergen_app.presentation.admin.branches.addBranch.AddBranchSc
 import com.example.emergen_app.presentation.admin.branches.branchList.BranchListScreen
 import com.example.emergen_app.presentation.admin.branches.branchList.branchDetails.BranchDetailsScreen
 import com.example.emergen_app.presentation.admin.branches.editBranch.EditBranchScreen
+import com.example.emergen_app.presentation.admin.contact.AdminChatScreen
+import com.example.emergen_app.presentation.admin.contact.ListUserContactScreen
 import com.example.emergen_app.presentation.admin.home.AdminHomeScreen
 import com.example.emergen_app.presentation.admin.notification.NotificationScreen
 import com.example.emergen_app.presentation.admin.reports.AdminReportScreen
@@ -23,8 +25,8 @@ import com.example.emergen_app.presentation.branch.UserDetailsScreen
 import com.example.emergen_app.presentation.branch.branchInfo.BranchInfoScreen
 import com.example.emergen_app.presentation.signIn.SignInScreen
 import com.example.emergen_app.presentation.signUp.SignupScreen
+import com.example.emergen_app.presentation.user.UserChatScreen
 import com.example.emergen_app.presentation.user.UserMainScreen
-import com.example.emergen_app.presentation.user.contact.ContactScreen
 import com.example.emergen_app.presentation.user.home.specificAppeal.FireEmergency
 import com.example.emergen_app.presentation.user.home.specificAppeal.MedicalEmergency
 import com.example.emergen_app.presentation.user.home.specificAppeal.PoliceEmergency
@@ -51,7 +53,7 @@ fun NavGraph(
                 userRole = userRole,
                 onSplashFinished = {
                     val destination = when {
-                        !isAccountReady || userRole == null -> AppDestination.SignInDestination.route
+                        !isAccountReady || userRole == null -> SignInDestination.route
                         userRole == "admin" -> AppDestination.AdminHomeDestination.route
                         userRole == "branch" -> AppDestination.BranchHomeDestination.route
                         else -> AppDestination.UserHomeDestination.route
@@ -70,8 +72,8 @@ fun NavGraph(
                 },
                 onSignUpClickNav = {
                     appState.navigateSingleTopToAndPopupTo(
-                        route = AppDestination.SignUpDestination.route,
-                        popUpToRoute = AppDestination.SignUpDestination.route
+                        route = SignUpDestination.route,
+                        popUpToRoute = SignUpDestination.route
                     )
                 },
                 onAdminSignIn = {
@@ -102,7 +104,7 @@ fun NavGraph(
                 onLogout = {
                     appState.navigateSingleTopToAndPopupTo(
                         route = SignInDestination.route,
-                        popUpToRoute = SignInDestination.route
+                        popUpToRoute = SignInDestination.route,
                     )
                 },
             )
@@ -124,8 +126,8 @@ fun NavGraph(
                 navController = appState.navController
             )
         }
-        composable(route = AppDestination.ContractDestination.route) {
-            ContactScreen(
+        composable(route = AppDestination.ContactDestination.route) {
+            UserChatScreen(
                 navController = appState.navController
             )
         }
@@ -213,6 +215,16 @@ fun NavGraph(
                 navController = appState.navController
             )
         }
+        composable(AppDestination.ListContactDestination.route) {
+            ListUserContactScreen(navController = appState.navController)
+        }
+
+        // شاشة محادثة الأدمن مع المستخدم
+        composable("chat/{userId}") { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId") ?: ""
+            AdminChatScreen(navController = appState.navController, userId = userId)
+        }
+
 
     }
 }

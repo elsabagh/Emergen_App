@@ -42,7 +42,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -69,8 +68,7 @@ fun AdminReportScreen(
             Column(
                 modifier = Modifier
                     .padding(paddingValues)
-                    .fillMaxSize()
-                    .padding(top = 36.dp),
+                    .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
 
@@ -100,45 +98,6 @@ fun AdminReportScreen(
             }
         }
     )
-}
-
-@Composable
-fun FilterButtons(selectedStatus: String, onStatusSelected: (String) -> Unit) {
-    val statuses = listOf("Being Processed", "Team On Way", "Completed")
-
-    Row(
-        modifier = Modifier
-            .background(Color(0xFFF2FBFE))
-            .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.SpaceAround
-    ) {
-        statuses.forEach { status ->
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .clickable { onStatusSelected(status) }
-                    .padding(8.dp)
-            ) {
-                Text(
-                    text = status,
-                    color = if (status == selectedStatus) Color(0xFF009EFF) else Color(0x993987A4),
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                if (status == selectedStatus) {
-                    Box(
-                        modifier = Modifier
-                            .height(3.dp)
-                            .fillMaxWidth(fraction = 0.3f) // ✅ العرض متناسب مع النص
-                            .background(Color(0xFF009EFF), shape = RoundedCornerShape(2.dp))
-                    )
-                }
-            }
-        }
-    }
 }
 
 @Preview(showBackground = true)
@@ -253,13 +212,7 @@ fun HelpRequestItem(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp)
-                    .clickable {
-                        onStatusUpdate(
-                            request.userId,
-                            request.statusRequest
-                        )
-                    }, // تحديث الحالة عند الضغط
+                    .padding(vertical = 8.dp),
                 shape = RoundedCornerShape(5.dp),
             ) {
                 Column(

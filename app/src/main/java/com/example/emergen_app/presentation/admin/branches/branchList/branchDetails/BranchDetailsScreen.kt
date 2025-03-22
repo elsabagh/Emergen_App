@@ -26,7 +26,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,8 +41,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.emergen_app.data.models.Branch
+import com.example.emergen_app.presentation.branch.branchInfo.BranchInfoWorkingHoursCard
 import com.example.emergen_app.ui.theme.EmergencyAppTheme
-import kotlin.collections.joinToString
+import com.example.emergen_app.ui.theme.adminWelcomeCard
 
 @Composable
 fun BranchDetailsScreen(navController: NavController, branchId: String) {
@@ -86,6 +87,13 @@ fun BranchDetailsScreen(navController: NavController, branchId: String) {
 fun BranchContent(
     branch: Branch
 ) {
+    val statusColor = when (branch.typeBranch) {
+        "Urgent" -> Color(0xFFFD0008)
+        "Medical Emergency" -> Color(0xFF4BD550)
+        "Police Emergency" -> Color(0xFF2996FD)
+        "Fire Emergency" -> Color(0xFFFF9800)
+        else -> Color.Gray
+    }
     Text(
         text = branch.branchName,
         style = MaterialTheme.typography.titleLarge,
@@ -98,7 +106,8 @@ fun BranchContent(
         style = MaterialTheme.typography.titleLarge,
         modifier = Modifier
             .fillMaxWidth(),
-        fontSize = 14.sp
+        fontSize = 14.sp,
+        color = statusColor
 
     )
 
@@ -106,6 +115,10 @@ fun BranchContent(
     BranchDetailCard("Mobile", branch.mobileNumber)
     BranchDetailCard("Email", branch.email)
     BranchDetailCard("Password", branch.password)
+    BranchInfoWorkingHoursCard(
+        label = "Working Hours",
+        branch = branch
+    )
     BranchDetailCard("Working Hours", branch.workDays.joinToString(", "))
     BranchDetailCard("Address", branch.address)
     LocationBranchText("Location", location = branch.addressMaps)
@@ -130,7 +143,7 @@ fun LocationBranchText(label: String, location: String) {
                 .fillMaxWidth()
         ) {
             Text(
-                text = locationText,
+                text = "location Link",
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier
                     .padding(8.dp)
@@ -140,8 +153,8 @@ fun LocationBranchText(label: String, location: String) {
                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
                         intent.setPackage("com.google.android.apps.maps")
                         context.startActivity(intent)
-                    }
-
+                    },
+                color = adminWelcomeCard
             )
         }
         Spacer(modifier = Modifier.height(8.dp))

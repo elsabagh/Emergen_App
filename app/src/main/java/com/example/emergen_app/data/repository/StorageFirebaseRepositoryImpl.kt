@@ -172,6 +172,32 @@ class StorageFirebaseRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun deleteBranchById(branchId: String) {
+        try {
+            // حذف بيانات الفرع من Firestore
+            val branchRef = fireStore.collection("users").document(branchId)
+
+            // حذف جميع المستندات المتعلقة بالفرع مثل المساعدة أو التقارير إذا كانت موجودة
+            val reportsQuery = fireStore.collection("reports")
+                .whereEqualTo("branchId", branchId)
+                .get()
+                .await()
+
+            reportsQuery.documents.forEach { report ->
+                report.reference.delete().await()  // حذف التقارير المرتبطة بالفرع
+            }
+
+            // حذف بيانات الفرع
+            branchRef.delete().await()
+
+            Log.d("FirebaseRepo", "Branch $branchId deleted successfully.")
+        } catch (e: Exception) {
+            Log.e("FirebaseRepo", "Error deleting branch: ${e.message}")
+            throw Exception("Failed to delete branch: ${e.message}", e)
+        }
+    }
+
+
     override suspend fun getBranchById(branchId: String): Branch? {
         return try {
             val docSnapshot = fireStore.collection("users")

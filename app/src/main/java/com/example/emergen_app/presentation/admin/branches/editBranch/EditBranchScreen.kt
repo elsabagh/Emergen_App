@@ -1,19 +1,28 @@
 package com.example.emergen_app.presentation.admin.branches.editBranch
 
+import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -33,6 +42,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,7 +54,11 @@ import androidx.navigation.compose.rememberNavController
 import com.example.emergen_app.R
 import com.example.emergen_app.presentation.components.TopAppBar
 import com.example.emergen_app.ui.theme.EmergencyAppTheme
+import com.example.emergen_app.ui.theme.adminWelcomeCard
 import com.example.emergen_app.ui.theme.branchesCardColor
+import com.example.emergen_app.utils.checkIfGpsEnabled
+import com.example.emergen_app.utils.updateLocation
+import com.google.android.gms.location.LocationServices
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,7 +80,8 @@ fun EditBranchScreen(navController: NavController, branchId: String) {
                     .verticalScroll(rememberScrollState())
                     .padding(paddingValues)
                     .fillMaxSize()
-                    .padding(16.dp),
+                    .padding(16.dp)
+                    .padding(bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 // Branch Name
@@ -110,11 +126,10 @@ fun EditBranchScreen(navController: NavController, branchId: String) {
                 )
 
                 // Address Map
-                OutlinedTextField(
-                    value = state.addressMaps,
-                    onValueChange = { editBranchViewModel.onAddressMapsChange(it) },
-                    label = { Text("Address Map") },
-                    modifier = Modifier.fillMaxWidth()
+                LocationBranchButton(
+                    context = LocalContext.current,
+                    uiState = state,
+                    viewModel = editBranchViewModel
                 )
 
                 // Password
@@ -137,7 +152,11 @@ fun EditBranchScreen(navController: NavController, branchId: String) {
                     onClick = {
                         editBranchViewModel.updateBranch(navController) // ✅ استدعاء تحديث البيانات
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(64.dp),
+                    colors = ButtonDefaults.buttonColors(adminWelcomeCard),
+                    shape = RoundedCornerShape(8.dp)
                 ) {
                     Text("Save Changes")
                 }
@@ -145,6 +164,48 @@ fun EditBranchScreen(navController: NavController, branchId: String) {
             }
         }
     )
+}
+
+@Composable
+fun LocationBranchButton(
+    context: Context,
+    uiState: EditBranchState,
+    viewModel: EditBranchViewModel
+) {
+    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        OutlinedTextField(
+            value = uiState.addressMaps,
+            onValueChange = viewModel::onAddressMapsChange,
+            label = { Text("Address Location (Google Maps)") },
+            modifier = Modifier
+        )
+
+        IconButton(onClick = {
+            val isGpsEnabled = checkIfGpsEnabled(context)
+            if (!isGpsEnabled) {
+                Log.e("LocationDebug", "GPS is disabled")
+                Toast.makeText(context, "Please enable GPS", Toast.LENGTH_SHORT).show()
+                return@IconButton
+            }
+            updateLocation(fusedLocationClient, context) { location ->
+                viewModel.onAddressMapsChange(location)
+            }
+        }) {
+            Icon(
+                imageVector = Icons.Filled.LocationOn,
+                contentDescription = "Get Location",
+                tint = Color.Black,
+                modifier = Modifier.size(40.dp)
+            )
+        }
+
+    }
 }
 
 

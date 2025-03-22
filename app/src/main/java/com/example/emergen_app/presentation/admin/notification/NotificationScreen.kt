@@ -1,8 +1,6 @@
 package com.example.emergen_app.presentation.admin.notification
 
 
-import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,32 +15,26 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
-import com.example.emergen_app.R
 import com.example.emergen_app.data.models.User
+import com.example.emergen_app.presentation.components.TopAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,16 +45,7 @@ fun NotificationScreen(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Notifications") },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        if (navController.previousBackStackEntry != null) {
-                            navController.popBackStack()
-                        }
-                    }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                }
+                "Notifications", navController
             )
         }
     ) { paddingValues ->
@@ -95,9 +78,10 @@ fun NotificationItem(notification: User, navController: NavController) {
         ) {
             Box(
                 contentAlignment = Alignment.Center,
-                modifier = Modifier.clickable {
-                    navController.navigate("user_profile/${notification.userId}/true")
-                }
+                modifier = Modifier
+                    .clickable {
+                        navController.navigate("user_profile/${notification.userId}/true")
+                    }
                     .size(60.dp)
                     .clip(CircleShape)
                     .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
@@ -121,7 +105,6 @@ fun NotificationItem(notification: User, navController: NavController) {
         }
     }
 }
-
 
 
 @Preview(showBackground = true)

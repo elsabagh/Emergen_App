@@ -39,10 +39,11 @@ fun AllBranchesScreen(navController: NavController) {
             Column(
                 modifier = Modifier
                     .padding(paddingValues)
+                    .padding(top = 16.dp)
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // نمرر اسم الفرع عند الضغط
+
                 BranchesCard(navController, colorUrgent, "Urgent")
                 BranchesCard(navController, colorMedicalEmergency, "Medical Emergency")
                 BranchesCard(navController, colorPoliceEmergency, "Police Emergency")
@@ -57,7 +58,8 @@ fun BranchesCard(navController: NavController, color: Color, value: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 16.dp)
+            .padding(bottom = 4.dp),
         verticalArrangement = Arrangement.Center
     ) {
         Card(
@@ -82,7 +84,6 @@ fun BranchesCard(navController: NavController, color: Color, value: String) {
         Spacer(modifier = Modifier.height(8.dp))
     }
 }
-
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable

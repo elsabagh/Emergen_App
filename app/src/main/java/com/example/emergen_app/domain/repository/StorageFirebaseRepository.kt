@@ -24,6 +24,8 @@ interface StorageFirebaseRepository {
 
     suspend fun getBranchesByType(typeBranch: String): List<Branch>
 
+    suspend fun deleteBranchById(branchId: String)
+
     suspend fun getBranchById(branchId: String): Branch?
 
     suspend fun updateBranch(branch: Branch)

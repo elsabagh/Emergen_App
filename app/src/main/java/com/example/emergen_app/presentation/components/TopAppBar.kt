@@ -18,7 +18,7 @@ fun TopAppBar(label: String, navController: NavController) {
     TopAppBar(
         title = { Text(label) },
         navigationIcon = {
-            IconButton(onClick = { navController.popBackStack() }) {
+            IconButton(onClick = { navController.popBackStack()}) {
                 Icon(Icons.Default.ArrowBack, contentDescription = "Back")
             }
         },

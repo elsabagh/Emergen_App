@@ -258,7 +258,10 @@ fun LogoutButton(
             userViewModel.signOutFromAccount()
             navController.navigate(AppDestination.SignInDestination.route) {
                 popUpTo(AppDestination.SignInDestination.route) { inclusive = true }
+                launchSingleTop = true
+
             }
+
         },
         colors = ButtonDefaults.buttonColors(colorButtonRed),
         modifier = Modifier

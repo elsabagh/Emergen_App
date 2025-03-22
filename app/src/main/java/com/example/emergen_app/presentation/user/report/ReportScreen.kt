@@ -66,7 +66,8 @@ fun ReportScreen(navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp)
-            .padding(top = 106.dp)
+            .padding(top = 126.dp)
+            .padding(bottom = 16.dp)
     ) {
         EmergencyDropdown(
             title = "Emergency",

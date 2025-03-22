@@ -77,10 +77,21 @@ fun UserHomeScreen(
 
     var selectedTab by remember { mutableStateOf(0) }
 
-    AppHeader()
+    Column{
+        AppHeader()
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFFFDF1D0))
+                .padding(bottom = 48.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {}
+    }
     Column(
         modifier = Modifier.fillMaxSize()
-            .padding(top = 96.dp)
+            .padding(top = 106.dp)
+            .padding(bottom = 16.dp)
     ) {
 
         user?.let { user ->
@@ -272,7 +283,7 @@ fun UrgentAppealContent(user: User, userHomeViewModel: UserHomeViewModel) {
         Image(
             painter = painterResource(id = R.drawable.ic_siren),
             contentDescription = "Siren",
-            modifier = Modifier.size(320.dp)
+            modifier = Modifier.size(280.dp)
         )
         Spacer(modifier = Modifier.height(24.dp))
         Button(

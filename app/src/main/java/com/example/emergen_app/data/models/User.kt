@@ -24,4 +24,6 @@ data class User(
     val typeReason: String = "",
     val statusRequest: String = "",
     val nameBranch: String = "",
+    val mobileBranch: String = "",
+    val betweenAddress: String = "",
 )

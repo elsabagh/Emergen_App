@@ -48,7 +48,4 @@ class BranchInfoViewModel@Inject constructor(
         }
     }
 
-    fun resetIsAccountSignedOut() {
-        _isAccountSignedOut.value = false
-    }
 }

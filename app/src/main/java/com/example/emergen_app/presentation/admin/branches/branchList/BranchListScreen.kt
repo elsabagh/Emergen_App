@@ -1,5 +1,7 @@
 package com.example.emergen_app.presentation.admin.branches.branchList
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,32 +15,30 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddBox
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.emergen_app.data.models.Branch
+import com.example.emergen_app.presentation.components.TopAppBar
 import com.example.emergen_app.ui.theme.EmergencyAppTheme
 
 @Composable
@@ -51,7 +51,7 @@ fun BranchListScreen(navController: NavController, branchName: String) {
     }
 
     Scaffold(
-        topBar = { BranchesTopAppBar(branchName, navController) },
+        topBar = { TopAppBar(branchName, navController) },
         content = { paddingValues ->
             Column(
                 modifier = Modifier
@@ -68,7 +68,7 @@ fun BranchListScreen(navController: NavController, branchName: String) {
                             onEditClick = {
                                 navController.navigate("edit_branch/${branch.userId}") // ✅ التنقل إلى صفحة التعديل مع تمرير ID
                             },
-                            onDeleteClick = { /* حذف الفرع */ }
+                            onDeleteClick = { viewModel.deleteBranch(branch.userId) }
                         )
                     }
                 }
@@ -76,7 +76,6 @@ fun BranchListScreen(navController: NavController, branchName: String) {
         }
     )
 }
-
 
 
 @Composable
@@ -90,11 +89,18 @@ fun BranchItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { onClick() },
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            .clickable { onClick() }
+            .border(1.dp, Color.Gray, RoundedCornerShape(12.dp))
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = "Branch: ${branch.branchName}", style = MaterialTheme.typography.titleMedium)
+        Column(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .padding(16.dp)
+        ) {
+            Text(
+                text = "Branch: ${branch.branchName}",
+                style = MaterialTheme.typography.titleMedium
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -142,28 +148,8 @@ fun PreviewBranchItem() {
                 mobileNumber = "+20123456789"
             ),
             onEditClick = { },
-            onDeleteClick = {  },
-            onClick = {  }
+            onDeleteClick = { },
+            onClick = { }
         )
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun BranchesTopAppBar(label: String, navController: NavController) {
-    TopAppBar(
-        title = { Text(label) },
-        navigationIcon = {
-            IconButton(onClick = { navController.popBackStack() }) {
-                Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-            }
-        },
-        actions = {
-            IconButton(onClick = {
-                navController.navigate("add_branch/$label") // تمرير اسم الفرع
-            }) {
-                Icon(Icons.Default.AddBox, contentDescription = "Add Branch")
-            }
-        }
-    )
 }

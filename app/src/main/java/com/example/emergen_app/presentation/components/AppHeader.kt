@@ -27,17 +27,19 @@ fun AppHeader() {
         modifier = Modifier
             .fillMaxWidth()
             .background(Color(0xFFFDF1D0))
-            .padding(vertical = 46.dp),
+            .padding(16.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
             painter = painterResource(id = R.drawable.group_366),
             contentDescription = "App Logo",
-            modifier = Modifier.size(80.dp)
+            modifier = Modifier.size(80.dp).padding(top = 16.dp)
         )
         Spacer(modifier = Modifier.width(8.dp))
-        Column {
+        Column(
+            modifier = Modifier.padding(top = 16.dp)
+        ) {
             Text(
                 text = "Emergency APP",
                 fontSize = 20.sp,

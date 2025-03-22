@@ -3,6 +3,7 @@ package com.example.emergen_app.presentation.admin.home
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -50,6 +51,7 @@ import com.example.emergen_app.presentation.components.AppHeader
 import com.example.emergen_app.ui.theme.EmergencyAppTheme
 import com.example.emergen_app.ui.theme.adminWelcomeCard
 import com.example.emergen_app.ui.theme.cardMenu
+import com.example.emergen_app.ui.theme.colorCardIcon
 
 
 @Composable
@@ -57,10 +59,29 @@ fun AdminHomeScreen(
     navController: NavController,
     onLogout: () -> Unit,
 ) {
-    AppHeader()
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFFFDF1D0))
+                .padding(bottom = 26.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {}
+        AppHeader()
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFFFDF1D0))
+                .padding(bottom = 26.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {}
+    }
     Column(
         modifier = Modifier
-            .fillMaxSize().padding(top = 116.dp),
+            .fillMaxSize()
+            .padding(top = 116.dp),
     ) {
         val homeViewModel: AdminHomeViewModel = hiltViewModel()
         val isAccountSignedOut by homeViewModel.isAccountSignedOut.collectAsStateWithLifecycle()
@@ -94,7 +115,7 @@ fun AdminHomeScreen(
             navController.navigate(AppDestination.AllBranchesDestination.route)
         }
         MenuButton(icon = Icons.Default.Chat, text = "Contact") {
-            navController.navigate("contact")
+            navController.navigate(AppDestination.ListContactDestination.route)
         }
         MenuButton(icon = Icons.Default.Assignment, text = "Report Status") {
             navController.navigate(AppDestination.AdminReportDestination.route)
@@ -139,20 +160,40 @@ fun AdminWelcomeCard(
                     color = Color.White
                 )
             }
-            Row {
-                IconButton(onClick = { navController.navigate(AppDestination.NotificationDestination.route) }) {
-                    Icon(
-                        imageVector = Icons.Default.Notifications,
-                        contentDescription = "Notifications",
-                        tint = Color.White
-                    )
+            Row(
+                modifier = Modifier,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .background(colorCardIcon)
+                ) {
+                    IconButton(onClick = { navController.navigate(AppDestination.NotificationDestination.route) }) {
+                        Icon(
+                            imageVector = Icons.Default.Notifications,
+                            contentDescription = "Notifications",
+                            tint = Color.White
+                        )
+                    }
                 }
-                IconButton(onClick = { viewModel.signOutFromAccount() }) {
-                    Icon(
-                        imageVector = Icons.Default.ExitToApp,
-                        contentDescription = "Logout",
-                        tint = Color.White
-                    )
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .background(colorCardIcon)
+                ) {
+                    IconButton(onClick = { viewModel.signOutFromAccount() }) {
+                        Icon(
+                            imageVector = Icons.Default.ExitToApp,
+                            contentDescription = "Logout",
+                            tint = Color.White
+                        )
+                    }
                 }
             }
         }
