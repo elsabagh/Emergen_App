@@ -40,8 +40,11 @@ fun UserChatScreen(navController: NavController) {
     val messageText = remember { mutableStateOf("") }
 
     val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+    val currentUserName by viewModel.user.collectAsState()
+    val currentUserImage by viewModel.user.collectAsState()
 
     LaunchedEffect(Unit) {
+        viewModel.fetchCurrentUser()
         viewModel.getChatWithCurrentUser()
     }
 
@@ -85,7 +88,9 @@ fun UserChatScreen(navController: NavController) {
                     val message = Message(
                         senderId = currentUserId,
                         receiverId = "zhovdszVmMfIjwgddeCcU94DRiD3",
-                        content = messageText.value
+                        content = messageText.value,
+                        nameSender = (currentUserName?.userName ?: "").toString(),
+                        imageSender = (currentUserImage?.userPhoto ?: "").toString()
                     )
                     viewModel.sendMessage(message)
                     messageText.value = ""
@@ -94,9 +99,9 @@ fun UserChatScreen(navController: NavController) {
                 Icon(Icons.Filled.Send, contentDescription = "Send Message")
             }
         }
-
     }
 }
+
 
 @Composable
 fun MessageItem(message: Message, currentUserId: String) {

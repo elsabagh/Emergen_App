@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -54,6 +53,7 @@ import coil.compose.rememberImagePainter
 import com.example.emergen_app.data.models.User
 import com.example.emergen_app.navigation.AppDestination
 import com.example.emergen_app.ui.theme.EmergencyAppTheme
+import com.example.emergen_app.ui.theme.adminWelcomeCard
 import com.example.emergen_app.ui.theme.colorButtonGreen
 import com.example.emergen_app.ui.theme.colorButtonRed
 
@@ -77,6 +77,7 @@ fun UserProfileScreen(navController: NavController, userId: String, isFromNotifi
                 ) {
                     UserProfileContent(user, openDialog, selectedImage)
                     ImageDialog(openDialog, selectedImage)
+                    Spacer(modifier = Modifier.height(16.dp))
                     ActionButtons(userViewModel, userId, navController, isFromNotification)
                 }
             }
@@ -192,17 +193,17 @@ fun LocationText(label: String, location: String) {
                 .fillMaxWidth()
         ) {
             Text(
-                text = locationText,
+                text = "Location Link",
                 style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier
+                modifier = Modifier.fillMaxWidth()
                     .padding(8.dp)
                     .clickable {
-                        // تحويل الإحداثيات إلى رابط Google Maps بشكل صحيح
                         val uri = "geo:$locationText?q=$locationText"
                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
                         intent.setPackage("com.google.android.apps.maps")
                         context.startActivity(intent)
-                    }
+                    },
+                color = adminWelcomeCard
 
             )
         }
@@ -273,9 +274,10 @@ fun ActionButtons(
     isFromNotification: Boolean
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
+            .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         if (isFromNotification) {
             // When coming from NotificationScreen, keep the Accept button active
@@ -287,7 +289,7 @@ fun ActionButtons(
                     }
                 },
                 colors = ButtonDefaults.buttonColors(colorButtonGreen),
-                modifier = Modifier.width(150.dp)
+                modifier = Modifier.weight(1f)
             ) {
                 Text("Accept")
             }
@@ -302,7 +304,7 @@ fun ActionButtons(
                     }
                 },
                 colors = ButtonDefaults.buttonColors(Color.Black),
-                modifier = Modifier.width(150.dp)
+                modifier = Modifier.weight(1f)
             ) {
                 Text("Disable")
             }
@@ -317,7 +319,7 @@ fun ActionButtons(
                     }
                 },
                 colors = ButtonDefaults.buttonColors(colorButtonRed),
-                modifier = Modifier.width(150.dp)
+                modifier = Modifier.weight(1f)
             ) {
                 Text("Reject")
             }
@@ -330,7 +332,7 @@ fun ActionButtons(
                     }
                 },
                 colors = ButtonDefaults.buttonColors(colorButtonRed),
-                modifier = Modifier.width(150.dp)
+                modifier = Modifier.weight(1f)
             ) {
                 Text("Delete")
             }

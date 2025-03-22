@@ -1,17 +1,30 @@
 package com.example.emergen_app.presentation.admin.contact
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.Button
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Send
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -20,75 +33,166 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.example.emergen_app.data.models.Message
+import com.example.emergen_app.ui.theme.colorCardIcon
 
 @Composable
-fun AdminChatScreen(navController: NavController, userId: String) {
+fun AdminChatScreen(
+    navController: NavController,
+    userId: String
+) {
     val viewModel: ChatViewModel = hiltViewModel()
     val messages by viewModel.messages.collectAsState()
 
     val messageText = remember { mutableStateOf("") }
 
-    // الحصول على الـ userId للمستخدم الحالي
     val currentUserId = "zhovdszVmMfIjwgddeCcU94DRiD3" // Admin ID
 
-    // الحصول على المحادثات مع المستخدم عند بداية الشاشة
     LaunchedEffect(userId) {
         viewModel.getChatWithUser(userId)
     }
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Text(text = "Chat with User $userId", style = MaterialTheme.typography.headlineMedium)
+    val user =
+        messages.find { it.senderId == userId || it.receiverId == userId }
 
-        // عرض الرسائل باستخدام LazyColumn
-        LazyColumn(
-            modifier = Modifier.weight(1f) // تأكد من أن الرسائل تأخذ المساحة المتبقية
-        ) {
-            itemsIndexed(messages) { index, message ->
-                MessageItem(message = message, currentUserId = currentUserId) // عرض الرسائل مع المحاذاة
+    Scaffold(
+        topBar = {
+            user?.let {
+                ChatTopAppBar(
+                    userName = it.nameSender,
+                    userImage = it.imageSender,
+                    navController = navController
+                )
             }
-        }
+        },
+        content = { paddingValues ->
 
-        // تثبيت الـ TextField و Button في أسفل الشاشة
-        Column(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
-            TextField(
-                value = messageText.value,
-                onValueChange = { messageText.value = it },
-                label = { Text("Type a message") },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Button(
-                onClick = {
-                    val message = Message(
-                        senderId = currentUserId, // Admin ID
-                        receiverId = userId,
-                        content = messageText.value
-                    )
-                    viewModel.sendMessage(message) // إرسال الرسالة
-                    messageText.value = ""  // Clear the text field
-                },
-                modifier = Modifier.fillMaxWidth()
+            Column(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .padding(horizontal = 16.dp)
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Send")
+                user?.let {
+                    Text(
+                        text = "Chat with ${it.nameSender}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                }
+                LazyColumn(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    itemsIndexed(messages) { index, message ->
+                        MessageItem(
+                            message = message,
+                            currentUserId = currentUserId
+                        )
+                    }
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(24.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedTextField(
+                        value = messageText.value,
+                        onValueChange = { messageText.value = it },
+                        label = { Text("Send message") },
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .size(36.dp)
+                            .clip(CircleShape)
+                            .background(colorCardIcon)
+                    ) {
+                        IconButton(
+                            onClick = {
+                                val message = Message(
+                                    senderId = currentUserId,
+                                    receiverId = userId,
+                                    content = messageText.value
+                                )
+                                viewModel.sendMessage(message)
+                                messageText.value = ""
+                            },
+                        ) {
+                            Icon(
+                                Icons.Filled.Send, contentDescription = "Send Message",
+                                tint = Color.White
+                            )
+                        }
+                    }
+
+                }
             }
         }
-    }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ChatTopAppBar(userName: String, userImage: String, navController: NavController) {
+    TopAppBar(
+        title = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                if (userImage.isNotEmpty()) {
+
+                    Image(
+                        painter = rememberImagePainter(userImage),
+                        contentDescription = "User Image",
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .size(40.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+
+                Column(modifier = Modifier.padding(start = 8.dp)) {
+                    Text(text = userName)
+                }
+            }
+        },
+        navigationIcon = {
+            IconButton(onClick = { navController.popBackStack() }) {
+                Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color(0xFFFFF6DD)
+        )
+    )
 }
 
 
 @Composable
 fun MessageItem(message: Message, currentUserId: String) {
     val alignment = if (message.senderId == currentUserId) {
-        Alignment.End // رسائل المستخدم تكون على اليمين
+        Alignment.End
     } else {
-        Alignment.Start // رسائل الـ Admin تكون على اليسار
+        Alignment.Start
     }
 
-    // عرض الرسالة مع محاذاة حسب المرسل
     Row(
         modifier = Modifier
             .fillMaxWidth()

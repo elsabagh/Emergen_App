@@ -53,6 +53,7 @@ import coil.compose.rememberImagePainter
 import com.example.emergen_app.data.models.User
 import com.example.emergen_app.navigation.AppDestination
 import com.example.emergen_app.presentation.admin.userProfile.ImageDialog
+import com.example.emergen_app.presentation.branch.AddressCard
 import com.example.emergen_app.ui.theme.adminWelcomeCard
 import com.example.emergen_app.ui.theme.colorButtonRed
 
@@ -121,7 +122,11 @@ fun ProfileContent(
 
         ProfileDetailCard("Email", user.email)
         ProfileDetailCard("Mobile", user.mobile)
-        ProfileDetailCard("Address", user.governmentName)
+        AddressCard(
+            label = "Address",
+            value = "${user.governmentName}, ${user.area}, ${user.plotNumber}," +
+                    " ${user.streetName}, ${user.buildNumber}, ${user.floorNumber}, ${user.apartmentNumber}"
+        )
         LocationText("Location (Google maps)", location = user.addressMaps)
 
         Spacer(modifier = Modifier.height(8.dp))

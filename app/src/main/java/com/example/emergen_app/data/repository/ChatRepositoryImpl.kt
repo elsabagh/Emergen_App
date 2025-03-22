@@ -67,9 +67,9 @@ class ChatRepositoryImpl @Inject constructor(
         if (currentUserId != null) {
             try {
                 val querySnapshot = fireStore.collection("messages")
-                    .whereIn("senderId", listOf(currentUserId, adminId)) // جلب الرسائل التي أرسلها الـ Admin أو المستخدم
-                    .whereIn("receiverId", listOf(currentUserId, adminId)) // جلب الرسائل التي استلمها الـ Admin أو المستخدم
-                    .orderBy("timestamp") // ترتيب الرسائل حسب الوقت
+                    .whereIn("senderId", listOf(currentUserId, adminId))
+                    .whereIn("receiverId", listOf(currentUserId, adminId))
+                    .orderBy("timestamp")
                     .get()
                     .await()
 
