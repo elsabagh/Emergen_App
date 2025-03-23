@@ -172,6 +172,9 @@ fun LocationBranchButton(
     uiState: EditBranchState,
     viewModel: EditBranchViewModel
 ) {
+    var latitude = uiState.latitude
+    var longitude = uiState.longitude
+
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
     Row(
@@ -180,10 +183,16 @@ fun LocationBranchButton(
         verticalAlignment = Alignment.CenterVertically
     ) {
         OutlinedTextField(
-            value = uiState.addressMaps,
-            onValueChange = viewModel::onAddressMapsChange,
-            label = { Text("Address Location (Google Maps)") },
-            modifier = Modifier
+            value = latitude,
+            onValueChange = viewModel::onLatitudeChange,
+            label = { Text("Latitude") },
+            modifier = Modifier.weight(1f)
+        )
+        OutlinedTextField(
+            value = longitude,
+            onValueChange = viewModel::onLongitudeChange,
+            label = { Text("Longitude") },
+            modifier = Modifier.weight(1f)
         )
 
         IconButton(onClick = {
@@ -194,7 +203,13 @@ fun LocationBranchButton(
                 return@IconButton
             }
             updateLocation(fusedLocationClient, context) { location ->
-                viewModel.onAddressMapsChange(location)
+                Log.d("LocationDebug", "Location received: $location")
+                val (lat, lon) = location.split(",")
+                latitude = lat.trim()
+                longitude = lon.trim()
+
+                viewModel.onLatitudeChange(latitude)
+                viewModel.onLongitudeChange(longitude)
             }
         }) {
             Icon(

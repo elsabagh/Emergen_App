@@ -21,6 +21,8 @@ data class EditUserState(
     val newPassword: String = "",
     val confirmPassword: String = "",
     val statusAccount: String = "accepted",
+    val latitude: String = "",
+    val longitude: String = "",
     val isLoading: Boolean = false,
     val isSuccess: Boolean = false,
     val errorMessage: String? = null,

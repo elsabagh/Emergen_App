@@ -45,6 +45,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -185,6 +186,31 @@ fun ProfileContent(
     }
 }
 
+
+@Preview(showBackground = true)
+@Composable
+fun ProfileContentPreview() {
+    val user = User(
+        userName = "John Doe",
+        userPhoto = "https://example.com/photo.jpg",
+        email = "john.doe@example.com",
+        mobile = "1234567890",
+        governmentName = "Government",
+        area = "Area",
+        plotNumber = "123",
+        streetName = "Street",
+        buildNumber = "456",
+        floorNumber = "7",
+        apartmentNumber = "8",
+        addressMaps = "37.7749,-122.4194",
+        idFront = "https://example.com/id_front.jpg",
+        idBack = "https://example.com/id_back.jpg"
+    )
+    val openDialog = remember { mutableStateOf(false) }
+    val selectedImage = remember { mutableStateOf("") }
+    ProfileContent(user, openDialog, selectedImage)
+}
+
 @Composable
 fun LocationText(label: String, location: String) {
     var locationText by remember { mutableStateOf(location) }
@@ -261,12 +287,16 @@ fun LogoutButton(
     Button(
         onClick = {
             userViewModel.signOutFromAccount()
+
+            // أولاً نبدأ بالتأكد من أن جميع الصفحات السابقة تم مسحها
+            navController.popBackStack(AppDestination.SignInDestination.route, inclusive = false)
+
+            // ثم ننتقل إلى صفحة تسجيل الدخول مع تفعيل popUpTo لتفريغ كل الصفحات
             navController.navigate(AppDestination.SignInDestination.route) {
+                // نحن نضمن أن أي صفحة قبل SignIn سيتم إزالتها، مع إضافة popUpTo بشكل صحيح
                 popUpTo(AppDestination.SignInDestination.route) { inclusive = true }
                 launchSingleTop = true
-
             }
-
         },
         colors = ButtonDefaults.buttonColors(colorButtonRed),
         modifier = Modifier
@@ -302,5 +332,3 @@ fun ProfileDetailsTopAppBar(navController: NavController, user: User?) {
         )
     )
 }
-
-

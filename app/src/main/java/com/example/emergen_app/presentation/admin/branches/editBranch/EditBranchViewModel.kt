@@ -48,6 +48,12 @@ class EditBranchViewModel @Inject constructor(
     fun onAddressChange(newAddress: String) {
         _state.value = _state.value.copy(address = newAddress)
     }
+    fun onLatitudeChange(newValue: String) {
+        _state.value = _state.value.copy(latitude = newValue)
+    }
+    fun onLongitudeChange(newValue: String) {
+        _state.value = _state.value.copy(longitude = newValue)
+    }
 
     fun onAddressMapsChange(newValue: String) {
         _state.value = _state.value.copy(addressMaps = newValue)
@@ -87,7 +93,9 @@ class EditBranchViewModel @Inject constructor(
                         workDays = it.workDays,
                         startTime = it.startTime,
                         endTime = it.endTime,
-                        addressMaps = it.addressMaps
+                        addressMaps = it.addressMaps,
+                        latitude = it.latitude,
+                        longitude = it.longitude
                     )
                     Log.d("EditBranchViewModel", "Branch loaded successfully: $it") // ✅ Debugging
                 }
@@ -103,7 +111,7 @@ class EditBranchViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val updatedBranch = Branch(
-                    userId = state.value.userId, // لازم يكون فيه userId!
+                    userId = state.value.userId,
                     branchName = state.value.branchName,
                     branchCapacity = state.value.branchCapacity,
                     email = state.value.email,
@@ -113,7 +121,9 @@ class EditBranchViewModel @Inject constructor(
                     workDays = state.value.workDays,
                     startTime = state.value.startTime,
                     endTime = state.value.endTime,
-                    addressMaps = state.value.addressMaps
+                    addressMaps = "${state.value.latitude},${state.value.longitude}",
+                    latitude = state.value.latitude,
+                    longitude = state.value.longitude
                 )
 
                 Log.d("EditBranchViewModel", "Updating branch: $updatedBranch") // ✅ Debugging

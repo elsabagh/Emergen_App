@@ -15,5 +15,6 @@ data class Branch(
     val role: String = "branch",
     val typeBranch: String = "",
     val addressMaps: String = "",
-
-    )
+    val latitude: String = "",
+    val longitude: String = "",
+)

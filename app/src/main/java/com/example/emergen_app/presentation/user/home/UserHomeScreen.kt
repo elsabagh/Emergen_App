@@ -58,7 +58,6 @@ import com.example.emergen_app.data.models.User
 import com.example.emergen_app.navigation.AppDestination
 import com.example.emergen_app.presentation.components.AppHeader
 import com.example.emergen_app.presentation.components.snackbar.SnackBarManager
-import com.example.emergen_app.ui.theme.EmergencyAppTheme
 import com.example.emergen_app.ui.theme.colorButtonRed
 import com.example.emergen_app.ui.theme.colorCardIcon
 import com.example.emergen_app.utils.checkIfGpsEnabled
@@ -480,11 +479,27 @@ fun PoliceEmergencyOption(
     }
 }
 
-
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true)
 @Composable
-fun PreviewUserHomeScreen() {
-    EmergencyAppTheme {
-        UserHomeScreen(navController = rememberNavController())
-    }
+fun UserCardPreview() {
+    val navController = rememberNavController()
+    val user = User(
+        userName = "John Doe",
+        userPhoto = "https://example.com/photo.jpg"
+    )
+    UserCard(navController = navController, user = user)
 }
+
+@Preview(showBackground = true)
+@Composable
+fun AppealTabsPreview() {
+    AppealTabs(selectedTab = 0, onTabSelected = {})
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SpecificAppealContentPreview() {
+    val navController = rememberNavController()
+    SpecificAppealContent(navController = navController)
+}
+

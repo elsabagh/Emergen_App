@@ -13,6 +13,8 @@ data class AddBranchState(
     val startTime: String = "",
     val endTime: String = "",
     val addressMaps: String = "",
+    val latitude: String = "",
+    val longitude: String = "",
     val isLoading: Boolean = false,  // حالة التحميل أثناء التسجيل
     val isSuccess: Boolean = false,  // حالة النجاح بعد التسجيل
     val errorMessage: String? = null // تخزين أي رسالة خطأ

@@ -41,7 +41,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.emergen_app.data.models.User
 import com.example.emergen_app.presentation.components.AppHeader
 import com.example.emergen_app.ui.theme.adminWelcomeCard
@@ -288,12 +287,4 @@ fun PreviewHelpRequestItem() {
         statusRequest = "Being Processed"
     )
     HelpRequestItem(request = sampleRequest)
-}
-
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewReportScreen() {
-    val navController = rememberNavController()
-    ReportScreen(navController = navController)
 }

@@ -101,6 +101,7 @@ fun SignupScreen(navController: NavController) {
             SnackBarManager.showMessage(R.string.created_account)
             viewModel.resetIsAccountCreated()
 
+            navController.popBackStack(AppDestination.SignInDestination.route, inclusive = false)
             navController.navigate(AppDestination.SignInDestination.route) {
                 popUpTo(AppDestination.SignUpDestination.route) { inclusive = true }
             }

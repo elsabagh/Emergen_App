@@ -17,15 +17,20 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddBox
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -38,7 +43,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.emergen_app.data.models.Branch
-import com.example.emergen_app.presentation.components.TopAppBar
 import com.example.emergen_app.ui.theme.EmergencyAppTheme
 
 @Composable
@@ -51,7 +55,7 @@ fun BranchListScreen(navController: NavController, branchName: String) {
     }
 
     Scaffold(
-        topBar = { TopAppBar(branchName, navController) },
+        topBar = { BranchesTopAppBar(branchName, navController) },
         content = { paddingValues ->
             Column(
                 modifier = Modifier
@@ -137,6 +141,29 @@ fun BranchItem(
     }
 }
 
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BranchesTopAppBar(label: String, navController: NavController) {
+    TopAppBar(
+        title = { Text(label) },
+        navigationIcon = {
+            IconButton(onClick = { navController.popBackStack() }) {
+                Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+            }
+        },
+        actions = {
+            IconButton(onClick = {
+                navController.navigate("add_branch/$label")
+            }) {
+                Icon(Icons.Default.AddBox, contentDescription = "Add Branch")
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color(0xFFFFF6DD)
+        )
+    )
+}
 
 @Preview(showBackground = true)
 @Composable

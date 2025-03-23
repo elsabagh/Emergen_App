@@ -1,11 +1,14 @@
 package com.example.emergen_app.utils
 
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Looper
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -76,4 +79,10 @@ fun updateLocation(
         locationCallback,
         Looper.getMainLooper()
     )
+}
+
+fun isLocationPermissionGranted(context: Context): Boolean {
+    return ContextCompat.checkSelfPermission(
+        context, Manifest.permission.ACCESS_FINE_LOCATION
+    ) == PackageManager.PERMISSION_GRANTED
 }

@@ -253,7 +253,9 @@ class StorageFirebaseRepositoryImpl @Inject constructor(
                     "workDays" to branch.workDays,
                     "startTime" to branch.startTime,
                     "endTime" to branch.endTime,
-                    "addressMaps" to branch.addressMaps
+                    "addressMaps" to "${branch.latitude},${branch.longitude}",
+                    "latitude" to branch.latitude,
+                    "longitude" to branch.longitude
                 )
             ).await()
 

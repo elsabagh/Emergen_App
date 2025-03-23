@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -154,6 +155,12 @@ fun EmergencyOption(text: String, selectedOption: String?, onSelect: (String) ->
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+fun EmergencyOptionPreview() {
+    EmergencyOption(text = "Cardiac Arrest", selectedOption = "Cardiac Arrest", onSelect = {})
+}
+
 
 @Composable
 fun CustomTextField(
@@ -194,6 +201,14 @@ fun CustomTextField(
     )
 }
 
+@Preview(showBackground = true)
+@Composable
+fun CustomTextFieldPreview() {
+    CustomTextField(
+        text = "",
+        onTextChange = {}
+    )
+}
 
 @Composable
 fun HelpRequestButton(

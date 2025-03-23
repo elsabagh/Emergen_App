@@ -532,19 +532,12 @@ fun ChangePasswordDialog(
         }
     )
 }
-@Preview(showBackground = true)
-@Composable
-fun PreviewChangePasswordDialog() {
-    ChangePasswordDialog(
-        onDismiss = { /* Do nothing on dismiss */ },
-        onChangePassword = { old, new ->
-            println("Old Password: $old, New Password: $new")
-        }
-    )
-}
 
 @Composable
 fun LocationButton(context: Context, uiState: EditUserState, viewModel: EditProfileViewModel) {
+
+    var latitude = uiState.latitude
+    var longitude = uiState.longitude
 
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
@@ -554,15 +547,18 @@ fun LocationButton(context: Context, uiState: EditUserState, viewModel: EditProf
         verticalAlignment = Alignment.CenterVertically
     ) {
         OutlinedTextField(
-            value = uiState.addressMaps,
-            onValueChange = viewModel::onAddressMapsChange,
-            label = { Text("Address Location (Google Maps)") },
-            modifier = Modifier
+            value = latitude,
+            onValueChange = viewModel::onLatitudeChange,
+            label = { Text("Latitude") },
+            modifier = Modifier.weight(1f)
         )
-
+        OutlinedTextField(
+            value = longitude,
+            onValueChange = viewModel::onLongitudeChange,
+            label = { Text("Longitude") },
+            modifier = Modifier.weight(1f)
+        )
         IconButton(onClick = {
-            Log.d("LocationDebug", "Location button clicked")
-
             val isGpsEnabled = checkIfGpsEnabled(context)
             if (!isGpsEnabled) {
                 Log.e("LocationDebug", "GPS is disabled")
@@ -570,11 +566,14 @@ fun LocationButton(context: Context, uiState: EditUserState, viewModel: EditProf
                 return@IconButton
             }
 
-            Log.d("LocationDebug", "GPS is enabled, fetching location...")
-
             updateLocation(fusedLocationClient, context) { location ->
                 Log.d("LocationDebug", "Location received: $location")
-                viewModel.onAddressMapsChange(location)
+                val (lat, lon) = location.split(",")
+                latitude = lat.trim()
+                longitude = lon.trim()
+
+                viewModel.onLatitudeChange(latitude)
+                viewModel.onLongitudeChange(longitude)
             }
         }) {
             Icon(
@@ -586,4 +585,52 @@ fun LocationButton(context: Context, uiState: EditUserState, viewModel: EditProf
         }
 
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewChangePasswordDialog() {
+    ChangePasswordDialog(
+        onDismiss = { /* Do nothing on dismiss */ },
+        onChangePassword = { old, new ->
+            println("Old Password: $old, New Password: $new")
+        }
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewChangeEmailDialog() {
+    ChangeEmailDialog(
+        onDismiss = { /* Do nothing on dismiss */ },
+        onChangeEmail = { newEmail, currentPassword ->
+            println("New Email: $newEmail, Current Password: $currentPassword")
+        }
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewEditIdImage() {
+    val state = EditUserState(
+        idFront = "https://example.com/id_front.jpg",
+        idBack = "https://example.com/id_back.jpg"
+    )
+    val idFrontUri = remember { mutableStateOf<Uri?>(null) }
+    val idBackUri = remember { mutableStateOf<Uri?>(null) }
+    val pickIdFrontLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri -> idFrontUri.value = uri }
+    )
+    val pickIdBackLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri -> idBackUri.value = uri }
+    )
+    EditIdImage(
+        state = state,
+        idFrontUri = idFrontUri,
+        idBackUri = idBackUri,
+        pickIdFrontLauncher = pickIdFrontLauncher,
+        pickIdBackLauncher = pickIdBackLauncher
+    )
 }

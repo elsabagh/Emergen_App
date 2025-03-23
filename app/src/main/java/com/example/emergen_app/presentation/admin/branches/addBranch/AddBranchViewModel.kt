@@ -49,6 +49,13 @@ class AddBranchViewModel @Inject constructor(
         _state.value = _state.value.copy(address = newAddress)
     }
 
+    fun onLatitudeChange(newValue: String) {
+        _state.value = _state.value.copy(latitude = newValue)
+    }
+    fun onLongitudeChange(newValue: String) {
+        _state.value = _state.value.copy(longitude = newValue)
+    }
+
     fun onAddressMapsChange(newValue: String) {
         _state.value = _state.value.copy(addressMaps = newValue)
     }
@@ -83,11 +90,13 @@ class AddBranchViewModel @Inject constructor(
                     endTime = state.value.endTime,
                     password = state.value.password,
                     address = state.value.address,
-                    addressMaps = state.value.addressMaps,
+                    addressMaps = "${state.value.latitude},${state.value.longitude}",
+                    latitude = state.value.latitude,
+                    longitude = state.value.longitude,
                     statusAccount = "accepted",
                     userId = "",
                     role = "branch",
-                    typeBranch = state.value.typeBranch // تأكيد إدخال قيمة typeBranch
+                    typeBranch = state.value.typeBranch
                 )
 
 

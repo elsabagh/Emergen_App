@@ -23,6 +23,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -52,6 +53,7 @@ import coil.compose.rememberImagePainter
 import com.example.emergen_app.data.models.User
 import com.example.emergen_app.presentation.components.TopAppBar
 import com.example.emergen_app.ui.theme.adminWelcomeCard
+import com.example.emergen_app.ui.theme.colorCardReport
 
 @Composable
 fun AdminReportScreen(
@@ -63,7 +65,7 @@ fun AdminReportScreen(
 
 
     Scaffold(
-        topBar = { TopAppBar("Reports status",navController) },
+        topBar = { TopAppBar("Reports status", navController) },
         content = { paddingValues ->
             Column(
                 modifier = Modifier
@@ -183,7 +185,7 @@ fun HelpRequestItem(
                         .clip(CircleShape)
                         .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
                         .background(Color.White)
-                        .clickable { onImageClick(request.userId) } // عند الضغط على الصورة
+                        .clickable { onImageClick(request.userId) }
                 ) {
                     Image(
                         painter = rememberImagePainter(request.userPhoto),
@@ -242,34 +244,72 @@ fun HelpRequestItem(
                 modifier = Modifier.align(Alignment.End)
             )
 
-            val statusText = when (request.statusRequest) {
-                "Being Processed" -> "Send Team"
-                "Team On Way" -> "Team Arrived"
-                else -> request.statusRequest
-            }
-
-            val backgroundColor =
-                if (request.statusRequest == "Completed") Color.Gray else adminWelcomeCard
-
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                shape = RoundedCornerShape(5.dp),
-            ) {
-                Column(
+            if (request.statusRequest == "Team On Way" || request.statusRequest == "Completed") {
+                Card(
                     modifier = Modifier
-                        .background(backgroundColor)
                         .fillMaxWidth()
-                        .padding(8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .padding(vertical = 8.dp),
+                    shape = RoundedCornerShape(5.dp),
                 ) {
-                    Text(
-                        text = statusText,
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontSize = 18.sp,
-                        color = Color.White
-                    )
+                    Row(
+                        modifier = Modifier
+                            .background(colorCardReport)
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = request.nameBranch,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontSize = 16.sp,
+                            color = Color.Black
+                        )
+
+                        Row(
+                            modifier = Modifier,
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Phone,
+                                contentDescription = "Phone",
+                                tint = adminWelcomeCard
+                            )
+                            Text(
+                                text = request.mobileBranch,
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontSize = 16.sp,
+                                color = Color.Black
+                            )
+                        }
+
+
+                    }
+                }
+            } else {
+                val statusText = "Being Processed"
+
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    shape = RoundedCornerShape(5.dp),
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .background(colorCardReport)
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = statusText,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontSize = 18.sp,
+                            color = Color.White
+                        )
+                    }
                 }
             }
         }

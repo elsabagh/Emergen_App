@@ -23,9 +23,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.emergen_app.R
 import com.example.emergen_app.presentation.components.TopAppBar
 import com.example.emergen_app.presentation.user.home.UserHomeViewModel
@@ -98,4 +100,10 @@ fun FireEmergency(navController: NavController) {
             }
         }
     )
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun FireEmergencyPreview() {
+    FireEmergency(navController = rememberNavController())
 }

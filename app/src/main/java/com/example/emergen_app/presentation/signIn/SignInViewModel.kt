@@ -1,6 +1,5 @@
 package com.example.emergen_app.presentation.signIn
 
-import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -112,25 +111,6 @@ class SignInViewModel @Inject constructor(
             SnackBarManager.showMessage(R.string.invalid_role_error)
         }
     }
-
-
-
-    fun startTheApp() {
-        viewModelScope.launch {
-            if (accountRepository.isUserSignedIn) {
-                val email = accountRepository.currentUserId
-                val role = storageFirebaseRepository.getUserRole(email) // ✅ جلب الدور من Firebase
-                _userRole.value = role // ✅ تحديث دور المستخدم
-
-                if (role != null) {
-                    _isAccountReady.value = true // ✅ تعيين الجاهزية بعد جلب الدور
-                } else {
-                    SnackBarManager.showMessage(R.string.authentication_failed) // ⚠️ التعامل مع الحالة الغير متوقعة
-                }
-            }
-        }
-    }
-
 
     fun resetIsSignInSucceeded() {
         _isSignInSucceeded.value = false

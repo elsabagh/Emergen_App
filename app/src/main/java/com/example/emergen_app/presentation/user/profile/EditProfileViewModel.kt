@@ -83,6 +83,14 @@ class EditProfileViewModel @Inject constructor(
         _editUserState.value = _editUserState.value.copy(addressMaps = newValue)
     }
 
+    fun onLatitudeChange(newValue: String) {
+        _editUserState.value = _editUserState.value.copy(latitude = newValue)
+    }
+    fun onLongitudeChange(newValue: String) {
+        _editUserState.value = _editUserState.value.copy(longitude = newValue)
+    }
+
+
     fun onPasswordChange(newValue: String) {
         _editUserState.value = _editUserState.value.copy(password = newValue)
     }
@@ -110,7 +118,9 @@ class EditProfileViewModel @Inject constructor(
                         addressMaps = fetchedUser.addressMaps,
                         userPhoto = fetchedUser.userPhoto,
                         idFront = fetchedUser.idFront,
-                        idBack = fetchedUser.idBack
+                        idBack = fetchedUser.idBack,
+                        latitude = fetchedUser.latitude,
+                        longitude = fetchedUser.longitude
                     )
                 }
             } catch (e: Exception) {
@@ -174,10 +184,12 @@ class EditProfileViewModel @Inject constructor(
                     buildNumber = _editUserState.value.buildNumber,
                     floorNumber = _editUserState.value.floorNumber,
                     apartmentNumber = _editUserState.value.apartmentNumber,
-                    addressMaps = _editUserState.value.addressMaps,
+                    addressMaps = "${_editUserState.value.latitude},${_editUserState.value.longitude}",
                     userPhoto = newUserPhotoUrl,
                     idFront = newIdFrontUrl,
                     idBack = newIdBackUrl,
+                    latitude = _editUserState.value.latitude,
+                    longitude = _editUserState.value.longitude
                 )
 
                 storageRepository.updateUserProfile(updatedUser)

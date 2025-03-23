@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Send
@@ -41,6 +42,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.example.emergen_app.data.models.Message
+import com.example.emergen_app.ui.theme.adminWelcomeCard
 import com.example.emergen_app.ui.theme.colorCardIcon
 
 @Composable
@@ -89,7 +91,11 @@ fun AdminChatScreen(
                     )
                 }
                 LazyColumn(
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(
+                            vertical = 16.dp
+                        )
                 ) {
                     itemsIndexed(messages) { index, message ->
                         MessageItem(
@@ -98,7 +104,6 @@ fun AdminChatScreen(
                         )
                     }
                 }
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -193,16 +198,42 @@ fun MessageItem(message: Message, currentUserId: String) {
         Alignment.Start
     }
 
+    val cardColor = if (message.senderId == currentUserId) adminWelcomeCard else Color(0xFFE6EAEE)
+    val textColor = if (message.senderId == currentUserId) Color.White else Color.Black
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
         horizontalArrangement = if (alignment == Alignment.End) Arrangement.End else Arrangement.Start
     ) {
-        Text(
-            text = message.content,
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(8.dp)
-        )
+        Column(
+            modifier = Modifier
+                .clip(
+                    if (message.senderId == currentUserId) RoundedCornerShape(
+                        topStart = 8.dp,
+                        topEnd = 0.dp,
+                        bottomEnd = 8.dp,
+                        bottomStart = 8.dp
+                    ) else RoundedCornerShape(
+                        topStart = 0.dp,
+                        topEnd = 8.dp,
+                        bottomEnd = 8.dp,
+                        bottomStart = 8.dp
+                    )
+                )
+                .background(
+                    color = cardColor
+                )
+                .padding(horizontal = 8.dp)
+        ) {
+            Text(
+                text = message.content,
+                style = MaterialTheme.typography.bodyLarge.copy(color = textColor),
+                modifier = Modifier
+                    .padding(12.dp)
+            )
+        }
+
     }
 }

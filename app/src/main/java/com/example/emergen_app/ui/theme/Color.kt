@@ -15,10 +15,12 @@ val cardMenu = Color(0xFF242424)
 val adminWelcomeCard = Color(0xFF09AFED)
 val branchesCardColor = Color(0xFFD8E7EC)
 val colorCardIcon = Color(0xFF52C7F2)
+val colorCardReport = Color(0xFFD0F2FF)
 val colorBottomNavBar = Color(0xFFFAFAFA)
+val colorCardDay = Color(0xFFD8E7EC)
+val colorTextDay = Color(0xFF67909D)
 
 val colorCardProfile = Color(0xFFF3F5F4)
-
 val colorButtonRed = Color(0xFFE30202)
 val colorButtonGreen = Color(0xFF57BC4E)
 

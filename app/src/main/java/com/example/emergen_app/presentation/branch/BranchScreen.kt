@@ -97,9 +97,14 @@ fun BranchScreen(
 
             FilterButtons(selectedStatus, branch) { status ->
                 selectedStatus = status
-                branch?.let {
-                    isFiltered = true
-                    viewModel.getFilteredReportsType(it.typeBranch, it.branchName)
+                isFiltered = true
+                when (status) {
+                    "Being Processed" -> {
+                        viewModel.getFilteredReports(branch.typeBranch)
+                    }
+                    "Team On Way", "Completed" -> {
+                        viewModel.getFilteredReportsType(branch.typeBranch, branch.branchName)
+                    }
                 }
             }
 
@@ -147,8 +152,14 @@ fun FilterButtons(selectedStatus: String, branch: Branch?, onStatusSelected: (St
                         onStatusSelected(status)
 
                         branch?.let {
-                            onStatusSelected(status)
-                            viewModel.getFilteredReportsType(it.typeBranch, it.branchName)
+                            when (status) {
+                                "Being Processed" -> {
+                                    viewModel.getFilteredReports(it.typeBranch)
+                                }
+                                "Team On Way", "Completed" -> {
+                                    viewModel.getFilteredReportsType(it.typeBranch, it.branchName)
+                                }
+                            }
                         }
                     }
             ) {

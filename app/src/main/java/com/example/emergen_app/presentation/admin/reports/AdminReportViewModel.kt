@@ -42,11 +42,10 @@ class AdminReportViewModel  @Inject constructor(
             val newStatus = when (currentStatus) {
                 "Being Processed" -> "Team On Way"
                 "Team On Way" -> "Completed"
-                else -> return@launch // لا يتم التحديث إذا كان بالفعل "Completed"
+                else -> return@launch
             }
             storageRepository.updateReportStatus(userId, newStatus)
 
-            // تحديث الحالة محليًا في القائمة لضمان التحديث الفوري دون الحاجة إلى إعادة تحميل كاملة
             _helpRequests.value = _helpRequests.value.map { request ->
                 if (request.userId == userId) request.copy(statusRequest = newStatus) else request
             }
@@ -55,8 +54,8 @@ class AdminReportViewModel  @Inject constructor(
 
     fun getReportById(reportId: String) {
         viewModelScope.launch {
-            val report = storageRepository.getReportById(reportId)  // جلب التقرير
-            _userDetails.value = report  // حفظ بيانات المستخدم داخل _userDetails
+            val report = storageRepository.getReportById(reportId)
+            _userDetails.value = report
         }
     }
 }
