@@ -25,5 +25,8 @@ data class User(
     val statusRequest: String = "",
     val nameBranch: String = "",
     val mobileBranch: String = "",
+    val addressBranch: String = "",
     val betweenAddress: String = "",
+    val latitude: String = "",
+    val longitude: String = "",
 )

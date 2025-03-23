@@ -77,5 +77,6 @@
     <string name="your_help_request_was_successful">Your help request was successful!</string>
     <string name="please_enable_gps">Please enable GPS</string>
     <string name="email_changed_successfully">email changed successfully</string>
+    <string name="message_notification">Your request has been received by emergency services. We are dispatching an emergency unit to your location. Estimated time of arrival: [estimated time based on Google Maps]. Please stay in a safe location and await the arrival of the unit.</string>
 
 </resources>

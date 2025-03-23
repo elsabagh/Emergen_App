@@ -8,8 +8,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,6 +39,7 @@ import com.example.emergen_app.R
 import com.example.emergen_app.presentation.components.EmailField
 import com.example.emergen_app.presentation.components.PasswordField
 import com.example.emergen_app.ui.theme.EmergencyAppTheme
+import com.example.emergen_app.ui.theme.adminWelcomeCard
 
 @Composable
 fun SignInScreen(
@@ -41,7 +47,7 @@ fun SignInScreen(
     onSignUpClickNav: () -> Unit = {},
     onAdminSignIn: () -> Unit = {},
     onBranchSignIn: () -> Unit = {},
-    onNavigateToHome: (String) -> Unit = {}, // ✅ تعديل هنا
+    onNavigateToHome: (String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
 
@@ -74,7 +80,7 @@ fun SignInScreen(
         onAdminClick = { signInViewModel.signInToAccount("admin") },
         onBranchClick = { signInViewModel.signInToAccount("branch") },
         onSignUpClick = onSignUpClickNav,
-        onAppStart = { userRole?.let { onNavigateToHome(it) } } // ✅ عند بدء التطبيق
+        onAppStart = { userRole?.let { onNavigateToHome(it) } }
     )
 }
 
@@ -95,14 +101,18 @@ fun SignInScreenContent(
     }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(
+                rememberScrollState()
+            )
     ) {
 
         Image(
             painter = painterResource(id = R.drawable.group_366),
             contentDescription = null,
             modifier = modifier
-                .padding(top = 46.dp)
+                .padding(top = 86.dp)
         )
         Text(
             modifier = Modifier
@@ -110,7 +120,7 @@ fun SignInScreenContent(
                 .align(Alignment.CenterHorizontally),
             text = "Emergency App",
             style = MaterialTheme.typography.bodyLarge,
-            fontSize = 24.sp,
+            fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )
 
@@ -119,8 +129,8 @@ fun SignInScreenContent(
                 .align(Alignment.CenterHorizontally),
             text = "For Deaf and Mute People",
             style = MaterialTheme.typography.bodyMedium,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Medium
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Normal
         )
 
         EmailField(
@@ -149,7 +159,10 @@ fun SignInScreenContent(
             onClick = onSignInClick,
             modifier = Modifier
                 .fillMaxWidth()
+                .height(64.dp)
                 .padding(horizontal = 16.dp),
+            colors = ButtonDefaults.buttonColors(adminWelcomeCard),
+            shape = RoundedCornerShape(8.dp)
         ) {
             Text(
                 text = stringResource(R.string.sign_in),
@@ -163,6 +176,7 @@ fun SignInScreenContent(
 
         Text(
             modifier = Modifier
+                .padding(top = 16.dp)
                 .clickable(
                     onClick = {
                         onSignUpClick()
@@ -172,40 +186,38 @@ fun SignInScreenContent(
             text = buildAnnotatedString {
                 append(stringResource(R.string.don_t_have_an_account_sign_up))
                 withStyle(
-                    style = SpanStyle(color = Color.Cyan)
+                    style = SpanStyle(color = adminWelcomeCard),
                 )
                 {
                     append(" Sign up")
                 }
             },
             style = MaterialTheme.typography.bodyMedium,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.SemiBold
+            fontSize = 16.sp,
+            fontWeight = FontWeight.SemiBold,
         )
 
         Row(
-            modifier = Modifier.padding(vertical = 24.dp),
+            modifier = Modifier
+                .padding(vertical = 24.dp)
+                .padding(top = 46.dp),
             horizontalArrangement = Arrangement.spacedBy(24.dp)
         ) {
 
-            // Admin Login
             Text(
                 modifier = Modifier.clickable { onAdminClick() },
                 text = "Admin",
                 style = MaterialTheme.typography.bodyLarge,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Red // Highlight admin login
             )
 
-            // Branch Login
             Text(
                 modifier = Modifier.clickable { onBranchClick() },
                 text = "Branch",
                 style = MaterialTheme.typography.bodyLarge,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Blue // Highlight branch login
             )
         }
     }

@@ -21,7 +21,6 @@ class BranchViewModel @Inject constructor(
     private val _branch = MutableStateFlow<Branch?>(null)
     val branch: StateFlow<Branch?> = _branch
 
-
     private val _userDetails = MutableStateFlow<User?>(null)
     val userDetails: StateFlow<User?> = _userDetails
 
@@ -55,21 +54,44 @@ class BranchViewModel @Inject constructor(
         }
     }
 
-    fun updateRequestStatus(userId: String, currentStatus: String) {
+    fun getFilteredReportsType(typeBranch: String, branchName: String) {
         viewModelScope.launch {
-            val newStatus = when (currentStatus) {
+            _helpRequests.value =
+                storageRepository.getFilteredReportsByBranchTypeAndName(typeBranch, branchName)
+        }
+    }
+
+
+    fun updateRequestStatus(user: User) {
+        viewModelScope.launch {
+            val newStatus = when (user.statusRequest) {
                 "Being Processed" -> "Team On Way"
                 "Team On Way" -> "Completed"
                 else -> return@launch
             }
-            storageRepository.updateReportStatus(userId, newStatus)
 
+            val currentBranch = _branch.value
 
-            _helpRequests.value = _helpRequests.value.map { request ->
-                if (request.userId == userId) request.copy(statusRequest = newStatus) else request
+            if (currentBranch == null) {
+                return@launch
+            }
+
+            val updatedReport = user.copy(
+                statusRequest = newStatus,
+                nameBranch = currentBranch.branchName,
+                mobileBranch = currentBranch.mobileNumber,
+                addressBranch = currentBranch.addressMaps,
+                betweenAddress = ""
+            )
+
+            storageRepository.updateReport(updatedReport)
+
+            _helpRequests.value = _helpRequests.value.map {
+                if (it.userId == user.userId) updatedReport else it
             }
         }
     }
+
 
     fun getReportById(reportId: String) {
         viewModelScope.launch {

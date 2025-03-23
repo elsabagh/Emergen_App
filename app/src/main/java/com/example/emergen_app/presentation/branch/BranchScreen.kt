@@ -69,6 +69,8 @@ fun BranchScreen(
 
     var selectedStatus by remember { mutableStateOf("Being Processed") }
 
+    var isFiltered by remember { mutableStateOf(false) }
+
     Column {
         Row(
             modifier = Modifier
@@ -79,15 +81,8 @@ fun BranchScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {}
         AppHeader()
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color(0xFFFDF1D0))
-                .padding(bottom = 26.dp),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {}
     }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -95,39 +90,47 @@ fun BranchScreen(
     ) {
         branch?.let { branch ->
             BranchCard(navController = navController, branch = branch)
-            viewModel.getFilteredReports(branch.typeBranch)
-        }
 
-        // أزرار الفلترة مع الشكل المطلوب
-        FilterButtons(selectedStatus) { status ->
-            selectedStatus = status
-        }
+            if (!isFiltered) {
+                viewModel.getFilteredReports(branch.typeBranch)
+            }
 
-        val filteredRequests = helpRequests.filter { it.statusRequest == selectedStatus }
+            FilterButtons(selectedStatus, branch) { status ->
+                selectedStatus = status
+                branch?.let {
+                    isFiltered = true
+                    viewModel.getFilteredReportsType(it.typeBranch, it.branchName)
+                }
+            }
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            LazyColumn {
-                itemsIndexed(filteredRequests) { _, request ->
-                    HelpRequestItem(request, onStatusUpdate = { userId, currentStatus ->
-                        viewModel.updateRequestStatus(userId, currentStatus)
-                    }) { userId ->
-                        Log.d("HelpRequestItem", "Navigating to user details: $userId")
-                        navController.navigate("user_details/$userId")  // الانتقال إلى صفحة تفاصيل المستخدم
+            val filteredRequests = helpRequests.filter { it.statusRequest == selectedStatus }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                LazyColumn {
+                    itemsIndexed(filteredRequests) { _, request ->
+                        HelpRequestItem(request, onStatusUpdate = { request ->
+                            viewModel.updateRequestStatus(request)
+                        }) { userId ->
+                            Log.d("HelpRequestItem", "Navigating to user details: $userId")
+                            navController.navigate("user_details/$userId")
+                        }
                     }
-
                 }
             }
         }
     }
 }
 
+
+
 @Composable
-fun FilterButtons(selectedStatus: String, onStatusSelected: (String) -> Unit) {
+fun FilterButtons(selectedStatus: String, branch: Branch?, onStatusSelected: (String) -> Unit) {
     val statuses = listOf("Being Processed", "Team On Way", "Completed")
+    val viewModel: BranchViewModel = hiltViewModel()
 
     Row(
         modifier = Modifier
@@ -140,7 +143,14 @@ fun FilterButtons(selectedStatus: String, onStatusSelected: (String) -> Unit) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .clickable { onStatusSelected(status) }
+                    .clickable {
+                        onStatusSelected(status)
+
+                        branch?.let {
+                            onStatusSelected(status)
+                            viewModel.getFilteredReportsType(it.typeBranch, it.branchName)
+                        }
+                    }
             ) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
@@ -166,15 +176,6 @@ fun FilterButtons(selectedStatus: String, onStatusSelected: (String) -> Unit) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewFilterButtons() {
-    var selectedStatus by remember { mutableStateOf("Being Processed") }
-
-    FilterButtons(selectedStatus) { status ->
-        selectedStatus = status
-    }
-}
 
 
 @Composable
@@ -255,7 +256,7 @@ fun BranchCard(
 @Composable
 fun HelpRequestItem(
     request: User,
-    onStatusUpdate: (String, String) -> Unit,
+    onStatusUpdate: (User) -> Unit,
     onImageClick: (String) -> Unit
 ) {
     Card(
@@ -355,10 +356,7 @@ fun HelpRequestItem(
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
                     .clickable {
-                        onStatusUpdate(
-                            request.userId,
-                            request.statusRequest
-                        )
+                        onStatusUpdate(request)
                     }, // تحديث الحالة عند الضغط
                 shape = RoundedCornerShape(5.dp),
             ) {
@@ -386,6 +384,7 @@ fun AddressCard(label: String, value: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(horizontal = 16.dp)
     ) {
         Text(
             text = label, modifier = Modifier
@@ -455,7 +454,7 @@ fun PreviewHelpRequestItem() {
     )
     HelpRequestItem(
         request = sampleRequest,
-        onStatusUpdate = { _, _ -> },
+        onStatusUpdate = { _ -> },
         onImageClick = { }
     )
 }

@@ -72,6 +72,9 @@ interface AppDestination {
     object ProfileDetailsDestination : AppDestination{
         override val route = " ProfileDetails"
     }
+    object UserNotificationDestination : AppDestination{
+        override val route = " UserNotification"
+    }
 
     object EditProfileDestination : AppDestination{
         override val route = " EditProfile"

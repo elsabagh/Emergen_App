@@ -42,6 +42,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,7 +50,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.example.emergen_app.data.models.User
-import com.example.emergen_app.presentation.branch.FilterButtons
 import com.example.emergen_app.presentation.components.TopAppBar
 import com.example.emergen_app.ui.theme.adminWelcomeCard
 
@@ -99,6 +99,48 @@ fun AdminReportScreen(
         }
     )
 }
+
+@Composable
+fun FilterButtons(selectedStatus: String, onStatusSelected: (String) -> Unit) {
+    val statuses = listOf("Being Processed", "Team On Way", "Completed")
+
+    Row(
+        modifier = Modifier
+            .background(Color(0xFFF2FBFE))
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.SpaceAround
+    ) {
+        statuses.forEach { status ->
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .clickable { onStatusSelected(status) }
+            ) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = status,
+                    color = if (status == selectedStatus) Color(0xFF009EFF) else Color(0x993987A4),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                if (status == selectedStatus) {
+                    Box(
+                        modifier = Modifier
+                            .height(4.dp)
+                            .fillMaxWidth(fraction = 0.3f)
+                            .background(
+                                Color(0xFF009EFF),
+                                shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp)
+                            )
+                    )
+                }
+            }
+        }
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable

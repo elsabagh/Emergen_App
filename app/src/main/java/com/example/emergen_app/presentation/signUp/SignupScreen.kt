@@ -116,7 +116,7 @@ fun SignupScreen(navController: NavController) {
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
-                .padding(bottom = 16.dp),
+                .padding(bottom = 24.dp),
         ) {
 
             Column(
@@ -144,8 +144,8 @@ fun SignupScreen(navController: NavController) {
                     idBackUri = idBackUri,
                     idFrontPicker = idFrontPicker,
                     idBackPicker = idBackPicker,
-                    onDeleteFront = { idFrontUri = null }, // حذف الصورة الأمامية
-                    onDeleteBack = { idBackUri = null } // حذف الصورة الخلفية
+                    onDeleteFront = { idFrontUri = null },
+                    onDeleteBack = { idBackUri = null }
                 )
 
 
@@ -287,23 +287,37 @@ fun AddressSection(uiState: SignUpState, viewModel: SignUpViewModel) {
 
 @Composable
 fun LocationButton(context: Context, uiState: SignUpState, viewModel: SignUpViewModel) {
-    var locationText by remember { mutableStateOf("Latitude and Longitude") }
+    var latitude by remember { mutableStateOf("") }
+    var longitude by remember { mutableStateOf("") }
 
     // الحصول على FusedLocationProviderClient
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
     // عرض الإحداثيات في OutlinedTextField
-
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         OutlinedTextField(
-            value = uiState.addressMaps,
-            onValueChange = viewModel::onAddressMapsChange,
-            label = { Text("Address Location (Google Maps)") },
-            modifier = Modifier
+            value = latitude,
+            onValueChange = { newValue ->
+                latitude = newValue
+                // تحديث الـ uiState مع الإحداثيات الجديدة
+                viewModel.onLatitudeChange(newValue)
+            },
+            label = { Text("Latitude") },
+            modifier = Modifier.weight(1f)
+        )
+        OutlinedTextField(
+            value = longitude,
+            onValueChange = { newValue ->
+                longitude = newValue
+                // تحديث الـ uiState مع الإحداثيات الجديدة
+                viewModel.onLongitudeChange(newValue)
+            },
+            label = { Text("Longitude") },
+            modifier = Modifier.weight(1f)
         )
 
         IconButton(onClick = {
@@ -320,7 +334,13 @@ fun LocationButton(context: Context, uiState: SignUpState, viewModel: SignUpView
 
             updateLocation(fusedLocationClient, context) { location ->
                 Log.d("LocationDebug", "Location received: $location")
-                viewModel.onAddressMapsChange(location)
+                val (lat, lon) = location.split(",")
+                latitude = lat.trim()
+                longitude = lon.trim()
+
+                // تحديث الـ viewModel مع الإحداثيات الجديدة
+                viewModel.onLatitudeChange(latitude)
+                viewModel.onLongitudeChange(longitude)
             }
         }) {
             Icon(
@@ -330,10 +350,8 @@ fun LocationButton(context: Context, uiState: SignUpState, viewModel: SignUpView
                 modifier = Modifier.size(40.dp)
             )
         }
-
     }
 }
-
 
 @Composable
 fun UploadIDSection(
@@ -515,8 +533,8 @@ fun LoadingOverlay() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.5f)) // Semi-transparent background
-            .clickable(enabled = false) {}, // Disable interactions
+            .background(Color.Black.copy(alpha = 0.5f))
+            .clickable(enabled = false) {},
         contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator(color = Color.White)

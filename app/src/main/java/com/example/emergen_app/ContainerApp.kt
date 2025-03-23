@@ -40,8 +40,8 @@ fun ContainerApp(
                 hostState = appState.scaffoldState.snackbarHostState,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp)
-                    .align(Alignment.BottomCenter), // ✅ ضمان أن يكون Snackbar أسفل الشاشة
+                    .padding(bottom = 36.dp)
+                    .align(Alignment.BottomCenter),
                 snackbar = { snackBarData ->
                     Snackbar(
                         snackBarData,

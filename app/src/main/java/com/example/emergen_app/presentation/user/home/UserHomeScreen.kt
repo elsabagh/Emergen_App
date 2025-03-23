@@ -60,6 +60,7 @@ import com.example.emergen_app.presentation.components.AppHeader
 import com.example.emergen_app.presentation.components.snackbar.SnackBarManager
 import com.example.emergen_app.ui.theme.EmergencyAppTheme
 import com.example.emergen_app.ui.theme.colorButtonRed
+import com.example.emergen_app.ui.theme.colorCardIcon
 import com.example.emergen_app.utils.checkIfGpsEnabled
 import com.example.emergen_app.utils.fetchLocation
 import com.google.android.gms.location.LocationServices
@@ -108,7 +109,6 @@ fun UserHomeScreen(
             when (helpRequestStatus) {
                 is UserHomeViewModel.Result.Success -> {
                     SnackBarManager.showMessage(stringResource(R.string.your_help_request_was_successful))
-
                 }
 
                 is UserHomeViewModel.Result.Failure -> {
@@ -200,19 +200,38 @@ fun UserCard(
                 }
             }
             Spacer(modifier = Modifier.weight(1f))
-            IconButton(onClick = { /* إشعارات */ }) {
-                Icon(
-                    imageVector = Icons.Default.Notifications,
-                    contentDescription = "Notifications",
-                    tint = Color.White
-                )
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(36.dp)
+                    .clip(CircleShape)
+                    .background(colorCardIcon)
+            ) {
+                IconButton(onClick = {
+                    navController.navigate(AppDestination.UserNotificationDestination.route)
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.Notifications,
+                        contentDescription = "Notifications",
+                        tint = Color.White
+                    )
+                }
             }
-            IconButton(onClick = { navController.navigate(AppDestination.ProfileDetailsDestination.route) }) {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = "Profile",
-                    tint = Color.White
-                )
+            Spacer(modifier = Modifier.width(8.dp))
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(36.dp)
+                    .clip(CircleShape)
+                    .background(colorCardIcon)
+            ) {
+                IconButton(onClick = { navController.navigate(AppDestination.ProfileDetailsDestination.route) }) {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = "Profile",
+                        tint = Color.White
+                    )
+                }
             }
         }
     }

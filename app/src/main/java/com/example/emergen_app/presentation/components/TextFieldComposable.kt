@@ -7,7 +7,6 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +22,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.emergen_app.R
+import com.example.emergen_app.ui.theme.adminWelcomeCard
 
 @Composable
 fun EmailField(
@@ -40,20 +40,12 @@ fun EmailField(
             Icon(
                 imageVector = Icons.Default.Email,
                 contentDescription = stringResource(R.string.email),
-                tint = MaterialTheme.colorScheme.primary
+                tint = adminWelcomeCard
             )
         }
     )
 }
 
-/**
- * A composable representing a password input field with a visibility toggle.
- *
- * @param value The current value of the password field.
- * @param placeholder The resource ID of the placeholder text to be displayed in the password field.
- * @param onNewValue A lambda function to handle the change in value (e.g., updating the password).
- * @param modifier A [Modifier] to customize the appearance of the password field (e.g., padding, size).
- */
 @Composable
 fun PasswordField(
     value: String,
@@ -79,7 +71,7 @@ fun PasswordField(
             Icon(
                 imageVector = Icons.Default.Lock,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary
+                tint = adminWelcomeCard
             )
         },
         trailingIcon = {

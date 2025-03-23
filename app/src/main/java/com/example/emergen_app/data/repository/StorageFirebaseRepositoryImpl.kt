@@ -109,25 +109,42 @@ class StorageFirebaseRepositoryImpl @Inject constructor(
 
     override suspend fun getFilteredReportsByBranchType(typeBranch: String): List<User> {
         return try {
-            // جلب جميع التقارير
-            val querySnapshot = fireStore.collection("reports").get().await()
+            val querySnapshot = fireStore.collection("reports")
+                .whereEqualTo("typeOfRequest", typeBranch) // فلترة باستخدام typeBranch فقط
+                .get()
+                .await()
 
-            // فلترة التقارير بناءً على نوع الفرع
-            val filteredReports = querySnapshot.documents.mapNotNull { doc ->
+            querySnapshot.documents.mapNotNull { doc ->
                 val request = doc.toObject(User::class.java)
-                if (request?.typeOfRequest == typeBranch) {  // هنا المقارنة بين نوع الطلب ونوع الفرع
-                    request.copy(userId = doc.id)
-                } else {
-                    null
-                }
+                request?.copy(userId = doc.id)
             }
-
-            filteredReports
         } catch (e: Exception) {
-            Log.e("FirebaseRepo", "Error fetching filtered help requests: ${e.message}")
-            emptyList<User>()
+            Log.e("FirebaseRepo", "Error fetching filtered help requests by branch type: ${e.message}")
+            emptyList()
         }
     }
+
+
+
+    override suspend fun getFilteredReportsByBranchTypeAndName(typeBranch: String, branchName: String): List<User> {
+        return try {
+            val querySnapshot = fireStore.collection("reports")
+                .whereEqualTo("typeOfRequest", typeBranch) // فلترة باستخدام typeBranch
+                .whereEqualTo("nameBranch", branchName)  // فلترة باستخدام branchName
+                .get()
+                .await()
+
+            querySnapshot.documents.mapNotNull { doc ->
+                val request = doc.toObject(User::class.java)
+                request?.copy(userId = doc.id)
+            }
+        } catch (e: Exception) {
+            Log.e("FirebaseRepo", "Error fetching filtered help requests by branch type and name: ${e.message}")
+            emptyList()
+        }
+    }
+
+
 
 
     // جلب بيانات المستخدم من Firestore
@@ -221,8 +238,8 @@ class StorageFirebaseRepositoryImpl @Inject constructor(
         try {
             val branchRef = fireStore.collection("users").document(branch.userId)
 
-            Log.d("FirebaseRepo", "Attempting to update branch: ${branch.userId}") // ✅ Debugging
-            Log.d("FirebaseRepo", "Data to be updated: $branch") // ✅ Debugging
+            Log.d("FirebaseRepo", "Attempting to update branch: ${branch.userId}")
+            Log.d("FirebaseRepo", "Data to be updated: $branch")
 
             // تحديث البيانات
             branchRef.update(
@@ -300,7 +317,11 @@ class StorageFirebaseRepositoryImpl @Inject constructor(
                 "textOther" to user.textOther,
                 "typeReason" to user.typeReason,
                 "timeOfRequest" to user.timeOfRequest,
-                "statusRequest" to user.statusRequest
+                "statusRequest" to user.statusRequest,
+                "nameBranch" to user.nameBranch,
+                "mobileBranch" to user.mobileBranch,
+                "addressBranch" to user.addressBranch,
+                "betweenAddress" to user.betweenAddress
             )
 
             db.collection("reports")
@@ -344,12 +365,51 @@ class StorageFirebaseRepositoryImpl @Inject constructor(
                 .document(userId)
                 .update("statusRequest", newStatus)
                 .await()
-            Log.d("FirebaseRepo", "Successfully updated report status to $newStatus for user $userId")
+            Log.d(
+                "FirebaseRepo",
+                "Successfully updated report status to $newStatus for user $userId"
+            )
         } catch (e: Exception) {
             Log.e("FirebaseRepo", "Error updating report status: ${e.message}")
         }
     }
 
+    override suspend fun updateReport(updatedReport: User) {
+        try {
+            val reportRef = fireStore.collection("reports").document(updatedReport.userId)
+
+            reportRef.update(
+                mapOf(
+                    "userName" to updatedReport.userName,
+                    "email" to updatedReport.email,
+                    "mobile" to updatedReport.mobile,
+                    "governmentName" to updatedReport.governmentName,
+                    "area" to updatedReport.area,
+                    "plotNumber" to updatedReport.plotNumber,
+                    "streetName" to updatedReport.streetName,
+                    "buildNumber" to updatedReport.buildNumber,
+                    "floorNumber" to updatedReport.floorNumber,
+                    "apartmentNumber" to updatedReport.apartmentNumber,
+                    "addressMaps" to updatedReport.addressMaps,
+                    "userPhoto" to updatedReport.userPhoto,
+                    "idFront" to updatedReport.idFront,
+                    "idBack" to updatedReport.idBack,
+                    "typeOfRequest" to updatedReport.typeOfRequest,
+                    "textOther" to updatedReport.textOther,
+                    "typeReason" to updatedReport.typeReason,
+                    "timeOfRequest" to updatedReport.timeOfRequest,
+                    "statusRequest" to updatedReport.statusRequest,
+                    "nameBranch" to updatedReport.nameBranch,
+                    "mobileBranch" to updatedReport.mobileBranch,
+                    "addressBranch" to updatedReport.addressBranch,
+                    "betweenAddress" to updatedReport.betweenAddress
+                )
+            ).await()
+        } catch (e: Exception) {
+            Log.e("FirebaseRepo", "Failed to update report: ${e.message}")
+            throw e
+        }
+    }
 
 
 }

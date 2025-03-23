@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.toString
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
@@ -75,6 +74,13 @@ class SignUpViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(addressMaps = newValue)
     }
 
+    fun onLatitudeChange(newValue: String) {
+        _uiState.value = _uiState.value.copy(latitude = newValue)
+    }
+    fun onLongitudeChange(newValue: String) {
+        _uiState.value = _uiState.value.copy(longitude = newValue)
+    }
+
     fun onPasswordChange(newValue: String) {
         _uiState.value = _uiState.value.copy(password = newValue)
     }
@@ -128,7 +134,9 @@ class SignUpViewModel @Inject constructor(
                     buildNumber = state.buildNumber,
                     floorNumber = state.floorNumber,
                     apartmentNumber = state.apartmentNumber,
-                    addressMaps = state.addressMaps,
+                    addressMaps = "${state.latitude},${state.longitude}",
+                    latitude = state.latitude,
+                    longitude = state.longitude,
                     role = "user",
                     statusAccount = "Under Processing"
                 )

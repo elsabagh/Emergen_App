@@ -127,7 +127,6 @@ fun ReportScreen(navController: NavController) {
             Text(text = "Show Results")
         }
 
-        // عرض النتائج عند الضغط على الزر
         if (showResults.value) {
             LazyColumn {
                 itemsIndexed(filteredRequests.value) { _, request ->

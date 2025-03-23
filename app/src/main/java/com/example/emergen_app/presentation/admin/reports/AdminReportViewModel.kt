@@ -17,14 +17,13 @@ class AdminReportViewModel  @Inject constructor(
     private val storageRepository: StorageFirebaseRepository
 ) : ViewModel() {
 
-    // حالة المستخدم من التقرير
     private val _userDetails = MutableStateFlow<User?>(null)
     val userDetails: StateFlow<User?> = _userDetails
 
     private val _helpRequests = MutableStateFlow<List<User>>(emptyList())
     val helpRequests: StateFlow<List<User>> = _helpRequests
 
-    private val _filteredReports = MutableStateFlow<Map<String, List<User>>>(emptyMap()) // Key: statusRequest, Value: List of Users
+    private val _filteredReports = MutableStateFlow<Map<String, List<User>>>(emptyMap())
     val filteredReports: StateFlow<Map<String, List<User>>> = _filteredReports
 
     init {

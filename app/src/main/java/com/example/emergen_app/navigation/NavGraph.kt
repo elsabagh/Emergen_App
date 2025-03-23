@@ -27,6 +27,7 @@ import com.example.emergen_app.presentation.signIn.SignInScreen
 import com.example.emergen_app.presentation.signUp.SignupScreen
 import com.example.emergen_app.presentation.user.UserChatScreen
 import com.example.emergen_app.presentation.user.UserMainScreen
+import com.example.emergen_app.presentation.user.home.notification.UserNotificationScreen
 import com.example.emergen_app.presentation.user.home.specificAppeal.FireEmergency
 import com.example.emergen_app.presentation.user.home.specificAppeal.MedicalEmergency
 import com.example.emergen_app.presentation.user.home.specificAppeal.PoliceEmergency
@@ -38,7 +39,7 @@ import com.example.emergen_app.presentation.user.report.ReportScreen
 fun NavGraph(
     appState: ContainerAppState,
     userRole: String?,
-    isAccountReady: Boolean, // ✅ التأكد من الجاهزية قبل الانتقال
+    isAccountReady: Boolean,
     modifier: Modifier = Modifier
 ) {
     NavHost(
@@ -196,6 +197,11 @@ fun NavGraph(
             EditProfile(
                 navController = appState.navController,
                 userId = userId
+            )
+        }
+        composable(AppDestination.UserNotificationDestination.route) {
+            UserNotificationScreen(
+                navController = appState.navController
             )
         }
         composable(AppDestination.BranchInfoDestination.route) {

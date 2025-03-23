@@ -18,6 +18,11 @@ interface StorageFirebaseRepository {
 
     suspend fun getFilteredReportsByBranchType(typeBranch: String): List<User>
 
+    suspend fun getFilteredReportsByBranchTypeAndName(
+        typeBranch: String,
+        branchName: String
+    ): List<User>
+
     fun getUserById(userId: String): Flow<User>
 
     fun getBranchUserById(branchId: String): Flow<Branch>
@@ -37,4 +42,7 @@ interface StorageFirebaseRepository {
     suspend fun getAllHelpRequests(): List<User>
 
     suspend fun updateReportStatus(userId: String, newStatus: String)
+
+    suspend fun updateReport(updatedReport: User)
+
 }
