@@ -323,7 +323,9 @@ class StorageFirebaseRepositoryImpl @Inject constructor(
                 "nameBranch" to user.nameBranch,
                 "mobileBranch" to user.mobileBranch,
                 "addressBranch" to user.addressBranch,
-                "betweenAddress" to user.betweenAddress
+                "betweenAddress" to user.betweenAddress,
+                "latitude" to user.latitude,
+                "longitude" to user.longitude
             )
 
             db.collection("reports")

@@ -118,7 +118,6 @@ class SignUpViewModel @Inject constructor(
             return
         }
 
-        // تعيين حالة التحميل إلى True
         _uiState.value = _uiState.value.copy(isLoading = true)
 
         viewModelScope.launch {

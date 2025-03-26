@@ -53,8 +53,6 @@
     <string name="please_enter_the_email_address">Please enter the email address</string>
     <string name="send_email">Send Email</string>
     <string name="verify_email">Verify Email</string>
-    <string name="don_t_receive_otp">Don\'t receive OTP?</string>
-    <string name="resend_otp">Resend OTP</string>
     <string name="conferm">Continue</string>
     <string name="your_otp_code_has_been_verified_successfully">Your OTP code has been verified successfully</string>
     <string name="reset_your_password">Reset  your password</string>
@@ -63,9 +61,9 @@
     <string name="password_change_failed">Password change failed</string>
     <string name="not_admin_error">not admin</string>
     <string name="user_not_found">user_not_found</string>
-    <string name="invalid_role_error">invalid_role_error</string>
-    <string name="empty_name_error">empty_name_error</string>
-    <string name="image_upload_error">image_upload_error</string>
+    <string name="invalid_role_error">invalid role</string>
+    <string name="empty_name_error">empty name </string>
+    <string name="image_upload_error">image upload</string>
     <string name="please_upload_all_required_images">Please upload all required images</string>
     <string name="created_account">created account</string>
     <string name="account_status_not_accepted">Your account is not yet accepted. Please check your account status.</string>
@@ -78,5 +76,7 @@
     <string name="please_enable_gps">Please enable GPS</string>
     <string name="email_changed_successfully">email changed successfully</string>
     <string name="message_notification">Your request has been received by emergency services. We are dispatching an emergency unit to your location. Estimated time of arrival: [estimated time based on Google Maps]. Please stay in a safe location and await the arrival of the unit.</string>
+    <string name="the_branch_is_at_full_capacity_cannot_send_more_reports">The branch is at full capacity.</string>
+    <string name="error_getting_travel_info">Error getting travel info</string>
 
 </resources>

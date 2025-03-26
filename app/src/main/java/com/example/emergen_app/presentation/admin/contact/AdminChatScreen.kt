@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -57,6 +58,14 @@ fun AdminChatScreen(
 
     val currentUserId = "zhovdszVmMfIjwgddeCcU94DRiD3" // Admin ID
 
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(messages.size) {
+        if (messages.isNotEmpty()) {
+            listState.animateScrollToItem(messages.size - 1)
+        }
+    }
+
     LaunchedEffect(userId) {
         viewModel.getChatWithUser(userId)
     }
@@ -91,6 +100,7 @@ fun AdminChatScreen(
                     )
                 }
                 LazyColumn(
+                    state = listState,
                     modifier = Modifier
                         .weight(1f)
                         .padding(

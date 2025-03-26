@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.example.emergen_app.R
 import com.example.emergen_app.data.models.Branch
@@ -129,8 +130,6 @@ fun BranchScreen(
         }
     }
 }
-
-
 
 @Composable
 fun FilterButtons(selectedStatus: String, branch: Branch?, onStatusSelected: (String) -> Unit) {

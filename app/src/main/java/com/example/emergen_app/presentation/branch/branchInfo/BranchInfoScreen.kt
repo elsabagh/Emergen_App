@@ -92,34 +92,57 @@ fun BranchInfoContent(
         else -> Color.Gray
     }
     Spacer(modifier = Modifier.height(16.dp))
-    Text(
-        text = branch.branchName,
-        modifier = Modifier
-            .fillMaxWidth(),
-        fontSize = 18.sp,
-        fontWeight = FontWeight.Bold
-    )
-    Text(
-        text = branch.typeBranch,
-        modifier = Modifier
-            .fillMaxWidth(),
-        fontSize = 14.sp,
-        color = statusColor
+    Column {
+        Text(
+            text = branch.branchName,
+            modifier = Modifier
+                .fillMaxWidth(),
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            text = branch.typeBranch,
+            modifier = Modifier
+                .fillMaxWidth(),
+            fontSize = 14.sp,
+            color = statusColor
 
-    )
-    Spacer(modifier = Modifier.height(8.dp))
+        )
+        Spacer(modifier = Modifier.height(8.dp))
 
-    BranchInfoCard("Capacity / hour", branch.branchCapacity)
-    BranchInfoCard("Mobile", branch.mobileNumber)
-    BranchInfoCard("Email", branch.email)
-    BranchInfoCard("Password", branch.password)
-    BranchInfoWorkingHoursCard(
-        label = "Working Hours",
-        branch = branch
+        BranchInfoCard("Capacity / hour", branch.branchCapacity)
+        BranchInfoCard("Mobile", branch.mobileNumber)
+        BranchInfoCard("Email", branch.email)
+        BranchInfoCard("Password", branch.password)
+        BranchInfoWorkingHoursCard(
+            label = "Working Hours",
+            branch = branch
+        )
+        BranchInfoCard("Working Days", branch.workDays.joinToString(", "))
+        BranchInfoCard("Address", branch.address)
+        LocationBranchText("Location", location = branch.addressMaps)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewBranchInfoContent() {
+    val sampleBranch = Branch(
+        branchName = "Emergency Center",
+        typeBranch = "Medical Emergency",
+        branchCapacity = "10",
+        mobileNumber = "1234567890",
+        email = "emergency@example.com",
+        password = "password123",
+        startTime = "08:00",
+        endTime = "20:00",
+        workDays = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday"),
+        address = "123 Emergency St.",
+        addressMaps = "geo:0,0?q=123+Emergency+St"
     )
-    BranchInfoCard("Working Days", branch.workDays.joinToString(", "))
-    BranchInfoCard("Address", branch.address)
-    LocationBranchText("Location", location = branch.addressMaps)
+    EmergencyAppTheme {
+        BranchInfoContent(branch = sampleBranch)
+    }
 }
 
 @Composable
@@ -262,7 +285,8 @@ fun LogoutButton(
     ) {
         Text(
             "Logout",
-            fontSize = 18.sp
+            fontSize = 18.sp,
+            modifier = Modifier.padding(4.dp)
         )
     }
 }

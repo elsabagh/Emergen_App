@@ -287,7 +287,6 @@ fun UrgentAppealContent(user: User, userHomeViewModel: UserHomeViewModel) {
     val context = LocalContext.current
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
-    // متغير لتخزين الموقع
     var currentLocation by remember { mutableStateOf<Pair<Double, Double>?>(null) }
     var currentTime by remember { mutableStateOf<String>("") }
 
@@ -295,15 +294,15 @@ fun UrgentAppealContent(user: User, userHomeViewModel: UserHomeViewModel) {
         modifier = Modifier
             .verticalScroll(rememberScrollState())
             .fillMaxWidth()
-            .padding(top = 16.dp),
+            .padding(top = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
             painter = painterResource(id = R.drawable.ic_siren),
             contentDescription = "Siren",
-            modifier = Modifier.size(280.dp)
+            modifier = Modifier.size(260.dp)
         )
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
                 val isGpsEnabled = checkIfGpsEnabled(context)
@@ -334,8 +333,7 @@ fun UrgentAppealContent(user: User, userHomeViewModel: UserHomeViewModel) {
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(84.dp)
-                .padding(16.dp)
+                .height(64.dp)
                 .padding(horizontal = 46.dp)
         ) {
             Text(
@@ -396,7 +394,7 @@ fun EmergencyOption(
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .fillMaxWidth()
             .height(120.dp)
-            .clickable { onClick() }, // ✅ تنفيذ التنقل عند النقر
+            .clickable { onClick() },
         colors = CardDefaults.cardColors(backgroundColor),
         shape = RoundedCornerShape(12.dp)
     ) {
@@ -425,7 +423,7 @@ fun EmergencyOption(
             Image(
                 painter = painterResource(id = imageRes),
                 contentDescription = title,
-                modifier = Modifier.size(160.dp)
+                modifier = Modifier.size(140.dp)
             )
         }
     }
@@ -457,7 +455,7 @@ fun PoliceEmergencyOption(
             Image(
                 painter = painterResource(id = imageRes),
                 contentDescription = title,
-                modifier = Modifier.size(160.dp)
+                modifier = Modifier.size(140.dp)
             )
             Spacer(modifier = Modifier.weight(1f))
             Column {

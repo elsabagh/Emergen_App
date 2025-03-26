@@ -15,7 +15,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
@@ -71,7 +73,9 @@ fun ProfileDetails(
         topBar = { ProfileDetailsTopAppBar(navController, user) },
         content = { paddingValues ->
             Column(
-                modifier = Modifier
+                modifier = Modifier.verticalScroll(
+                    rememberScrollState()
+                )
                     .padding(paddingValues)
                     .fillMaxSize()
                     .padding(top = 36.dp),
@@ -233,7 +237,8 @@ fun LocationText(label: String, location: String) {
             Text(
                 text = "Location Link",
                 style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(8.dp)
                     .clickable {
                         val uri = "geo:$locationText?q=$locationText"
@@ -288,12 +293,9 @@ fun LogoutButton(
         onClick = {
             userViewModel.signOutFromAccount()
 
-            // أولاً نبدأ بالتأكد من أن جميع الصفحات السابقة تم مسحها
             navController.popBackStack(AppDestination.SignInDestination.route, inclusive = false)
 
-            // ثم ننتقل إلى صفحة تسجيل الدخول مع تفعيل popUpTo لتفريغ كل الصفحات
             navController.navigate(AppDestination.SignInDestination.route) {
-                // نحن نضمن أن أي صفحة قبل SignIn سيتم إزالتها، مع إضافة popUpTo بشكل صحيح
                 popUpTo(AppDestination.SignInDestination.route) { inclusive = true }
                 launchSingleTop = true
             }
@@ -303,8 +305,10 @@ fun LogoutButton(
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ) {
-        Text("Logout",
-            fontSize = 18.sp)
+        Text(
+            "Logout",
+            fontSize = 16.sp,
+        )
     }
 }
 

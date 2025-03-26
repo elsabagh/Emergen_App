@@ -24,5 +24,4 @@ abstract class FirebaseModuleImpl {
     @Binds
     abstract fun provideChatRepository(impl: ChatRepositoryImpl): ChatRepository
 
-
 }

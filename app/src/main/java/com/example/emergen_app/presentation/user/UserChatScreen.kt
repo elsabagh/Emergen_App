@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -53,6 +54,14 @@ fun UserChatScreen(navController: NavController) {
     val currentUserName by viewModel.user.collectAsState()
     val currentUserImage by viewModel.user.collectAsState()
 
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(messages.size) {
+        if (messages.isNotEmpty()) {
+            listState.animateScrollToItem(messages.size - 1)
+        }
+    }
+
     LaunchedEffect(Unit) {
         viewModel.fetchCurrentUser()
         viewModel.getChatWithCurrentUser()
@@ -73,7 +82,10 @@ fun UserChatScreen(navController: NavController) {
             modifier = Modifier
         )
 
-        LazyColumn(modifier = Modifier.weight(1f)) {
+        LazyColumn(
+            state = listState,
+            modifier = Modifier.weight(1f)
+        ) {
             itemsIndexed(messages) { index, message ->
                 MessageItem(message = message, currentUserId = currentUserId)
             }

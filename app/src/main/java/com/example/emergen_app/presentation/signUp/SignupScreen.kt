@@ -288,13 +288,11 @@ fun AddressSection(uiState: SignUpState, viewModel: SignUpViewModel) {
 
 @Composable
 fun LocationButton(context: Context, uiState: SignUpState, viewModel: SignUpViewModel) {
-    var latitude by remember { mutableStateOf("") }
-    var longitude by remember { mutableStateOf("") }
+    var latitude = uiState.latitude
+    var longitude = uiState.longitude
 
-    // الحصول على FusedLocationProviderClient
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
-    // عرض الإحداثيات في OutlinedTextField
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -302,20 +300,16 @@ fun LocationButton(context: Context, uiState: SignUpState, viewModel: SignUpView
     ) {
         OutlinedTextField(
             value = latitude,
-            onValueChange = { newValue ->
-                latitude = newValue
-                // تحديث الـ uiState مع الإحداثيات الجديدة
-                viewModel.onLatitudeChange(newValue)
+            onValueChange = {
+                viewModel::onLatitudeChange
             },
             label = { Text("Latitude") },
             modifier = Modifier.weight(1f)
         )
         OutlinedTextField(
             value = longitude,
-            onValueChange = { newValue ->
-                longitude = newValue
-                // تحديث الـ uiState مع الإحداثيات الجديدة
-                viewModel.onLongitudeChange(newValue)
+            onValueChange = {
+                viewModel::onLongitudeChange
             },
             label = { Text("Longitude") },
             modifier = Modifier.weight(1f)
@@ -339,7 +333,6 @@ fun LocationButton(context: Context, uiState: SignUpState, viewModel: SignUpView
                 latitude = lat.trim()
                 longitude = lon.trim()
 
-                // تحديث الـ viewModel مع الإحداثيات الجديدة
                 viewModel.onLatitudeChange(latitude)
                 viewModel.onLongitudeChange(longitude)
             }
@@ -387,7 +380,6 @@ fun UploadIDSection(
                         )
                         .padding(8.dp)
                 ) {
-                    // النص "Front" أعلى الصورة
                     Text(
                         text = "Front",
                         style = MaterialTheme.typography.bodySmall,
@@ -408,12 +400,15 @@ fun UploadIDSection(
                             .clickable { idFrontPicker.launch("image/*") },
                         contentAlignment = Alignment.Center,
                     ) {
-                        Button(onClick = { idFrontPicker.launch("image/*") }) {
+                        Button(
+                            onClick = { idFrontPicker.launch("image/*") },
+                            colors = ButtonDefaults.buttonColors(adminWelcomeCard),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
                             Text("Upload")
                         }
                     }
 
-                    // زر الحذف في الجزء السفلي داخل البوردر
                     if (idFrontUri != null) {
                         IconButton(
                             onClick = onDeleteFront,
@@ -430,7 +425,6 @@ fun UploadIDSection(
                 }
             }
 
-            // عمود لصورة الجهة الخلفية
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Box(
                     modifier = Modifier
@@ -443,7 +437,6 @@ fun UploadIDSection(
                         )
                         .padding(8.dp)
                 ) {
-                    // النص "Back" أعلى الصورة
                     Text(
                         text = "Back",
                         style = MaterialTheme.typography.bodySmall,
@@ -464,18 +457,21 @@ fun UploadIDSection(
                             .clickable { idBackPicker.launch("image/*") },
                         contentAlignment = Alignment.Center
                     ) {
-                        Button(onClick = { idBackPicker.launch("image/*") }) {
+                        Button(
+                            onClick = { idBackPicker.launch("image/*") },
+                            colors = ButtonDefaults.buttonColors(adminWelcomeCard),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
                             Text("Upload")
                         }
                     }
 
-                    // زر الحذف في الجزء السفلي داخل البوردر
                     if (idBackUri != null) {
                         IconButton(
                             onClick = onDeleteBack,
                             modifier = Modifier
-                                .align(Alignment.BottomEnd) // وضعه في أسفل يمين البوردر
-                                .padding(4.dp) // إضافة padding للتحكم في المسافة
+                                .align(Alignment.BottomEnd)
+                                .padding(4.dp)
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Delete,

@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -54,6 +55,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.example.emergen_app.presentation.components.TopAppBar
 import com.example.emergen_app.presentation.signUp.LoadingOverlay
+import com.example.emergen_app.ui.theme.adminWelcomeCard
 import com.example.emergen_app.utils.checkIfGpsEnabled
 import com.example.emergen_app.utils.updateLocation
 import com.google.android.gms.location.LocationServices
@@ -126,7 +128,9 @@ fun EditProfile(
 
                 Button(
                     onClick = { openEmailDialog.value = true },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(adminWelcomeCard),
+                    shape = RoundedCornerShape(8.dp)
                 ) {
                     Text("Change Email")
                 }
@@ -208,7 +212,9 @@ fun EditProfile(
 
                 Button(
                     onClick = { openDialog.value = true },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(adminWelcomeCard),
+                    shape = RoundedCornerShape(8.dp)
                 ) {
                     Text("Change password")
                 }
@@ -242,7 +248,9 @@ fun EditProfile(
                             idBackUri.value
                         )
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(adminWelcomeCard),
+                    shape = RoundedCornerShape(8.dp)
                 ) {
                     Text("Save Changes")
                 }
@@ -269,7 +277,7 @@ fun ChangeEmailDialog(
         title = { Text("Change Email") },
         text = {
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 OutlinedTextField(
                     value = newEmail.value,
@@ -289,13 +297,19 @@ fun ChangeEmailDialog(
             Button(
                 onClick = {
                     onChangeEmail(newEmail.value, currentPassword.value)
-                }
+                },
+                modifier = Modifier.padding(horizontal = 4.dp),
+                colors = ButtonDefaults.buttonColors(adminWelcomeCard),
+                shape = RoundedCornerShape(8.dp)
             ) {
                 Text("Confirm")
             }
         },
         dismissButton = {
-            Button(onClick = onDismiss) {
+            Button(onClick = onDismiss,
+                modifier = Modifier.padding(horizontal = 4.dp),
+                colors = ButtonDefaults.buttonColors(adminWelcomeCard),
+                shape = RoundedCornerShape(8.dp)) {
                 Text("Cancel")
             }
         }
@@ -520,13 +534,21 @@ fun ChangePasswordDialog(
             Button(
                 onClick = {
                     onChangePassword(oldPassword.value, newPassword.value)
-                }
+                },
+                modifier = Modifier.padding(horizontal = 4.dp),
+                colors = ButtonDefaults.buttonColors(adminWelcomeCard),
+                shape = RoundedCornerShape(8.dp)
             ) {
                 Text("Confirm")
             }
         },
         dismissButton = {
-            Button(onClick = onDismiss) {
+            Button(
+                onClick = onDismiss,
+                modifier = Modifier.padding(horizontal = 4.dp),
+                colors = ButtonDefaults.buttonColors(adminWelcomeCard),
+                shape = RoundedCornerShape(8.dp)
+            ) {
                 Text("Cancel")
             }
         }

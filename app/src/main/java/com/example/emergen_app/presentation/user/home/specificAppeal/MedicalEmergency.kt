@@ -79,9 +79,8 @@ fun MedicalEmergency(navController: NavController) {
                     .padding(bottom = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // صورة سيارة الإسعاف
                 Image(
-                    painter = painterResource(id = R.drawable.medical_emergency), // استبدل بالصور المناسبة
+                    painter = painterResource(id = R.drawable.medical_emergency),
                     contentDescription = "Ambulance",
                     modifier = Modifier.size(220.dp)
                 )
@@ -148,9 +147,8 @@ fun EmergencyOption(text: String, selectedOption: String?, onSelect: (String) ->
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier
-                .fillMaxWidth()
-                .background(color = MaterialTheme.colorScheme.background),
-            color = Color.Black
+                .background(MaterialTheme.colorScheme.background)
+            .fillMaxWidth(),
         )
     }
 }
@@ -184,6 +182,7 @@ fun CustomTextField(
         decorationBox = { innerTextField ->
             Box(
                 modifier = Modifier
+                    .background(MaterialTheme.colorScheme.background)
                     .fillMaxWidth()
                     .height(86.dp)
                     .border(
@@ -191,7 +190,6 @@ fun CustomTextField(
                         color = if (isFocused) adminWelcomeCard else Color.Gray,
                         shape = RoundedCornerShape(8.dp)
                     )
-                    .background(Color.White)
                     .padding(12.dp)
             ) {
                 if (text.isEmpty()) Text("Other..", color = Color.Gray)
