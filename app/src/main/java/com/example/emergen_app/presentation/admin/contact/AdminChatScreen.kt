@@ -2,6 +2,7 @@ package com.example.emergen_app.presentation.admin.contact
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
@@ -18,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -43,6 +46,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.example.emergen_app.data.models.Message
+import com.example.emergen_app.data.models.symbolsList
 import com.example.emergen_app.ui.theme.adminWelcomeCard
 import com.example.emergen_app.ui.theme.colorCardIcon
 
@@ -114,6 +118,41 @@ fun AdminChatScreen(
                         )
                     }
                 }
+                LazyRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    itemsIndexed(symbolsList) { _, symbol ->
+                        Card(
+                            modifier = Modifier
+                                .clickable {
+                                    val message = Message(
+                                        senderId = currentUserId,
+                                        receiverId = userId,
+                                        content = symbol.meaning,
+                                        imageResId = symbol.imageRes,
+                                    )
+                                    viewModel.sendMessage(message)
+                                },
+                        ) {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                            ) {
+                                Text(
+                                    text = symbol.meaning,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    modifier = Modifier
+                                        .padding(8.dp)
+                                        .align(Alignment.Center)
+                                )
+                            }
+                        }
+                    }
+                }
+
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -214,7 +253,7 @@ fun MessageItem(message: Message, currentUserId: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(vertical = 8.dp),
         horizontalArrangement = if (alignment == Alignment.End) Arrangement.End else Arrangement.Start
     ) {
         Column(
@@ -232,18 +271,13 @@ fun MessageItem(message: Message, currentUserId: String) {
                         bottomStart = 8.dp
                     )
                 )
-                .background(
-                    color = cardColor
-                )
-                .padding(horizontal = 8.dp)
+                .background(color = cardColor)
+                .padding(12.dp)
         ) {
             Text(
                 text = message.content,
-                style = MaterialTheme.typography.bodyLarge.copy(color = textColor),
-                modifier = Modifier
-                    .padding(12.dp)
+                style = MaterialTheme.typography.bodyLarge.copy(color = textColor)
             )
         }
-
     }
 }

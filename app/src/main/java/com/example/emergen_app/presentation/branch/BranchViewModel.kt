@@ -90,7 +90,7 @@ class BranchViewModel @Inject constructor(
             graphHopperRepository.getRoute("$lat1,$lon1", "$lat2,$lon2", apiKey).collect { result ->
                 result.onSuccess { path ->
                     val distance = "المسافة: ${path.distance / 1000} كم"
-                    val duration = "الوقت: ${(path.time / 60000)} دقيقة"
+                    val duration = "${(path.time / 60000)}m"
                     val travelInfo = "$distance - $duration"
                     Log.d("GraphHopper", "Distance: ${path.distance}, Duration: ${path.time}")
 
@@ -99,7 +99,7 @@ class BranchViewModel @Inject constructor(
                         nameBranch = currentBranch.branchName,
                         mobileBranch = currentBranch.mobileNumber,
                         addressBranch = currentBranch.addressMaps,
-                        betweenAddress = travelInfo
+                        betweenAddress = duration
                     )
 
                     storageRepository.updateReport(updatedReport)

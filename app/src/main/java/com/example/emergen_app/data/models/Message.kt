@@ -9,4 +9,5 @@ data class Message(
     val nameSender: String = "",
     val nameReceiver: String = "",
     val imageSender: String = "",
+    val imageResId: Int? = null, // ← ID الصورة لو كانت محلية
 )

@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.emergen_app.R
+import com.example.emergen_app.data.models.User
 import com.example.emergen_app.presentation.components.TopAppBar
 
 @Composable
@@ -53,7 +54,8 @@ fun UserNotificationScreen(
                 // استخدام TypeOfRequestText هنا
                 LazyColumn {
                     itemsIndexed(notifications) { _, user ->
-                        TypeOfRequestText(typeOfRequest = user.typeOfRequest)
+                        TypeOfRequestText(user = user,
+                                typeOfRequest = user.typeOfRequest)
                     }
                 }
             }
@@ -63,7 +65,7 @@ fun UserNotificationScreen(
 
 
 @Composable
-fun TypeOfRequestText(typeOfRequest: String?) {
+fun TypeOfRequestText(user: User?, typeOfRequest: String?) {
     val (icon, color) = when (typeOfRequest) {
         "Fire Emergency" -> Pair(Icons.Filled.NotificationImportant, Color(0xFFF39357))
         "Police Emergency" -> Pair(Icons.Filled.NotificationImportant, Color(0xFF57BFF3))
@@ -99,6 +101,11 @@ fun TypeOfRequestText(typeOfRequest: String?) {
                     style = MaterialTheme.typography.bodyMedium,
                     fontSize = 14.sp
                 )
+                Text(
+                    text = " Estimated time of arrival: [${user!!.betweenAddress}]",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontSize = 14.sp
+                )
             }
         }
         Spacer(
@@ -115,6 +122,9 @@ fun TypeOfRequestText(typeOfRequest: String?) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewTypeOfRequestText() {
-    TypeOfRequestText(typeOfRequest = "Medical Emergency")
+    TypeOfRequestText(
+        typeOfRequest = "Medical Emergency",
+        user = TODO()
+    )
 }
 
