@@ -51,3 +51,20 @@ For geolocation, distance calculations, and dispatch routing.
 
 ---
 
+## 🖼️ Screenshots
+
+### 👨‍🦯 Deaf & Mute Users
+
+![User](images/User%20screen.png)
+
+---
+
+### 🛡️ Admin
+
+![Admin](images/Admin%20screen.png)
+---
+
+### 🏥 Branch Employees
+
+![Branch](images/branches%20Screens.png)
+
